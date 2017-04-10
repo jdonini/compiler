@@ -1,0 +1,11 @@
+CONST
+    m = 7,
+    n = 85;
+
+# testando comentarios 123
+
+VAR
+    x, y, z, q, r;
+
+PROCEDURE multiply;
+VAR a, b;
