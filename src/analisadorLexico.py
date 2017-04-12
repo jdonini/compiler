@@ -1,183 +1,108 @@
 import ply.lex as lex
 import re
-import codecs
 import os
-import sys
+import datetime
 
-# 1. Definición de tokens
+
+# Definição dos tokens que a linguagem reconhece
 tokens = [
-    'MAYORIGUAL', 'MENORIGUAL', 'MENORQUE', 'MAYORQUE',
-    'ILOGICO', 'OLOGICO', 'IGUALIGUAL', 'DIFERENTE',
-    'LKEY', 'RKEY', 'LPAR', 'RPAR', 'LCOR', 'RCOR',
-    'NEGBOOL', 'UMINUS', 'MEN', 'SUM', 'MULT', 'DIV', 'MOD', 'IGUAL',
-    'DOT', 'COMMA', 'DOTCOMMA', 'ID', 'NUMERO', 'CAD'
+    'ID', 'NUMBER', 'PLUS', 'MINUS', 'MULT', 'DIVIDE', 'MOD',
+    'NE', 'LT', 'LTE', 'GT', 'GTE', 'LPAREN', 'RPAREN', 'EQUALS',
+    'DOT', 'COMMA', 'SEMICOLON',
     ]
 
-# tokens_unused = ['BINARIO', 'NEWLINE', 'COMENTARIO']
-# palavras_reservadas_unused = {'void':'VOID'}
-
-# De acordo com a linguagem itilizada
+# De acordo com a linguagem itilizada, foi definida as palavras_reservadas
 palavras_reservadas = {
+    'if': 'IF',
+    'then': 'THEN',
+    'else': 'ELSE',
+    'while': 'WHILE',
+    'def': 'DEF',
     'class': 'CLASS',
     'return': 'RETURN',
-    'this': 'THIS',
-    'extends': 'EXTENDS',
-    'if': 'IF',
-    'new': 'NEW',
-    'else': 'ELSE',
     'length': 'LENGTH',
     'int': 'INT',
-    'while': 'WHILE',
-    'true': 'TRUE',
     'boolean': 'BOOLEAN',
-    'break': 'BREAK',
+    'true': 'TRUE',
     'false': 'FALSE',
-    'string': 'STRING',
+    'break': 'BREAK',
     'continue': 'CONTINUE',
+    'string': 'STRING',
     'null': 'NULL'
 }
 tokens += list(palavras_reservadas.values())
 
 # implementando utilizando expressoes regulares
-# t_COMENTARIO = '\/\/.*'
-# t_COMENTARIO = r'\/\*.*\n\*\/'
-# t_ignore_COMENTARIO = '\/\/.*'
-# t_COMENTARIO = r'\/\*\s*([^\s]*)\s*\s*\/'
-t_MAYORIGUAL = '>='
-t_MENORIGUAL = '<='
-t_MENORQUE = '<'
-t_MAYORQUE = '>'
-t_ILOGICO = '&&'
-t_OLOGICO = r'\|\|'
-t_IGUALIGUAL = r'=='
-t_DIFERENTE = '!='
-t_LKEY = '\{'
-t_RKEY = '\}'
-t_LPAR = '\('
-t_RPAR = '\)'
-t_LCOR = '\['
-t_RCOR = r'\]'
-t_NEGBOOL = '!'
-t_MEN = '-'
-t_UMINUS = '\-'
-t_SUM = '\+'
-t_MULT = '\*'
-t_DIV = r'/'
-t_MOD = '%'
-t_IGUAL = '='
+t_ignore_COMMENT = r'\#.*'
+t_PLUS = r'\+'
+t_MINUS = r'\-'
+t_MULT = r'\*'
+t_DIVIDE = r'/'
+t_MOD = r'%'
+t_NE = r'<>'
+t_LT = r'<'
+t_LTE = r'<='
+t_GT = r'>'
+t_GTE = r'=>'
+t_LPAREN = r'\('
+t_RPAREN = r'\)'
+t_EQUALS = r'='
 t_DOT = r'\.'
-t_COMMA = ','
-t_DOTCOMMA = ';'
+t_COMMA = r','
+t_SEMICOLON = r';'
 
 
-def t_COMENTARIO(t):
-    """ Verifica os comentarios """
-    r'(/\*(.|\n|\r|\t)*?\*/)|//.*'
-    # t.value = str(t.value)
-    return t
-
-
-# BINARIO-----------------------------------------------
-def t_BINARIO(t):
-    r'[b]\'[01]+\''
-    t.value = int(t.value[2:-1], 2)
-    # t.value = str(t.value)
-    return t
-
-# -----------------------------------------------------------------
-# def t_error_CAD(t):
-#     r'"([\x20-\x7E]|\\\\|\\n|\\t|\\r)*'
-#     print"la cadena no quedo bien cerrada"
-
-
-def t_CAD(t):
-
-    r'"([\x20-\x7E]|\t|\r)*"'
-    # t.value = str(t.value)
-    return t
-
-
-# ERROR ID ---------------------------------------------
-def t_error_ID(t):
-    r'[ñÑáÁéÉíÍÓóúÚ\d][A-Za-z]([0-9a-zA-ZñÑáÁéÉíÍÓóúÚ]*[A-Za-z])?'
-    t.value = re.sub(r'[ñÑáÁéÉíÍÓóúÚ]', '_', t.value)
-    print("El identidicador %s no es valido" % t.value)
+# Funções seguindo o padrão da doc (http://www.dabeaz.com/ply/ply.html#ply_nn6)
+def t_ID(t):
+    r'[a-zA-Z_][a-zA-Z0-9_]*'
     t.type = palavras_reservadas.get(t.value, 'ID')
-    t.lexer.skip(1)
-    # t.value = str(t.value)
-
-
-# ID---------------------------------------------------
-def t_ID(t):  # done
-    r'[A-Za-z]([0-9a-zA-ZñÑáÁéÉíÍÓóúÚ]*)?[A-Za-zñÑáÁéÉíÍÓóúÚ]*'
-
-    # reemplazando la ñ y los caracteres tildados
-    t.value = re.sub(r'[ñÑáÁéÉíÍÓóúÚ]', '_', t.value)
-    t.type = palavras_reservadas.get(t.value, 'ID')
-    # t.value = str(t.value)
     return t
 
-# NUMERO-----------------------------------------------
-# reconoce los token como caracteres y la convertimos a un numero para
-# escribirlo, si no es un numero tira una exepcion
+
+# verifica se existe comentário na linha, assumimos que seja #
+# varias vezes (*), pelo menos uma vez(+)
+def t_COMMENT(t):
+    r'\#.*'
+    pass
 
 
-def t_NUMERO(t):
-
-    r'(-?[0-9]+(\.[0-9]+)?)([eE]-?\+?[0-9]+)?'
-
+def t_NUMBER(t):
+    r'\d+'
     try:
-        #  coge la cadena y se convierte en numero
-        t.value = float(t.value)
-        if t.value < -2147483648.0 or t.value > 2147483647.0:
-            print ("ERROR valor fuera de rango en la linea %d" % t.lineno)
-            t.value = 0
-
+        t.value = int(t.value)
     except ValueError:
-        print ("El valor no es correcto %d", t.value)
+        print("Valor do inteiro muito grande %d", t.value)
         t.value = 0
-        # t.value = str(t.value)
-        return t
-
-# RETURN-----------------------------------------------
-# detecta la palabra reservada return
-# NOTA: no hay necesidad de realizar esta funcion, puesto que
-# esta dentro de las palabras reservadas
-
-
-def t_RETURN(t):
-    r'return'
-    # t.value = str(t.value)
     return t
-# IF---------------------------------------------------
-# def t_IF(t):
-#   r'if'
-#  return t
 
 
-# 3. Caracteres que se reconocen e ignoran
-# aca se esta ignorando el espacio
-t_ignore = " \t"
-
-# NEWLINE----------------------------------------------
-# reconoce un salto de linea y cuenta los saltos de linea para saber
-# cuantas lineas hay
+def t_error(t):
+    """ trato o erro que ocorre quando é verificado um Caracter ao longo
+    da leitura do arquivo, encontra o erro e continua """
+    print ("Caracter ilegal '%s' " % t.value[0])
+    t.lexer.skip(1)
 
 
 def t_NEWLINE(t):
     r'\n+'
     t.lexer.lineno += t.value.count("\n")
-    # t.value = str(t.value)
-
-# ERROR------------------------------------------------
-# entra aca si no concuerda con ningun caracter, es decir si no reconoce
-# un token
+    t.lexer.current = t.lexer.lexpos - 1
 
 
-def t_error(t):
-    # se encontrar erro o analisador continua (skip)
-    print("Caracter não reconhecido '%s'" % t.value[0])
-    t.lexer.skip(1)
+# Compute column.
+#     input is the input text string
+#     token is a token instance
+# def find_column(cadeia_caracteres, t):
+#     print("FIND column")
+#     last_cr = input.rfind('\n', 0, t.lexpos)
+#     if last_cr < 0:
+#         last_cr = 0
+#     column = (t.lexpos - last_cr) + 1
+#     return columnn
+
+
+# Ignora tabs e espaços
+t_ignore = ' \t'
 
 
 def buscar_arquivos():
@@ -185,44 +110,51 @@ def buscar_arquivos():
     arquivos = []
     numero_arquivo = ''
     resposta = False
-    cont = 1
+    contador = 1
 
-    for base, dirs, files in os.walk(diretorio):
+    for base, dirs, files in os.walk(diretorio_teste):
         arquivos.append(files)
 
         for file in files:
-            print(str(cont)+". "+file)
-            cont = cont+1
+            print(str(contador)+". "+file)
+            contador += 1
 
         if resposta is False:
-            numero_arquivo = input('\nNumero do Teste: ')
+            numero_arquivo = input('\nNúmero do Teste: ')
             for file in files:
                 if file == files[int(numero_arquivo)-1]:
                     break
-
             print("Você escolheu \"%s\" \n" % files[int(numero_arquivo)-1])
 
             return files[int(numero_arquivo)-1]
 
-analisador = lex.lex()
 
-print("Selecione o teste")
-print("Presiona Ctrl+z para sair\n")
+analisador_lexer = lex.lex()
 
-
-diretorio = '/home/juliano/Workspace/Compiladores/test/'
+# arquivos de Teste
+diretorio_teste = '/home/juliano/Workspace/Compiladores/test/'
 arquivo = buscar_arquivos()
-teste = diretorio+arquivo
-fp = codecs.open(teste, "r", "utf-8")
-cadeia = fp.read()
-fp.close()
+teste = diretorio_teste + arquivo
+arquivo_teste = open(teste, "r")
+cadeia_caracteres = arquivo_teste.read()
+arquivo_teste.close()
 
+# arquivos de Resulado
+diretorio_resultado = '/home/juliano/Workspace/Compiladores/result/'
+i = datetime.datetime.now()
+resultado = diretorio_resultado + arquivo + "__" + ("%s-%s-%s" % (i.day, i.month, i.year)) + \
+            "__" + ("%s:%s:%s" % (i.hour, i.minute, i.second))
+arquivo_resultado = open(resultado, "w+")
 
-analisador.input(cadeia)
+# usa a cadeia_caracteres como entrada para o AL
+analisador_lexer.input(cadeia_caracteres)
 
 # Printa a lista de token
 while True:
-    token = analisador.token()
+    token = analisador_lexer.token()
     if not token:
         break
     print(token)
+    arquivo_resultado.write(str(token)+"\n")
+print("\n")
+arquivo_resultado.close()
