@@ -1,0 +1,3 @@
+LexToken(EQUALS,'=',1,2)
+LexToken(NUMBER,7,1,4)
+LexToken(COMMA,',',1,5)

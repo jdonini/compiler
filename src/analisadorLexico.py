@@ -6,9 +6,10 @@ import datetime
 
 # Definição dos tokens que a linguagem reconhece
 tokens = [
-    'ID', 'NUMBER', 'PLUS', 'MINUS', 'MULT', 'DIVIDE', 'MOD',
-    'NE', 'LT', 'LTE', 'GT', 'GTE', 'LPAREN', 'RPAREN', 'EQUALS',
-    'DOT', 'COMMA', 'SEMICOLON',
+    'LPAREN', 'RPAREN', 'LCOR', 'RCOR', 'LKEY', 'RKEY', 'COMMA', 'SEMICOLON',
+    'ID', 'NUMBER', 'PLUS', 'MINUS', 'MULT', 'DIVIDE', 'EQUALS', 'DIFFERENT',
+    'GT', 'GTE', 'LT', 'LTE',  'OR', 'AND', 'NOT', 'ASSIGN', 'PLUSASSING',
+    'MINUSASSING', 'MULTASSING', 'DIVIDEASSING', 'MOD', 'MODASSING', 'TERNARY', 'CAD_STRING',
     ]
 
 # De acordo com a linguagem itilizada, foi definida as palavras_reservadas
@@ -17,53 +18,79 @@ palavras_reservadas = {
     'then': 'THEN',
     'else': 'ELSE',
     'while': 'WHILE',
-    'def': 'DEF',
-    'class': 'CLASS',
+    'for': 'FOR',
     'return': 'RETURN',
-    'length': 'LENGTH',
     'int': 'INT',
-    'boolean': 'BOOLEAN',
+    'bool': 'BOOLEAN',
+    'string': 'STRING',
     'true': 'TRUE',
     'false': 'FALSE',
     'break': 'BREAK',
-    'continue': 'CONTINUE',
-    'string': 'STRING',
-    'null': 'NULL'
+    'read': 'READ',
+    'write': 'WRITE',
+    'void': 'VOID',
+    'func': 'FUNCTION',
+    'main': 'MAIN',
 }
 tokens += list(palavras_reservadas.values())
 
 # implementando utilizando expressoes regulares
 t_ignore_COMMENT = r'\#.*'
+t_LPAREN = r'\('
+t_RPAREN = r'\)'
+t_LCOR = '\['
+t_RCOR = r'\]'
+t_LKEY = r'\{'
+t_RKEY = r'\}'
+t_COMMA = r','
+t_SEMICOLON = r';'
 t_PLUS = r'\+'
 t_MINUS = r'\-'
 t_MULT = r'\*'
 t_DIVIDE = r'/'
-t_MOD = r'%'
-t_NE = r'<>'
-t_LT = r'<'
-t_LTE = r'<='
+t_EQUALS = r'=='
+t_DIFFERENT = r'!='
 t_GT = r'>'
 t_GTE = r'=>'
-t_LPAREN = r'\('
-t_RPAREN = r'\)'
-t_EQUALS = r'='
-t_DOT = r'\.'
-t_COMMA = r','
-t_SEMICOLON = r';'
+t_LT = r'<'
+t_LTE = r'<='
+t_OR = r'\|\|'
+t_AND = r'&&'
+t_NOT = r'!'
+t_ASSIGN = r'='
+t_PLUSASSING = r'\+='
+t_MINUSASSING = r'-='
+t_MULTASSING = r'\*='
+t_DIVIDEASSING = r'/='
+t_MOD = '%'
+t_MODASSING = r'%='
+t_TERNARY = r'\? :'
+
+# Ignora tabs e espaços
+t_ignore = ' \t\v\r'
 
 
-# Funções seguindo o padrão da doc (http://www.dabeaz.com/ply/ply.html#ply_nn6)
-def t_ID(t):
+# Funções seguindo o padrão da doc(http://www.dabeaz.com/ply/ply.html\ply_nn6)
+def t_id(t):
     r'[a-zA-Z_][a-zA-Z0-9_]*'
     t.type = palavras_reservadas.get(t.value, 'ID')
     return t
 
 
-# verifica se existe comentário na linha, assumimos que seja #
-# varias vezes (*), pelo menos uma vez(+)
-def t_COMMENT(t):
-    r'\#.*'
+# Verifica se existe comentário na linha
+def t_comment(t):
+    r'\//.*'
     pass
+
+
+def t_comment_multline(l):
+    r'(/\*(.|\n)*?\*/)|(//.*)'
+    pass
+
+
+def t_CAD_STRING(t):
+    r'"([\x20-\x7E]|\t|\r)*"'
+    return t
 
 
 def t_NUMBER(t):
@@ -77,32 +104,26 @@ def t_NUMBER(t):
 
 
 def t_error(t):
-    """ trato o erro que ocorre quando é verificado um Caracter ao longo
+    """ Trata o erro que ocorre quando é verificado um Caracter ao longo
     da leitura do arquivo, encontra o erro e continua """
     print ("Caracter ilegal '%s' " % t.value[0])
     t.lexer.skip(1)
 
 
-def t_NEWLINE(t):
+def t_newline(t):
     r'\n+'
     t.lexer.lineno += t.value.count("\n")
     t.lexer.current = t.lexer.lexpos - 1
 
 
-# Compute column.
-#     input is the input text string
-#     token is a token instance
-# def find_column(cadeia_caracteres, t):
-#     print("FIND column")
-#     last_cr = input.rfind('\n', 0, t.lexpos)
+# def find_column(input, lexpos):
+#     print("coluna")
+#     """Encontra a coluna de acordo com lexpos"""
+#     last_cr = current_input.rfind('\n', 0, lexpos)
 #     if last_cr < 0:
 #         last_cr = 0
-#     column = (t.lexpos - last_cr) + 1
-#     return columnn
-
-
-# Ignora tabs e espaços
-t_ignore = ' \t'
+#     column = (lexpos - last_cr)
+#     return column
 
 
 def buscar_arquivos():
@@ -142,7 +163,8 @@ arquivo_teste.close()
 # arquivos de Resulado
 diretorio_resultado = '/home/juliano/Workspace/Compiladores/result/'
 i = datetime.datetime.now()
-resultado = diretorio_resultado + arquivo + "__" + ("%s-%s-%s" % (i.day, i.month, i.year)) + \
+resultado = diretorio_resultado + arquivo + \
+            "__" + ("%s-%s-%s" % (i.day, i.month, i.year)) + \
             "__" + ("%s:%s:%s" % (i.hour, i.minute, i.second))
 arquivo_resultado = open(resultado, "w+")
 
