@@ -1,0 +1,28 @@
+<program> ::= <seqDeclaração>
+<seqDeclaração> ::= <declaração> {<declaração> <seqDeclaração>}
+
+<declaração> ::= tipo id ';'
+
+<comando> ::= <comandoIf>
+            | <comandoWhile>
+            | <comandoFor>
+
+<comandoIF> ::= 'if' '(' <expressão> ')' '{' <bloco> '}'
+            |   'if' '(' <expressão> ')' '{' <bloco> '}' 'else' '{' <bloco> '}'
+
+<comandoWhile> ::= 'while' '(' <expressão> ')' '{' <bloco> '}'
+                |  'while' '(' <expressão> ')' '{' <break> '}'
+
+<comandoFor> ::= 'for' '(' <><expressão><> ')' '{' <bloco> '}'
+
+<expressão> ::= num
+            |   str
+            |   lógico
+            |   <variável>
+            |   <chamadaFunção>
+            |   <expressão <op> <expressão>
+            |
+
+<bloco> ::=
+
+<op> ::=

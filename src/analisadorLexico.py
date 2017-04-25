@@ -9,8 +9,8 @@ tokens = [
     'LPAREN', 'RPAREN', 'LCOR', 'RCOR', 'LKEY', 'RKEY', 'COMMA', 'SEMICOLON',
     'ID', 'NUMBER', 'PLUS', 'MINUS', 'MULT', 'DIVIDE', 'EQUALS', 'DIFFERENT',
     'GT', 'GTE', 'LT', 'LTE',  'OR', 'AND', 'NOT', 'ASSIGN', 'PLUSASSING',
-    'MINUSASSING', 'MULTASSING', 'DIVIDEASSING', 'MOD', 'MODASSING', 'TERNARY',
-    'DOT', 'FLOAT', 'STRING', '_FIND_COLUMN',
+    'MINUSASSING', 'MULTASSING', 'DIVIDEASSING', 'MODASSING', 'TERNARY',
+    'DOT', 'FLOAT', 'STRING',
     ]
 
 # De acordo com a linguagem itilizada, foi definida as palavras_reservadas
@@ -32,6 +32,9 @@ palavras_reservadas = {
     'main': 'MAIN',
 }
 tokens += list(palavras_reservadas.values())
+
+# o Caracter T antes das funcões quer dizer que vamos reconhecer um token
+# passando T como paramentro, vamos analisar os tokens na função
 
 # implementando utilizando expressoes regulares
 t_ignore_COMMENT = r'\#.*'
@@ -61,7 +64,6 @@ t_PLUSASSING = r'\+='
 t_MINUSASSING = r'-='
 t_MULTASSING = r'\*='
 t_DIVIDEASSING = r'/='
-t_MOD = '%'
 t_MODASSING = r'%='
 t_TERNARY = r'\? :'
 t_DOT = r'\.'
