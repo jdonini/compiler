@@ -1,3 +1,0 @@
-LexToken(INT,'int',1,0)
-LexToken(ID,'v',1,4)
-LexToken(LCOR,'[',1,5)

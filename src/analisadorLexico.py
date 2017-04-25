@@ -9,7 +9,8 @@ tokens = [
     'LPAREN', 'RPAREN', 'LCOR', 'RCOR', 'LKEY', 'RKEY', 'COMMA', 'SEMICOLON',
     'ID', 'NUMBER', 'PLUS', 'MINUS', 'MULT', 'DIVIDE', 'EQUALS', 'DIFFERENT',
     'GT', 'GTE', 'LT', 'LTE',  'OR', 'AND', 'NOT', 'ASSIGN', 'PLUSASSING',
-    'MINUSASSING', 'MULTASSING', 'DIVIDEASSING', 'MOD', 'MODASSING', 'TERNARY', 'CAD_STRING',
+    'MINUSASSING', 'MULTASSING', 'DIVIDEASSING', 'MOD', 'MODASSING', 'TERNARY',
+    'DOT', 'FLOAT', 'STRING', '_FIND_COLUMN',
     ]
 
 # De acordo com a linguagem itilizada, foi definida as palavras_reservadas
@@ -28,8 +29,6 @@ palavras_reservadas = {
     'break': 'BREAK',
     'read': 'READ',
     'write': 'WRITE',
-    'void': 'VOID',
-    'func': 'FUNCTION',
     'main': 'MAIN',
 }
 tokens += list(palavras_reservadas.values())
@@ -65,6 +64,9 @@ t_DIVIDEASSING = r'/='
 t_MOD = '%'
 t_MODASSING = r'%='
 t_TERNARY = r'\? :'
+t_DOT = r'\.'
+t_FLOAT = r'((\d*\.\d+)(E[\+-]?\d+)?|([1-9]\d*E[\+-]?\d+))'
+t_STRING = r'\".*?\"'
 
 # Ignora tabs e espaços
 t_ignore = ' \t\v\r'
@@ -77,20 +79,12 @@ def t_id(t):
     return t
 
 
-# Verifica se existe comentário na linha
-def t_comment(t):
-    r'\//.*'
-    pass
-
-
-def t_comment_multline(l):
+# Verifica se existe comentário na(s) linha(s)
+def t_comment_multline(t):
     r'(/\*(.|\n)*?\*/)|(//.*)'
+    # ignora tudo que é comentario, porém em toda quebra de linha add +1
+    t.lexer.lineno += t.value.count("\n")
     pass
-
-
-def t_CAD_STRING(t):
-    r'"([\x20-\x7E]|\t|\r)*"'
-    return t
 
 
 def t_NUMBER(t):
@@ -106,24 +100,13 @@ def t_NUMBER(t):
 def t_error(t):
     """ Trata o erro que ocorre quando é verificado um Caracter ao longo
     da leitura do arquivo, encontra o erro e continua """
-    print ("Caracter ilegal '%s' " % t.value[0])
+    print("Caracter ilegal '%s' " % t.value[0])
     t.lexer.skip(1)
 
 
 def t_newline(t):
     r'\n+'
     t.lexer.lineno += t.value.count("\n")
-    t.lexer.current = t.lexer.lexpos - 1
-
-
-# def find_column(input, lexpos):
-#     print("coluna")
-#     """Encontra a coluna de acordo com lexpos"""
-#     last_cr = current_input.rfind('\n', 0, lexpos)
-#     if last_cr < 0:
-#         last_cr = 0
-#     column = (lexpos - last_cr)
-#     return column
 
 
 def buscar_arquivos():
@@ -161,12 +144,12 @@ cadeia_caracteres = arquivo_teste.read()
 arquivo_teste.close()
 
 # arquivos de Resulado
-diretorio_resultado = '/home/juliano/Workspace/Compiladores/result/'
-i = datetime.datetime.now()
-resultado = diretorio_resultado + arquivo + \
-            "__" + ("%s-%s-%s" % (i.day, i.month, i.year)) + \
-            "__" + ("%s:%s:%s" % (i.hour, i.minute, i.second))
-arquivo_resultado = open(resultado, "w+")
+# diretorio_resultado = '/home/juliano/Workspace/Compiladores/result/'
+# i = datetime.datetime.now()
+# resultado = diretorio_resultado + arquivo + \
+#             "__" + ("%s-%s-%s" % (i.day, i.month, i.year)) + \
+#             "__" + ("%s:%s:%s" % (i.hour, i.minute, i.second))
+# arquivo_resultado = open(resultado, "w+")
 
 # usa a cadeia_caracteres como entrada para o AL
 analisador_lexer.input(cadeia_caracteres)
@@ -177,6 +160,6 @@ while True:
     if not token:
         break
     print(token)
-    arquivo_resultado.write(str(token)+"\n")
+    # arquivo_resultado.write(str(token)+"\n")
 print("\n")
-arquivo_resultado.close()
+# arquivo_resultado.close()

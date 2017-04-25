@@ -30,4 +30,3 @@ void main() {
  write v[i], " ";
  }
 }
-

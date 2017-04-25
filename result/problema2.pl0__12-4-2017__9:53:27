@@ -1,8 +1,0 @@
-LexToken(ID,'m',1,0)
-LexToken(EQUALS,'=',1,2)
-LexToken(NUMBER,7,1,4)
-LexToken(COMMA,',',1,5)
-LexToken(ID,'n',2,7)
-LexToken(EQUALS,'=',2,9)
-LexToken(NUMBER,85,2,11)
-LexToken(SEMICOLON,';',2,13)
