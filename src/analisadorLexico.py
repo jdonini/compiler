@@ -2,15 +2,15 @@ import ply.lex as lex
 import re
 import os
 import datetime
-
+import baseLexer
 
 # Definição dos tokens que a linguagem reconhece
 tokens = [
     'LPAREN', 'RPAREN', 'LCOR', 'RCOR', 'LKEY', 'RKEY', 'COMMA', 'SEMICOLON',
     'ID', 'NUMBER', 'PLUS', 'MINUS', 'MULT', 'DIVIDE', 'EQUALS', 'DIFFERENT',
-    'GT', 'GTE', 'LT', 'LTE',  'OR', 'AND', 'NOT', 'ASSIGN', 'PLUSASSING',
-    'MINUSASSING', 'MULTASSING', 'DIVIDEASSING', 'MODASSING', 'TERNARY',
-    'DOT', 'FLOAT', 'STRING',
+    'GT', 'GTE', 'LT', 'LTE',  'OR', 'AND', 'NOT', 'ASSIGN', 'PLUSASSIGN',
+    'MINUSASSIGN', 'MULTASSIGN', 'DIVIDEASSIGN', 'MODASSIGN', 'TERNARY',
+    'DOT', 'STRING',
     ]
 
 # De acordo com a linguagem itilizada, foi definida as palavras_reservadas
@@ -60,16 +60,14 @@ t_OR = r'\|\|'
 t_AND = r'&&'
 t_NOT = r'!'
 t_ASSIGN = r'='
-t_PLUSASSING = r'\+='
-t_MINUSASSING = r'-='
-t_MULTASSING = r'\*='
-t_DIVIDEASSING = r'/='
-t_MODASSING = r'%='
+t_PLUSASSIGN = r'\+='
+t_MINUSASSIGN = r'-='
+t_MULTASSIGN = r'\*='
+t_DIVIDEASSIGN = r'/='
+t_MODASSIGN = r'%='
 t_TERNARY = r'\? :'
 t_DOT = r'\.'
-t_FLOAT = r'((\d*\.\d+)(E[\+-]?\d+)?|([1-9]\d*E[\+-]?\d+))'
 t_STRING = r'\".*?\"'
-
 # Ignora tabs e espaços
 t_ignore = ' \t\v\r'
 
@@ -102,7 +100,8 @@ def t_NUMBER(t):
 def t_error(t):
     """ Trata o erro que ocorre quando é verificado um Caracter ao longo
     da leitura do arquivo, encontra o erro e continua """
-    print("Caracter ilegal '%s' " % t.value[0])
+    print("LexToken(ERROR Léxico: Linha: %d, Coluna %d, Token invávildo: %s)" % (t.lexer.lineno, t.lexer.lexpos, t.value[0]))
+    #  t.lexer.lexpos - t.lexer.linestart + 1
     t.lexer.skip(1)
 
 

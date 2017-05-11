@@ -28,7 +28,5 @@ precedencia_tokens = (
 # P quer dizer que vamos analisar as produções
 def p_program(p):
     ''' program = bloco e P são as produções '''
-    p[0] = program(p[1], "programa")
-
-
-def
+    # p[0] = program(p[1], "programa")
+    pass

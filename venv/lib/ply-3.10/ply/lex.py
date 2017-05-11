@@ -52,6 +52,7 @@ except AttributeError:
 # This regular expression is used to match valid token names
 _is_identifier = re.compile(r'^[a-zA-Z0-9_]+$')
 
+
 # Exception thrown when invalid token encountered and no default error
 # handler is defined.
 class LexError(Exception):
