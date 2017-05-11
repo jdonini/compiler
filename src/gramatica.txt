@@ -1,0 +1,72 @@
+<programa> ::= <seqDeclaracao>
+
+<seqDeclaracao> ::= <declaracao> {','<declaracao>}
+
+<declaracao> ::= <tipo> identificador ['=' <valor>] ';'
+
+|<tipo> <variavel> ['=' '{'<num> {,<num>}'}'] ';'
+
+<tipo> ::= int
+        |  string
+        |  bool
+
+<valor> ::=  <num>
+        |    <logico>
+        |    string
+
+<variavel> ::= identificador
+        | identificador'['[<num>]']'
+
+<num> ::= <dig> {<dig>}
+
+<dig> ::= 0|1|2|3|4|5|6|7|8|9
+
+<logico> ::= true | false
+
+<op> ::= '-' | '!' | '*' | '/' | '%' | '+' | '<' | '<=' | '>' | '>=' | '==' | '!=' | '&&' | '||'
+
+<opAtrib> ::= '=' | '+=' | '-='|'*='|'/='|'%='
+
+<comando> ::= <comandoIf>
+            | <comandoFor>
+            | <comandoWhile>
+            | <comandoAtrib>
+            | <comandoReturn>
+            | <comandoBreak>
+            | <comandoChamadaProc>
+            | <comandoRead>
+            | <comandoWrite>
+
+<expressao> ::= <valor>
+            |   <variavel>
+            |   <chamadaFuncao>
+            |   <expressão> <op> <expressao>
+            |   <operadorTernario>
+
+<comandoIf> ::= 'if' '(' <expressao> ')' '{'<bloco>'}'
+              | 'if' '(' <expressao> ')' '{' <bloco> '}' 'else' '{'<bloco>'}'
+
+<comandoFor> ::= 'for' <variavel> 'in' <variavel> '{'<bloco>'}'
+                |'for' <variavel> 'in' 'range('<num>','<num>')''{'<bloco>'}'
+
+<comandoWhile> ::= 'while' '('<expressao> ')' '{'<bloco>'}'
+ 
+<comandoAtrib> ::= <variavel> <opAtrib> <expressao> ';'
+
+<comandoReturn> ::= 'return' [<expressão>] ';'
+
+<comandoBreak> ::= 'break' ';'
+
+<comandoChamadaProc> ::= identificador'('{<tipo>identificador}')'{'<bloco>'}'
+
+<comandoRead> ::= 'read' <variavel> ';'
+
+<comandoWrite> ::= 'write' <expressao> {','<expressao>}
+
+<bloco> ::= [<seqDeclaracoes>]{[<comando>]}
+
+<chamadaFuncao> ::= <tipo> identificador'('[<listaDeParametros>]')' '{'<bloco>'}'
+
+<listaDeParametros> ::= <tipo> identificador {',' <tipo> identificador}
+
+<comentario> ::= '/\*(.|\n)*?\*/)|(//.*'

@@ -1,8 +1,9 @@
 import ply.lex as lex
 import re
 import os
+import sys
 import datetime
-import baseLexer
+
 
 # Definição dos tokens que a linguagem reconhece
 tokens = [
@@ -23,7 +24,7 @@ palavras_reservadas = {
     'return': 'RETURN',
     'int': 'INT',
     'bool': 'BOOLEAN',
-    'string': 'STRING',
+    # 'string': 'STRING',
     'true': 'TRUE',
     'false': 'FALSE',
     'break': 'BREAK',
@@ -101,7 +102,6 @@ def t_error(t):
     """ Trata o erro que ocorre quando é verificado um Caracter ao longo
     da leitura do arquivo, encontra o erro e continua """
     print("LexToken(ERROR Léxico: Linha: %d, Coluna %d, Token invávildo: %s)" % (t.lexer.lineno, t.lexer.lexpos, t.value[0]))
-    #  t.lexer.lexpos - t.lexer.linestart + 1
     t.lexer.skip(1)
 
 
@@ -136,7 +136,6 @@ def buscar_arquivos():
 
 analisador_lexer = lex.lex()
 
-# arquivos de Teste
 diretorio_teste = '/home/juliano/Workspace/Compiladores/test/'
 arquivo = buscar_arquivos()
 teste = diretorio_teste + arquivo
@@ -144,7 +143,6 @@ arquivo_teste = open(teste, "r")
 cadeia_caracteres = arquivo_teste.read()
 arquivo_teste.close()
 
-# arquivos de Resulado
 # diretorio_resultado = '/home/juliano/Workspace/Compiladores/result/'
 # i = datetime.datetime.now()
 # resultado = diretorio_resultado + arquivo + \
