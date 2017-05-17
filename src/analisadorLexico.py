@@ -98,16 +98,26 @@ def t_NUMBER(t):
     return t
 
 
-def t_error(t):
-    """ Trata o erro que ocorre quando é verificado um Caracter ao longo
-    da leitura do arquivo, encontra o erro e continua """
-    print("LexToken(ERROR Léxico: Linha: %d, Coluna %d, Token invávildo: %s)" % (t.lexer.lineno, t.lexer.lexpos, t.value[0]))
-    t.lexer.skip(1)
-
-
 def t_newline(t):
     r'\n+'
     t.lexer.lineno += t.value.count("\n")
+
+
+# Compute column.
+# input is the input text string
+# token is a token instance
+# Basically taken from the PLY documentation
+def find_column(input, token):
+    last_cr = input.rfind('\n', 0, token.lexpos)
+    return (token.lexpos - last_cr)
+
+
+def t_error(t):
+    """ Trata o erro que ocorre quando é verificado um Caracter ao longo
+    da leitura do arquivo, encontra o erro e continua """
+    column = find_column(t.lexer.lexdata, t)
+    print("LexToken(ERROR Léxico: Linha: %d, Coluna %d, Token invávildo: %s)" % (t.lexer.lineno, column, t.value[0]))
+    t.lexer.skip(1)
 
 
 def buscar_arquivos():
