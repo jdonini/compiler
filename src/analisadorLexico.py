@@ -106,17 +106,17 @@ def t_newline(t):
 # Compute column.
 # input is the input text string
 # token is a token instance
-# Basically taken from the PLY documentation
 def find_column(input, token):
     last_cr = input.rfind('\n', 0, token.lexpos)
-    return (token.lexpos - last_cr)
+    column = token.lexpos - last_cr
+    return column
 
 
 def t_error(t):
     """ Trata o erro que ocorre quando é verificado um Caracter ao longo
     da leitura do arquivo, encontra o erro e continua """
     column = find_column(t.lexer.lexdata, t)
-    print("LexToken(ERROR Léxico: Linha: %d, Coluna %d, Token invávildo: %s)" % (t.lexer.lineno, column, t.value[0]))
+    print("LexToken(ERROR Léxico: Linha: %d, Coluna: %d, Token invávildo: %s)" % (t.lexer.lineno, column, t.value[0]))
     t.lexer.skip(1)
 
 
@@ -127,7 +127,7 @@ def buscar_arquivos():
     resposta = False
     contador = 1
 
-    for base, dirs, files in os.walk(diretorio_teste):
+    for base, dirs, files in os.walk('/home/juliano/Workspace/Compiladores/test/'):
         arquivos.append(files)
 
         for file in files:
@@ -145,30 +145,39 @@ def buscar_arquivos():
 
 
 analisador_lexer = lex.lex()
-
-diretorio_teste = '/home/juliano/Workspace/Compiladores/test/'
 arquivo = buscar_arquivos()
-teste = diretorio_teste + arquivo
-arquivo_teste = open(teste, "r")
-cadeia_caracteres = arquivo_teste.read()
-arquivo_teste.close()
 
-# diretorio_resultado = '/home/juliano/Workspace/Compiladores/result/'
-# i = datetime.datetime.now()
-# resultado = diretorio_resultado + arquivo + \
-#             "__" + ("%s-%s-%s" % (i.day, i.month, i.year)) + \
-#             "__" + ("%s:%s:%s" % (i.hour, i.minute, i.second))
-# arquivo_resultado = open(resultado, "w+")
 
-# usa a cadeia_caracteres como entrada para o AL
-analisador_lexer.input(cadeia_caracteres)
+def buscar_arquivos_teste(arquivo):
+    diretorio_teste = '/home/juliano/Workspace/Compiladores/test/'
+    teste = diretorio_teste + arquivo
+    arquivo_teste = open(teste, "r")
+    cadeia_caracteres = arquivo_teste.read()
+    arquivo_teste.close()
+    return cadeia_caracteres
 
-# Printa a lista de token
-while True:
-    token = analisador_lexer.token()
-    if not token:
-        break
-    print(token)
-    # arquivo_resultado.write(str(token)+"\n")
-print("\n")
-# arquivo_resultado.close()
+
+def buscar_arquivos_restultado(arquivo):
+    diretorio_resultado = '/home/juliano/Workspace/Compiladores/result/'
+    time = datetime.datetime.now()
+    resultado = diretorio_resultado + arquivo + \
+        "__" + ("%s-%s-%s" % (time.day, time.month, time.year)) + \
+        "__" + ("%s:%s:%s" % (time.hour, time.minute, time.second))
+    arquivo_resultado = open(resultado, "w+")
+    return arquivo_resultado
+
+
+# usa a cadeia_caracteres como entrada para o A.Lex
+analisador_lexer.input(buscar_arquivos_teste(arquivo))
+
+
+def test_output_lexer(arquivo_resultado):
+    while True:
+        token = analisador_lexer.token()
+        # column = find_column(lex.lexdata, lex)
+        if not token:
+            break
+        print('LexToken(Tipo: %s, Token: %r, Linha: %d, Coluna: %d)' % (token.type, token.value, token.lineno, token.lexpos))
+        arquivo_resultado.write(str(token)+"\n")
+    print("\n")
+    arquivo_resultado.close()
