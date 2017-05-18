@@ -1,3 +1,3 @@
-from analisadorLexico import test_output_lexer, buscar_arquivos_restultado, arquivo
+from analisadorLexico import test_output_lexer, escrever_arquivos_restultado, arquivo
 
-test_output_lexer(buscar_arquivos_restultado(arquivo))
+test_output_lexer(escrever_arquivos_restultado(arquivo))

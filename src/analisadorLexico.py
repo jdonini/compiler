@@ -106,6 +106,7 @@ def t_newline(t):
 # Compute column.
 # input is the input text string
 # token is a token instance
+# marca a ultima posição do token identificado
 def find_column(input, token):
     last_cr = input.rfind('\n', 0, token.lexpos)
     column = token.lexpos - last_cr
@@ -157,29 +158,31 @@ def buscar_arquivos_teste(arquivo):
     return cadeia_caracteres
 
 
-def buscar_arquivos_restultado(arquivo):
+# usa a cadeia_caracteres como entrada para o A.Lex
+analisador_lexer.input(buscar_arquivos_teste(arquivo))
+
+
+def escrever_arquivos_restultado(arquivo):
     diretorio_resultado = '/home/juliano/Workspace/Compiladores/result/'
     time = datetime.datetime.now()
     resultado = diretorio_resultado + arquivo + \
         "__" + ("%s-%s-%s" % (time.day, time.month, time.year)) + \
         "__" + ("%s:%s:%s" % (time.hour, time.minute, time.second))
-    arquivo_resultado = open(resultado, "w+")
-    return arquivo_resultado
+    return resultado
 
 
-# usa a cadeia_caracteres como entrada para o A.Lex
-analisador_lexer.input(buscar_arquivos_teste(arquivo))
-
-
-def test_output_lexer(arquivo_resultado):
+def test_output_lexer(resultado):
     while True:
         token = analisador_lexer.token()
+        last_cr = lex.lexer.lexdata.rfind('\n', 0, lex.lexer.lexpos)
+        column = lex.lexer.lexpos - last_cr - 1
+        file = open(resultado, "w+")
         if not token:
             break
-        print('LexToken(Token: %s, Valor: %r, Linha: %d, Coluna: %d)' % (token.type, token.value, token.lineno, token.lexpos))
-        arquivo_resultado.write(str(token)+"\n")
-    print("\n")
-    arquivo_resultado.close()
+        result = 'LexToken(Token: %s, Valor: %r, Linha: %d, Coluna: %d)' % (token.type, token.value, token.lineno, column)
+        print (result)
+        file.write(str(result)+'\n')
+        file.close()
 
 
-test_output_lexer(buscar_arquivos_restultado(arquivo))
+test_output_lexer(escrever_arquivos_restultado(arquivo))
