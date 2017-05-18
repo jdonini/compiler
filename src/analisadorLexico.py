@@ -162,12 +162,12 @@ def buscar_arquivos_teste(arquivo):
 analisador_lexer.input(buscar_arquivos_teste(arquivo))
 
 
-def escrever_arquivos_restultado(arquivo):
+def escrever_arquivos_resultado(arquivo):
     diretorio_resultado = '/home/juliano/Workspace/Compiladores/result/'
     time = datetime.datetime.now()
     resultado = diretorio_resultado + arquivo + \
         "__" + ("%s-%s-%s" % (time.day, time.month, time.year)) + \
-        "__" + ("%s:%s:%s" % (time.hour, time.minute, time.second))
+        "__" + ("%s:%s:%s" % (time.hour, time.minute, time.second)) + ".txt"
     return resultado
 
 
@@ -176,13 +176,13 @@ def test_output_lexer(resultado):
         token = analisador_lexer.token()
         last_cr = lex.lexer.lexdata.rfind('\n', 0, lex.lexer.lexpos)
         column = lex.lexer.lexpos - last_cr - 1
-        file = open(resultado, "w+")
         if not token:
             break
         result = 'LexToken(Token: %s, Valor: %r, Linha: %d, Coluna: %d)' % (token.type, token.value, token.lineno, column)
         print (result)
-        file.write(str(result)+'\n')
-        file.close()
+        with open(resultado, 'a') as file:
+            file.write(result + '\n')
+            file.close()
 
 
-test_output_lexer(escrever_arquivos_restultado(arquivo))
+test_output_lexer(escrever_arquivos_resultado(arquivo))
