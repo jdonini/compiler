@@ -174,10 +174,12 @@ analisador_lexer.input(buscar_arquivos_teste(arquivo))
 def test_output_lexer(arquivo_resultado):
     while True:
         token = analisador_lexer.token()
-        # column = find_column(lex.lexdata, lex)
         if not token:
             break
-        print('LexToken(Tipo: %s, Token: %r, Linha: %d, Coluna: %d)' % (token.type, token.value, token.lineno, token.lexpos))
+        print('LexToken(Token: %s, Valor: %r, Linha: %d, Coluna: %d)' % (token.type, token.value, token.lineno, token.lexpos))
         arquivo_resultado.write(str(token)+"\n")
     print("\n")
     arquivo_resultado.close()
+
+
+test_output_lexer(buscar_arquivos_restultado(arquivo))
