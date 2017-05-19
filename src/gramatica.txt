@@ -1,72 +1,98 @@
-<programa> ::= <seqDeclaracao>
+<program> ::= <sequenciaDeclaracao>
 
-<seqDeclaracao> ::= <declaracao> {','<declaracao>}
+<declaracao> ::= <variaveldeclaracao>
+       | id '(' <listaParametro> ')' '{' <bloco> '}'
+       | <tipo> id '(' <listaParametro> ')' '{' <bloco> '}'
 
-<declaracao> ::= <tipo> identificador ['=' <valor>] ';'
+<variaveldeclaracao> ::= <tipo> <variavelSpecificacaoSeq> ';'
 
-|<tipo> <variavel> ['=' '{'<num> {,<num>}'}'] ';'
+<variavelSpecificacao> ::= id
+           | id '=' <valor>
+           | id '[' num ']'
+           | id '[' num ']' '=' '{' <sequenciavalor> '}'
 
-<tipo> ::= int
-        |  string
-        |  bool
+<tipo> ::= "int"
+        |  "stringing"
+        |  "bool"
 
-<valor> ::=  <num>
-        |    <logico>
-        |    string
+<parametro> ::= <tipo> id
+              | <tipo> id '[' ']'
 
-<variavel> ::= identificador
-        | identificador'['[<num>]']'
+<bloco> ::= <variaveldeclaracaoList> <listacomando>
 
-<num> ::= <dig> {<dig>}
+<comando> ::= <comandoIf>
+          |   <comandoWhile>
+          |   <comandoFor>
+          |   <comandoBreak>
+          |   <comandoReturn>
+          |   <comandoRead>
+          |   <comandoWrite>
+          |   <expressaoAtrib> ';'
+          |   <chamadaDeFuncao> ';'
 
-<dig> ::= 0|1|2|3|4|5|6|7|8|9
+<comandoIf> ::= "if" '(' <expressao> ')' '{' <bloco> '}'
+              | "if" '(' <expressao> ')' '{' <bloco> '}' "else" '{' <bloco> '}'
 
-<logico> ::= true | false
+<comandoWhile> ::= "while" '(' <expressao> ')' '{' <bloco> '}'
+
+<comandoFor> ::= "for" '(' <expressaoAtrib> ';' <expressao> ';' <expressaoAtrib> ')' '{' <bloco> '}'
+
+<comandoBreak> ::= "break" ';'
+
+<comandoRead> ::= "read" <variavel> ';'
+
+<comandoWrite> ::= "write" <listaexpressaoeracao> ';'
+
+<comandoReturn> ::= "return" ';'
+                  | "return" <expressao> ';'
+
+<chamadaDeFuncao> ::= id '(' <listaexpressaoeracao> ')'
 
 <op> ::= '-' | '!' | '*' | '/' | '%' | '+' | '<' | '<=' | '>' | '>=' | '==' | '!=' | '&&' | '||'
 
 <opAtrib> ::= '=' | '+=' | '-='|'*='|'/='|'%='
 
-<comando> ::= <comandoIf>
-            | <comandoFor>
-            | <comandoWhile>
-            | <comandoAtrib>
-            | <comandoReturn>
-            | <comandoBreak>
-            | <comandoChamadaProc>
-            | <comandoRead>
-            | <comandoWrite>
+<expressaoAtrib> ::= <variavel> <opAtrib>  <expressao>
 
-<expressao> ::= <valor>
-            |   <variavel>
-            |   <chamadaFuncao>
-            |   <expressão> <op> <expressao>
-            |   <operadorTernario>
+<variavel> ::= id
+             | id '[' <expressao> ']'
 
-<comandoIf> ::= 'if' '(' <expressao> ')' '{'<bloco>'}'
-              | 'if' '(' <expressao> ')' '{' <bloco> '}' 'else' '{'<bloco>'}'
+<expressao> ::= <expressao> <op> <expressao>
+             | '!' <expressao>
+             | '-' <expressao>
+             | <expressao> '?' <expressao> ':' <expressao>
+             | <chamadaDeFuncao>
+             | <variavel>
+             | <valor>
+             | '(' <expressao> ')'
 
-<comandoFor> ::= 'for' <variavel> 'in' <variavel> '{'<bloco>'}'
-                |'for' <variavel> 'in' 'range('<num>','<num>')''{'<bloco>'}'
+<valor> ::= num
+          | string
+          | logica
 
-<comandoWhile> ::= 'while' '('<expressao> ')' '{'<bloco>'}'
- 
-<comandoAtrib> ::= <variavel> <opAtrib> <expressao> ';'
+<listaParametro> ::= <sequenciaParametro>
+                    | ε
 
-<comandoReturn> ::= 'return' [<expressão>] ';'
+<sequenciaParametro> ::= <parametro> ',' <sequenciaParametro>
+                      |  <parametro>
 
-<comandoBreak> ::= 'break' ';'
+<variaveldeclaracaoList> ::= <variaveldeclaracao> <variaveldeclaracaoList>
+                          | ε
 
-<comandoChamadaProc> ::= identificador'('{<tipo>identificador}')'{'<bloco>'}'
+<variavelSpecificacaoSeq> ::= <variavelSpecificacao> ',' <variavelSpecificacaoSeq>
+                          |   <variavelSpecificacao>
 
-<comandoRead> ::= 'read' <variavel> ';'
+<sequenciaDeclaracao> ::= <declaracao> <sequenciaDeclaracao>
+                      |   <declaracao>
 
-<comandoWrite> ::= 'write' <expressao> {','<expressao>}
+<listacomando> ::= <comando> <listacomando>
+                | ε
 
-<bloco> ::= [<seqDeclaracoes>]{[<comando>]}
+<sequenciavalor> ::= <valor> <sequenciavalor>
+                  |  <valor>
 
-<chamadaFuncao> ::= <tipo> identificador'('[<listaDeParametros>]')' '{'<bloco>'}'
+<listaexpressaoeracao> ::= <sequenciaexpressaoeracao>
+                          | ε
 
-<listaDeParametros> ::= <tipo> identificador {',' <tipo> identificador}
-
-<comentario> ::= '/\*(.|\n)*?\*/)|(//.*'
+<sequenciaexpressaoeracao> ::= <expressao> ',' <sequenciaexpressaoeracao>
+                            |  <expressao>
