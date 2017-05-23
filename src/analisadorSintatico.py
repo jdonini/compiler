@@ -35,16 +35,16 @@ precedencia_tokens = (
 # os não terminais da gramatica, serão os nomes das funcões
 # P quer dizer que vamos analisar as produções
 def p_program(p):
-    '''<program> ::= <sequenciaDeclaracao>'''
+    '''program ::= sequenciaDeclaracao'''
     if len(p) == 1:
         p[0] = (p[1], "programa")
 
 
 def p_declaracao(p):
     '''
-    <declaracao> ::= <variaveldeclaracao>
-           | id '(' <listaParametro> ')' '{' <bloco> '}'
-           | <tipo> id '(' <listaParametro> ')' '{' <bloco> '}''
+    declaracao ::= variaveldeclaracao
+           | id '(' listaParametro ')' '{' bloco '}'
+           | tipo id '(' listaParametro ')' '{' bloco '}'
     '''
     if len(p) == 1:
         p[0] = (p[1], "Declaração")
@@ -56,17 +56,17 @@ def p_declaracao(p):
 
 def p_variavelDeclaracao(p):
     '''
-    <variaveldeclaracao> ::= <tipo> <variavelEspecificacaoSeq> ';'
+    variaveldeclaracao ::= tipo variavelEspecificacaoSeq ';'
     '''
     p[0] = (p[1], p[2], ';', "Declaração Variavel")
 
 
 def p_variavelEspecificacao(p):
     '''
-    <variavelEspecificacao> ::= id
-               | id '=' <valor>
+    variavelEspecificacao ::= id
+               | id '=' valor
                | id '[' num ']'
-               | id '[' num ']' '=' '{' <sequenciaValor> '}'
+               | id '[' num ']' '=' '{' sequenciaValor '}'
     '''
     if len(p) == 1:
         p[0] = (p[1], "Especificacao de variavel")
@@ -80,17 +80,17 @@ def p_variavelEspecificacao(p):
 
 def p_tipo(p):
     '''
-    <tipo> ::= "int"
-            |  "string"
-            |  "bool"
+    tipo ::= int
+            |  string
+            |  bool
     '''
     p[0] = (p[1], "tipo")
 
 
 def p_parametro(p):
     '''
-    <parametro> ::= <tipo> id
-                  | <tipo> id       '['     ']'
+    parametro ::= tipo id
+                  | tipo id       '['     ']'
     '''
     if len(p) == 2:
         p[0] = (p[1], p[2], "Parametro")
@@ -100,7 +100,7 @@ def p_parametro(p):
 
 def p_bloco(p):
     '''
-    <bloco> ::= <variaveldeclaracaoList> <listaComando>
+    bloco ::= variaveldeclaracaoList listaComando
     '''
     p[0] = (p[1], p[2], "bloco")
 
@@ -114,8 +114,8 @@ def p_comando(p):
 
 def p_comandoIf(p):
     '''
-    <comandoIf> ::= "if" '(' <expressao> ')' '{' <bloco> '}'
-                  | "if" '(' <expressao> ')' '{' <bloco> '}' "else" '{' <bloco> '}'
+    comandoIf ::= if '(' expressao ')' '{' bloco '}'
+                  | if '(' expressao ')' '{' bloco '}' else '{' bloco '}'
     '''
     if len(p) == 7:
         p[0] = (p[1], p[2], p[3], p[4], p[5], p[6], p[7], "IF")
@@ -126,7 +126,7 @@ def p_comandoIf(p):
 
 def p_comandoWhile(p):
     '''
-    <comandoWhile> ::= "while" '(' <expressao> ')' '{' <bloco> '}'
+    comandoWhile ::= while '(' expressao ')' '{' bloco '}'
     '''
     if len(p) == 7:
         p[0] = (p[1], p[2], p[3], p[4], p[5], p[6], p[7], "WHILE")
@@ -134,7 +134,7 @@ def p_comandoWhile(p):
 
 def p_comandoFor(p):
     '''
-    <comandoFor> ::= "for" '(' <expressaoAtrib> ';' <expressao> ';' <expressaoAtrib> ')' '{' <bloco> '}'
+    comandoFor ::= for '(' expressaoAtrib ';' expressao ';' expressaoAtrib ')' '{' bloco '}'
     '''
     if len(p) == 7:
         p[0] = (p[1], p[2])
@@ -142,7 +142,7 @@ def p_comandoFor(p):
 
 def p_comandoBreak(p):
     '''
-    <comandoBreak> ::= "break" ';'
+    comandoBreak ::= break ';'
     '''
     if len(p) == 2:
         p[0] = (p[1], p[2], "BREAK")
@@ -150,22 +150,22 @@ def p_comandoBreak(p):
 
 def p_comandoRead(p):
     '''
-    <comandoRead> ::= "read" <variavel> ';'
+    comandoRead ::= read variavel ';'
     '''
     p[0] = (p[1], p[2], p[3], "READ")
 
 
 def p_comandoWrite(p):
     '''
-    <comandoWrite> ::= "write" <listaExpressao> ';'
+    comandoWrite ::= write listaExpressao ';'
     '''
     p[0] = (p[1], p[2], p[3], "WRITE")
 
 
 def p_comandoReturn(p):
     '''
-    <comandoReturn> ::= "return" ';'
-                     | "return" <expressao> ';'
+    comandoReturn ::= return ';'
+                     | return expressao ';'
     '''
     if len(p) == 2:
         p[0] = (p[1], p[2], "RETURN")
@@ -175,37 +175,54 @@ def p_comandoReturn(p):
 
 def p_chamadaDeFuncao(p):
     '''
-    <chamadaDeFuncao> ::= id '(' <listaExpressao> ')'
+    chamadaDeFuncao ::= id '(' listaExpressao ')'
     '''
     p[0] = (p[1], p[2], p[3], p[4], "Chamada de função")
 
 
 def p_op(p):
     '''
-    <op> ::= '-' | '!' | '*' | '/' | '%' | '+'
-           | '<' | '<=' | '>' | '>=' | '==' | '!=' | '&&' | '||'
+    op ::= '-'
+        | '!'
+        | '*'
+        | '/'
+        | '%'
+        | '+'
+        | ''
+        | '='
+        | ''
+        | '='
+        | '=='
+        | '!='
+        | '&&'
+        | '||'
     '''
     p[0] = (p[1], "Operação")
 
 
 def p_opAtrib(p):
     '''
-    <opAtrib> ::= '=' | '+=' | '-='|'*='|'/='|'%='
+    opAtrib ::= '='
+            | '+='
+            | '-='
+            | '*='
+            | '/='
+            | '%='
     '''
     p[0] = (p[1], "Atribuição")
 
 
 def p_expressaoAtrib(p):
     '''
-    <expressaoAtrib> ::= <variavel> <opAtrib>  <expressao>
+    expressaoAtrib ::= variavel opAtrib  expressao
     '''
     p[0] = (p[1], "Expressão de Atribuição")
 
 
 def p_variavel(p):
     '''
-    <variavel> ::= id
-                | id '[' <expressao> ']'
+    variavel ::= id
+                | id '[' expressao ']'
     '''
     if len(p) == 1:
         p[0] = (p[1], "Variável")
@@ -215,14 +232,14 @@ def p_variavel(p):
 
 def p_expressao(p):
     '''
-    <expressao> ::= <expressao> <op> <expressao>
-             | '!' <expressao>
-             | '-' <expressao>
-             | <expressao> '?' <expressao> ':' <expressao>
-             | <chamadaDeFuncao>
-             | <variavel>
-             | <valor>
-             | '(' <expressao> ')'
+    expressao ::= expressao op expressao
+             | '!' expressao
+             | '-' expressao
+             | expressao '?' expressao ':' expressao
+             | chamadaDeFuncao
+             | variavel
+             | valor
+             | '(' expressao ')'
     '''
     if len(p) == 1:
         p[0] = (p[1], p[2], "Expressão")
@@ -239,7 +256,7 @@ def p_expressao(p):
 
 def p_valor(p):
     '''
-    <valor> ::= num
+    valor ::= num
               | string
               | logica
     '''
@@ -248,8 +265,8 @@ def p_valor(p):
 
 def p_listaParametro(p):
     '''
-    <listaParametro> ::= <sequenciaParametro>
-                      | ε
+    listaParametro ::= sequenciaParametro
+                      | 'ε'
     '''
     p[0] = (p[1], "Lista de parametros")
 
@@ -260,8 +277,8 @@ def p_listaParametroNull(p):
 
 def p_sequenciaParametro(p):
     '''
-    <sequenciaParametro> ::= <parametro> ',' <sequenciaParametro>
-                          |  <parametro>
+    sequenciaParametro ::= parametro ',' sequenciaParametro
+                          |  parametro
     '''
     if len(p) == 3:
         p[0] = (p[1], p[2], p[3], "Sequencia de parametros")
@@ -271,8 +288,8 @@ def p_sequenciaParametro(p):
 
 def p_variavelDeclaracaoList(p):
     '''
-    <variavelDeclaracaoList> ::= <variavelDeclaracao> <variavelDeclaracaoList>
-                              | ε
+    variavelDeclaracaoList ::= variavelDeclaracao variavelDeclaracaoList
+                              | 'ε'
     '''
     p[0] = (p[1], p[2], "Lista de declaração de variável")
 
@@ -283,8 +300,8 @@ def p_variavelDeclaracaoListNull(p):
 
 def p_variavelEspecificacaoSeq(p):
     '''
-    <variavelEspecificacaoSeq> ::= <variavelEspecificacao> ',' <variavelEspecificacaoSeq>
-                               |   <variavelEspecificacao>
+    variavelEspecificacaoSeq ::= variavelEspecificacao ',' variavelEspecificacaoSeq
+                               |   variavelEspecificacao
     '''
     if len(p) == 3:
         p[0] = (p[1], p[2], p[3], "Sequencia de variável")
@@ -294,8 +311,8 @@ def p_variavelEspecificacaoSeq(p):
 
 def p_sequenciaDeclaracao(p):
     '''
-    <sequenciaDeclaracao> ::= <declaracao> <sequenciaDeclaracao>
-                           |   <declaracao>
+    sequenciaDeclaracao ::= declaracao sequenciaDeclaracao
+                           |   declaracao
     '''
     if len(p) == 2:
         p[0] = (p[1], p[2], "Sequencia de declaração")
@@ -305,8 +322,8 @@ def p_sequenciaDeclaracao(p):
 
 def p_listaComando(p):
     '''
-    <listaComando> ::= <comando> <listaComando>
-                    | ε
+    listaComando ::= comando listaComando
+                    | 'ε'
     '''
     p[0] = (p[1], p[2], "Lista de comando")
 
@@ -317,8 +334,8 @@ def p_listaComandoNull(p):
 
 def p_sequencialValor(p):
     '''
-    <sequenciaValor> ::= <valor> <sequenciaValor>
-                      |  <valor>
+    sequenciaValor ::= valor sequenciaValor
+                      |  valor
     '''
     if len(p) == 2:
         p[0] = (p[1], p[2], "Valor da sequencia")
@@ -328,8 +345,8 @@ def p_sequencialValor(p):
 
 def p_listaExpressao(p):
     '''
-    <listaExpressao> ::= <sequenciaExpressao>
-                      | ε
+    listaExpressao ::= sequenciaExpressao
+                      | 'ε'
     '''
     if len(p) == 1:
         p[0] = (p[1], "Sequencia de Expressão")
@@ -341,8 +358,8 @@ def p_listaExpressaoNull(p):
 
 def p_sequencialExpressao(p):
     '''
-    <sequenciaExpressao> ::= <expressao> ',' <sequenciaExpressao>
-                          |  <expressao>
+    sequenciaExpressao ::= expressao ',' sequenciaExpressao
+                          |  expressao
     '''
     if len(p) == 3:
         p[0] = (p[1], p[2], p[3], "Expressão")
