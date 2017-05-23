@@ -2,53 +2,27 @@ Created by PLY version 3.10 (http://www.dabeaz.com/ply)
 
 Unused terminals:
 
-    LPAREN
-    RPAREN
-    LCOR
-    RCOR
-    LKEY
-    RKEY
-    COMMA
-    SEMICOLON
-    ID
-    NUMBER
-    NOT
     TERNARY
-    DOT
-    STRING
-    IF
-    THEN
-    ELSE
-    WHILE
-    FOR
-    RETURN
-    INT
-    BOOLEAN
-    TRUE
-    FALSE
-    BREAK
-    READ
-    WRITE
     MAIN
 
 Grammar
 
 Rule 0     S' -> program
 Rule 1     program -> sequenciaDeclaracao
-Rule 2     declaracao -> variaveldeclaracao
-Rule 3     declaracao -> id ( listaParametro ) { bloco }
-Rule 4     declaracao -> tipo id ( listaParametro ) { bloco }
-Rule 5     variaveldeclaracao -> tipo variavelEspecificacaoSeq ;
-Rule 6     variavelEspecificacao -> id
-Rule 7     variavelEspecificacao -> id = valor
-Rule 8     variavelEspecificacao -> id [ num ]
-Rule 9     variavelEspecificacao -> id [ num ] = { sequenciaValor }
-Rule 10    tipo -> int
-Rule 11    tipo -> string
-Rule 12    tipo -> bool
-Rule 13    parametro -> tipo id
-Rule 14    parametro -> tipo id [ ]
-Rule 15    bloco -> variaveldeclaracaoList listaComando
+Rule 2     declaracao -> variavelDeclaracao
+Rule 3     declaracao -> ID LPAREN listaParametro RPAREN LKEY bloco RKEY
+Rule 4     declaracao -> tipo ID LPAREN listaParametro RPAREN LKEY bloco RKEY
+Rule 5     variavelDeclaracao -> tipo variavelEspecificacaoSeq ;
+Rule 6     variavelEspecificacao -> ID
+Rule 7     variavelEspecificacao -> ID ASSIGN valor
+Rule 8     variavelEspecificacao -> ID LCOR NUMBER RCOR
+Rule 9     variavelEspecificacao -> ID LCOR NUMBER RCOR ASSIGN LKEY sequenciaValor RKEY
+Rule 10    tipo -> INT
+Rule 11    tipo -> STRING
+Rule 12    tipo -> BOOLEAN
+Rule 13    parametro -> tipo ID
+Rule 14    parametro -> tipo ID LCOR RCOR
+Rule 15    bloco -> variavelDeclaracaoList listaComando
 Rule 16    comando -> comandoIf
 Rule 17    comando -> comandoWhile
 Rule 18    comando -> comandoFor
@@ -56,18 +30,18 @@ Rule 19    comando -> comandoBreak
 Rule 20    comando -> comandoReturn
 Rule 21    comando -> comandoRead
 Rule 22    comando -> comandoWrite
-Rule 23    comando -> expressaoAtrib ;
-Rule 24    comando -> chamadaDeFuncao ;
-Rule 25    comandoIf -> if ( expressao ) { bloco }
-Rule 26    comandoIf -> if ( expressao ) { bloco } else { bloco }
-Rule 27    comandoWhile -> while ( expressao ) { bloco }
-Rule 28    comandoFor -> for ( expressaoAtrib ; expressao ; expressaoAtrib ) { bloco }
-Rule 29    comandoBreak -> break ;
-Rule 30    comandoRead -> read variavel ;
-Rule 31    comandoWrite -> write listaExpressao ;
-Rule 32    comandoReturn -> return ;
-Rule 33    comandoReturn -> return expressao ;
-Rule 34    chamadaDeFuncao -> id ( listaExpressao )
+Rule 23    comando -> expressaoAtrib SEMICOLON
+Rule 24    comando -> chamadaDeFuncao SEMICOLON
+Rule 25    comandoIf -> IF LPAREN expressao RPAREN LKEY bloco RKEY
+Rule 26    comandoIf -> IF LPAREN expressao LPAREN LKEY bloco RKEY ELSE LKEY bloco RKEY
+Rule 27    comandoWhile -> WHILE LPAREN expressao RPAREN LKEY bloco RKEY
+Rule 28    comandoFor -> FOR LPAREN expressaoAtrib SEMICOLON expressao SEMICOLON expressaoAtrib RPAREN LKEY bloco RKEY
+Rule 29    comandoBreak -> BREAK SEMICOLON
+Rule 30    comandoRead -> READ variavel SEMICOLON
+Rule 31    comandoWrite -> WRITE listaExpressao SEMICOLON
+Rule 32    comandoReturn -> RETURN SEMICOLON
+Rule 33    comandoReturn -> RETURN expressao SEMICOLON
+Rule 34    chamadaDeFuncao -> ID LPAREN listaExpressao RPAREN
 Rule 35    op -> PLUS
 Rule 36    op -> MINUS
 Rule 37    op -> MULT
@@ -88,112 +62,100 @@ Rule 51    opAtrib -> MULTASSIGN
 Rule 52    opAtrib -> DIVIDEASSIGN
 Rule 53    opAtrib -> MODASSIGN
 Rule 54    expressaoAtrib -> variavel opAtrib expressao
-Rule 55    variavel -> id
-Rule 56    variavel -> id [ expressao ]
+Rule 55    variavel -> ID
+Rule 56    variavel -> ID LCOR expressao RCOR
 Rule 57    expressao -> expressao op expressao
-Rule 58    expressao -> ! expressao
-Rule 59    expressao -> - expressao
+Rule 58    expressao -> NOT expressao
+Rule 59    expressao -> MINUS expressao
 Rule 60    expressao -> expressao ? expressao : expressao
 Rule 61    expressao -> chamadaDeFuncao
 Rule 62    expressao -> variavel
 Rule 63    expressao -> valor
-Rule 64    expressao -> ( expressao )
-Rule 65    valor -> num
-Rule 66    valor -> string
-Rule 67    valor -> logica
-Rule 68    listaParametro -> sequenciaParametro
-Rule 69    listaParametro -> ε
-Rule 70    program -> empty
-Rule 71    sequenciaParametro -> parametro , sequenciaParametro
-Rule 72    sequenciaParametro -> parametro
-Rule 73    variavelDeclaracaoList -> variavelDeclaracao variavelDeclaracaoList
-Rule 74    variavelDeclaracaoList -> ε
-Rule 75    variavelEspecificacaoSeq -> variavelEspecificacao , variavelEspecificacaoSeq
-Rule 76    variavelEspecificacaoSeq -> variavelEspecificacao
-Rule 77    sequenciaDeclaracao -> declaracao sequenciaDeclaracao
-Rule 78    sequenciaDeclaracao -> declaracao
-Rule 79    listaComando -> comando listaComando
-Rule 80    listaComando -> ε
-Rule 81    sequenciaValor -> valor sequenciaValor
-Rule 82    sequenciaValor -> valor
-Rule 83    listaExpressao -> sequenciaExpressao
-Rule 84    listaExpressao -> ε
-Rule 85    sequenciaExpressao -> expressao , sequenciaExpressao
-Rule 86    sequenciaExpressao -> expressao
-Rule 87    empty -> <empty>
+Rule 64    expressao -> LPAREN expressao RPAREN
+Rule 65    valor -> NUMBER
+Rule 66    valor -> STRING
+Rule 67    valor -> TRUE
+Rule 68    valor -> FALSE
+Rule 69    listaParametro -> sequenciaParametro
+Rule 70    listaParametro -> ε
+Rule 71    program -> empty
+Rule 72    sequenciaParametro -> parametro COMMA sequenciaParametro
+Rule 73    sequenciaParametro -> parametro
+Rule 74    variavelDeclaracaoList -> variavelDeclaracao variavelDeclaracaoList
+Rule 75    variavelDeclaracaoList -> ε
+Rule 76    variavelEspecificacaoSeq -> variavelEspecificacao COMMA variavelEspecificacaoSeq
+Rule 77    variavelEspecificacaoSeq -> variavelEspecificacao
+Rule 78    sequenciaDeclaracao -> declaracao sequenciaDeclaracao
+Rule 79    sequenciaDeclaracao -> declaracao
+Rule 80    listaComando -> comando listaComando
+Rule 81    listaComando -> ε
+Rule 82    sequenciaValor -> valor sequenciaValor
+Rule 83    sequenciaValor -> valor
+Rule 84    listaExpressao -> sequenciaExpressao
+Rule 85    listaExpressao -> ε
+Rule 86    sequenciaExpressao -> expressao , sequenciaExpressao
+Rule 87    sequenciaExpressao -> expressao
+Rule 88    empty -> <empty>
 
 Terminals, with rules where they appear
 
-!                    : 58
-(                    : 3 4 25 26 27 28 34 64
-)                    : 3 4 25 26 27 28 34 64
-,                    : 71 75 85
--                    : 59
+,                    : 86
 :                    : 60
-;                    : 5 23 24 28 28 29 30 31 32 33
-=                    : 7 9
+;                    : 5
 ?                    : 60
 AND                  : 46
-ASSIGN               : 48
-BOOLEAN              : 
-BREAK                : 
-COMMA                : 
+ASSIGN               : 7 9 48
+BOOLEAN              : 12
+BREAK                : 29
+COMMA                : 72 76
 DIFFERENT            : 41
 DIVIDE               : 38
 DIVIDEASSIGN         : 52
-DOT                  : 
-ELSE                 : 
+ELSE                 : 26
 EQUALS               : 40
-FALSE                : 
-FOR                  : 
+FALSE                : 68
+FOR                  : 28
 GT                   : 44
 GTE                  : 43
-ID                   : 
-IF                   : 
-INT                  : 
-LCOR                 : 
-LKEY                 : 
-LPAREN               : 
+ID                   : 3 4 6 7 8 9 13 14 34 55 56
+IF                   : 25 26
+INT                  : 10
+LCOR                 : 8 9 14 56
+LKEY                 : 3 4 9 25 26 26 27 28
+LPAREN               : 3 4 25 26 26 27 28 34 64
 LT                   : 45
 LTE                  : 42
 MAIN                 : 
-MINUS                : 36
+MINUS                : 36 59
 MINUSASSIGN          : 50
 MOD                  : 39
 MODASSIGN            : 53
 MULT                 : 37
 MULTASSIGN           : 51
-NOT                  : 
-NUMBER               : 
+NOT                  : 58
+NUMBER               : 8 9 65
 OR                   : 47
 PLUS                 : 35
 PLUSASSIGN           : 49
-RCOR                 : 
-READ                 : 
-RETURN               : 
-RKEY                 : 
-RPAREN               : 
-SEMICOLON            : 
-STRING               : 
+RCOR                 : 8 9 14 56
+READ                 : 30
+RETURN               : 32 33
+RKEY                 : 3 4 9 25 26 26 27 28
+RPAREN               : 3 4 25 27 28 34 64
+SEMICOLON            : 23 24 28 28 29 30 31 32 33
+STRING               : 11 66
 TERNARY              : 
-THEN                 : 
-TRUE                 : 
-WHILE                : 
-WRITE                : 
-[                    : 8 9 14 56
-]                    : 8 9 14 56
+TRUE                 : 67
+WHILE                : 27
+WRITE                : 31
 error                : 
-{                    : 3 4 9 25 26 26 27 28
-}                    : 3 4 9 25 26 26 27 28
-ε                    : 69 74 80 84
+ε                    : 70 75 81 85
 
 Nonterminals, with rules where they appear
 
 bloco                : 3 4 25 26 26 27 28
-bool                 : 12
-break                : 29
 chamadaDeFuncao      : 24 61
-comando              : 79
+comando              : 80
 comandoBreak         : 19
 comandoFor           : 18
 comandoIf            : 16
@@ -201,40 +163,3196 @@ comandoRead          : 21
 comandoReturn        : 20
 comandoWhile         : 17
 comandoWrite         : 22
-declaracao           : 77 78
-else                 : 26
-empty                : 70
-expressao            : 25 26 27 28 33 54 56 57 57 58 59 60 60 60 64 85 86
+declaracao           : 78 79
+empty                : 71
+expressao            : 25 26 27 28 33 54 56 57 57 58 59 60 60 60 64 86 87
 expressaoAtrib       : 23 28 28
-for                  : 28
-id                   : 3 4 6 7 8 9 13 14 34 55 56
-if                   : 25 26
-int                  : 10
-listaComando         : 15 79
+listaComando         : 15 80
 listaExpressao       : 31 34
 listaParametro       : 3 4
-logica               : 67
-num                  : 8 9 65
 op                   : 57
 opAtrib              : 54
-parametro            : 71 72
+parametro            : 72 73
 program              : 0
-read                 : 30
-return               : 32 33
-sequenciaDeclaracao  : 1 77
-sequenciaExpressao   : 83 85
-sequenciaParametro   : 68 71
-sequenciaValor       : 9 81
-string               : 11 66
+sequenciaDeclaracao  : 1 78
+sequenciaExpressao   : 84 86
+sequenciaParametro   : 69 72
+sequenciaValor       : 9 82
 tipo                 : 4 5 13 14
-valor                : 7 63 81 82
+valor                : 7 63 82 83
 variavel             : 30 54 62
-variavelDeclaracao   : 73
-variavelDeclaracaoList : 73
-variavelEspecificacao : 75 76
-variavelEspecificacaoSeq : 5 75
-variaveldeclaracao   : 2
-variaveldeclaracaoList : 15
-while                : 27
-write                : 31
+variavelDeclaracao   : 2 74
+variavelDeclaracaoList : 15 74
+variavelEspecificacao : 76 77
+variavelEspecificacaoSeq : 5 76
 
+Parsing method: LALR
+
+state 0
+
+    (0) S' -> . program
+    (1) program -> . sequenciaDeclaracao
+    (71) program -> . empty
+    (78) sequenciaDeclaracao -> . declaracao sequenciaDeclaracao
+    (79) sequenciaDeclaracao -> . declaracao
+    (88) empty -> .
+    (2) declaracao -> . variavelDeclaracao
+    (3) declaracao -> . ID LPAREN listaParametro RPAREN LKEY bloco RKEY
+    (4) declaracao -> . tipo ID LPAREN listaParametro RPAREN LKEY bloco RKEY
+    (5) variavelDeclaracao -> . tipo variavelEspecificacaoSeq ;
+    (10) tipo -> . INT
+    (11) tipo -> . STRING
+    (12) tipo -> . BOOLEAN
+
+    $end            reduce using rule 88 (empty -> .)
+    ID              shift and go to state 6
+    INT             shift and go to state 8
+    STRING          shift and go to state 9
+    BOOLEAN         shift and go to state 10
+
+    program                        shift and go to state 1
+    sequenciaDeclaracao            shift and go to state 2
+    empty                          shift and go to state 3
+    declaracao                     shift and go to state 4
+    variavelDeclaracao             shift and go to state 5
+    tipo                           shift and go to state 7
+
+state 1
+
+    (0) S' -> program .
+
+
+
+state 2
+
+    (1) program -> sequenciaDeclaracao .
+
+    $end            reduce using rule 1 (program -> sequenciaDeclaracao .)
+
+
+state 3
+
+    (71) program -> empty .
+
+    $end            reduce using rule 71 (program -> empty .)
+
+
+state 4
+
+    (78) sequenciaDeclaracao -> declaracao . sequenciaDeclaracao
+    (79) sequenciaDeclaracao -> declaracao .
+    (78) sequenciaDeclaracao -> . declaracao sequenciaDeclaracao
+    (79) sequenciaDeclaracao -> . declaracao
+    (2) declaracao -> . variavelDeclaracao
+    (3) declaracao -> . ID LPAREN listaParametro RPAREN LKEY bloco RKEY
+    (4) declaracao -> . tipo ID LPAREN listaParametro RPAREN LKEY bloco RKEY
+    (5) variavelDeclaracao -> . tipo variavelEspecificacaoSeq ;
+    (10) tipo -> . INT
+    (11) tipo -> . STRING
+    (12) tipo -> . BOOLEAN
+
+    $end            reduce using rule 79 (sequenciaDeclaracao -> declaracao .)
+    ID              shift and go to state 6
+    INT             shift and go to state 8
+    STRING          shift and go to state 9
+    BOOLEAN         shift and go to state 10
+
+    declaracao                     shift and go to state 4
+    sequenciaDeclaracao            shift and go to state 11
+    variavelDeclaracao             shift and go to state 5
+    tipo                           shift and go to state 7
+
+state 5
+
+    (2) declaracao -> variavelDeclaracao .
+
+    ID              reduce using rule 2 (declaracao -> variavelDeclaracao .)
+    INT             reduce using rule 2 (declaracao -> variavelDeclaracao .)
+    STRING          reduce using rule 2 (declaracao -> variavelDeclaracao .)
+    BOOLEAN         reduce using rule 2 (declaracao -> variavelDeclaracao .)
+    $end            reduce using rule 2 (declaracao -> variavelDeclaracao .)
+
+
+state 6
+
+    (3) declaracao -> ID . LPAREN listaParametro RPAREN LKEY bloco RKEY
+
+    LPAREN          shift and go to state 12
+
+
+state 7
+
+    (4) declaracao -> tipo . ID LPAREN listaParametro RPAREN LKEY bloco RKEY
+    (5) variavelDeclaracao -> tipo . variavelEspecificacaoSeq ;
+    (76) variavelEspecificacaoSeq -> . variavelEspecificacao COMMA variavelEspecificacaoSeq
+    (77) variavelEspecificacaoSeq -> . variavelEspecificacao
+    (6) variavelEspecificacao -> . ID
+    (7) variavelEspecificacao -> . ID ASSIGN valor
+    (8) variavelEspecificacao -> . ID LCOR NUMBER RCOR
+    (9) variavelEspecificacao -> . ID LCOR NUMBER RCOR ASSIGN LKEY sequenciaValor RKEY
+
+    ID              shift and go to state 13
+
+    variavelEspecificacaoSeq       shift and go to state 14
+    variavelEspecificacao          shift and go to state 15
+
+state 8
+
+    (10) tipo -> INT .
+
+    ID              reduce using rule 10 (tipo -> INT .)
+
+
+state 9
+
+    (11) tipo -> STRING .
+
+    ID              reduce using rule 11 (tipo -> STRING .)
+
+
+state 10
+
+    (12) tipo -> BOOLEAN .
+
+    ID              reduce using rule 12 (tipo -> BOOLEAN .)
+
+
+state 11
+
+    (78) sequenciaDeclaracao -> declaracao sequenciaDeclaracao .
+
+    $end            reduce using rule 78 (sequenciaDeclaracao -> declaracao sequenciaDeclaracao .)
+
+
+state 12
+
+    (3) declaracao -> ID LPAREN . listaParametro RPAREN LKEY bloco RKEY
+    (69) listaParametro -> . sequenciaParametro
+    (70) listaParametro -> . ε
+    (72) sequenciaParametro -> . parametro COMMA sequenciaParametro
+    (73) sequenciaParametro -> . parametro
+    (13) parametro -> . tipo ID
+    (14) parametro -> . tipo ID LCOR RCOR
+    (10) tipo -> . INT
+    (11) tipo -> . STRING
+    (12) tipo -> . BOOLEAN
+
+    ε               shift and go to state 18
+    INT             shift and go to state 8
+    STRING          shift and go to state 9
+    BOOLEAN         shift and go to state 10
+
+    listaParametro                 shift and go to state 16
+    sequenciaParametro             shift and go to state 17
+    parametro                      shift and go to state 19
+    tipo                           shift and go to state 20
+
+state 13
+
+    (4) declaracao -> tipo ID . LPAREN listaParametro RPAREN LKEY bloco RKEY
+    (6) variavelEspecificacao -> ID .
+    (7) variavelEspecificacao -> ID . ASSIGN valor
+    (8) variavelEspecificacao -> ID . LCOR NUMBER RCOR
+    (9) variavelEspecificacao -> ID . LCOR NUMBER RCOR ASSIGN LKEY sequenciaValor RKEY
+
+    LPAREN          shift and go to state 21
+    COMMA           reduce using rule 6 (variavelEspecificacao -> ID .)
+    ;               reduce using rule 6 (variavelEspecificacao -> ID .)
+    ASSIGN          shift and go to state 22
+    LCOR            shift and go to state 23
+
+
+state 14
+
+    (5) variavelDeclaracao -> tipo variavelEspecificacaoSeq . ;
+
+    ;               shift and go to state 24
+
+
+state 15
+
+    (76) variavelEspecificacaoSeq -> variavelEspecificacao . COMMA variavelEspecificacaoSeq
+    (77) variavelEspecificacaoSeq -> variavelEspecificacao .
+
+    COMMA           shift and go to state 25
+    ;               reduce using rule 77 (variavelEspecificacaoSeq -> variavelEspecificacao .)
+
+
+state 16
+
+    (3) declaracao -> ID LPAREN listaParametro . RPAREN LKEY bloco RKEY
+
+    RPAREN          shift and go to state 26
+
+
+state 17
+
+    (69) listaParametro -> sequenciaParametro .
+
+    RPAREN          reduce using rule 69 (listaParametro -> sequenciaParametro .)
+
+
+state 18
+
+    (70) listaParametro -> ε .
+
+    RPAREN          reduce using rule 70 (listaParametro -> ε .)
+
+
+state 19
+
+    (72) sequenciaParametro -> parametro . COMMA sequenciaParametro
+    (73) sequenciaParametro -> parametro .
+
+    COMMA           shift and go to state 27
+    RPAREN          reduce using rule 73 (sequenciaParametro -> parametro .)
+
+
+state 20
+
+    (13) parametro -> tipo . ID
+    (14) parametro -> tipo . ID LCOR RCOR
+
+    ID              shift and go to state 28
+
+
+state 21
+
+    (4) declaracao -> tipo ID LPAREN . listaParametro RPAREN LKEY bloco RKEY
+    (69) listaParametro -> . sequenciaParametro
+    (70) listaParametro -> . ε
+    (72) sequenciaParametro -> . parametro COMMA sequenciaParametro
+    (73) sequenciaParametro -> . parametro
+    (13) parametro -> . tipo ID
+    (14) parametro -> . tipo ID LCOR RCOR
+    (10) tipo -> . INT
+    (11) tipo -> . STRING
+    (12) tipo -> . BOOLEAN
+
+    ε               shift and go to state 18
+    INT             shift and go to state 8
+    STRING          shift and go to state 9
+    BOOLEAN         shift and go to state 10
+
+    tipo                           shift and go to state 20
+    listaParametro                 shift and go to state 29
+    sequenciaParametro             shift and go to state 17
+    parametro                      shift and go to state 19
+
+state 22
+
+    (7) variavelEspecificacao -> ID ASSIGN . valor
+    (65) valor -> . NUMBER
+    (66) valor -> . STRING
+    (67) valor -> . TRUE
+    (68) valor -> . FALSE
+
+    NUMBER          shift and go to state 31
+    STRING          shift and go to state 32
+    TRUE            shift and go to state 33
+    FALSE           shift and go to state 34
+
+    valor                          shift and go to state 30
+
+state 23
+
+    (8) variavelEspecificacao -> ID LCOR . NUMBER RCOR
+    (9) variavelEspecificacao -> ID LCOR . NUMBER RCOR ASSIGN LKEY sequenciaValor RKEY
+
+    NUMBER          shift and go to state 35
+
+
+state 24
+
+    (5) variavelDeclaracao -> tipo variavelEspecificacaoSeq ; .
+
+    ID              reduce using rule 5 (variavelDeclaracao -> tipo variavelEspecificacaoSeq ; .)
+    INT             reduce using rule 5 (variavelDeclaracao -> tipo variavelEspecificacaoSeq ; .)
+    STRING          reduce using rule 5 (variavelDeclaracao -> tipo variavelEspecificacaoSeq ; .)
+    BOOLEAN         reduce using rule 5 (variavelDeclaracao -> tipo variavelEspecificacaoSeq ; .)
+    $end            reduce using rule 5 (variavelDeclaracao -> tipo variavelEspecificacaoSeq ; .)
+    ε               reduce using rule 5 (variavelDeclaracao -> tipo variavelEspecificacaoSeq ; .)
+
+
+state 25
+
+    (76) variavelEspecificacaoSeq -> variavelEspecificacao COMMA . variavelEspecificacaoSeq
+    (76) variavelEspecificacaoSeq -> . variavelEspecificacao COMMA variavelEspecificacaoSeq
+    (77) variavelEspecificacaoSeq -> . variavelEspecificacao
+    (6) variavelEspecificacao -> . ID
+    (7) variavelEspecificacao -> . ID ASSIGN valor
+    (8) variavelEspecificacao -> . ID LCOR NUMBER RCOR
+    (9) variavelEspecificacao -> . ID LCOR NUMBER RCOR ASSIGN LKEY sequenciaValor RKEY
+
+    ID              shift and go to state 37
+
+    variavelEspecificacao          shift and go to state 15
+    variavelEspecificacaoSeq       shift and go to state 36
+
+state 26
+
+    (3) declaracao -> ID LPAREN listaParametro RPAREN . LKEY bloco RKEY
+
+    LKEY            shift and go to state 38
+
+
+state 27
+
+    (72) sequenciaParametro -> parametro COMMA . sequenciaParametro
+    (72) sequenciaParametro -> . parametro COMMA sequenciaParametro
+    (73) sequenciaParametro -> . parametro
+    (13) parametro -> . tipo ID
+    (14) parametro -> . tipo ID LCOR RCOR
+    (10) tipo -> . INT
+    (11) tipo -> . STRING
+    (12) tipo -> . BOOLEAN
+
+    INT             shift and go to state 8
+    STRING          shift and go to state 9
+    BOOLEAN         shift and go to state 10
+
+    parametro                      shift and go to state 19
+    sequenciaParametro             shift and go to state 39
+    tipo                           shift and go to state 20
+
+state 28
+
+    (13) parametro -> tipo ID .
+    (14) parametro -> tipo ID . LCOR RCOR
+
+    COMMA           reduce using rule 13 (parametro -> tipo ID .)
+    RPAREN          reduce using rule 13 (parametro -> tipo ID .)
+    LCOR            shift and go to state 40
+
+
+state 29
+
+    (4) declaracao -> tipo ID LPAREN listaParametro . RPAREN LKEY bloco RKEY
+
+    RPAREN          shift and go to state 41
+
+
+state 30
+
+    (7) variavelEspecificacao -> ID ASSIGN valor .
+
+    COMMA           reduce using rule 7 (variavelEspecificacao -> ID ASSIGN valor .)
+    ;               reduce using rule 7 (variavelEspecificacao -> ID ASSIGN valor .)
+
+
+state 31
+
+    (65) valor -> NUMBER .
+
+    COMMA           reduce using rule 65 (valor -> NUMBER .)
+    ;               reduce using rule 65 (valor -> NUMBER .)
+    SEMICOLON       reduce using rule 65 (valor -> NUMBER .)
+    ?               reduce using rule 65 (valor -> NUMBER .)
+    PLUS            reduce using rule 65 (valor -> NUMBER .)
+    MINUS           reduce using rule 65 (valor -> NUMBER .)
+    MULT            reduce using rule 65 (valor -> NUMBER .)
+    DIVIDE          reduce using rule 65 (valor -> NUMBER .)
+    MOD             reduce using rule 65 (valor -> NUMBER .)
+    EQUALS          reduce using rule 65 (valor -> NUMBER .)
+    DIFFERENT       reduce using rule 65 (valor -> NUMBER .)
+    LTE             reduce using rule 65 (valor -> NUMBER .)
+    GTE             reduce using rule 65 (valor -> NUMBER .)
+    GT              reduce using rule 65 (valor -> NUMBER .)
+    LT              reduce using rule 65 (valor -> NUMBER .)
+    AND             reduce using rule 65 (valor -> NUMBER .)
+    OR              reduce using rule 65 (valor -> NUMBER .)
+    ,               reduce using rule 65 (valor -> NUMBER .)
+    NUMBER          reduce using rule 65 (valor -> NUMBER .)
+    STRING          reduce using rule 65 (valor -> NUMBER .)
+    TRUE            reduce using rule 65 (valor -> NUMBER .)
+    FALSE           reduce using rule 65 (valor -> NUMBER .)
+    RKEY            reduce using rule 65 (valor -> NUMBER .)
+    RPAREN          reduce using rule 65 (valor -> NUMBER .)
+    LPAREN          reduce using rule 65 (valor -> NUMBER .)
+    RCOR            reduce using rule 65 (valor -> NUMBER .)
+    :               reduce using rule 65 (valor -> NUMBER .)
+
+
+state 32
+
+    (66) valor -> STRING .
+
+    COMMA           reduce using rule 66 (valor -> STRING .)
+    ;               reduce using rule 66 (valor -> STRING .)
+    SEMICOLON       reduce using rule 66 (valor -> STRING .)
+    ?               reduce using rule 66 (valor -> STRING .)
+    PLUS            reduce using rule 66 (valor -> STRING .)
+    MINUS           reduce using rule 66 (valor -> STRING .)
+    MULT            reduce using rule 66 (valor -> STRING .)
+    DIVIDE          reduce using rule 66 (valor -> STRING .)
+    MOD             reduce using rule 66 (valor -> STRING .)
+    EQUALS          reduce using rule 66 (valor -> STRING .)
+    DIFFERENT       reduce using rule 66 (valor -> STRING .)
+    LTE             reduce using rule 66 (valor -> STRING .)
+    GTE             reduce using rule 66 (valor -> STRING .)
+    GT              reduce using rule 66 (valor -> STRING .)
+    LT              reduce using rule 66 (valor -> STRING .)
+    AND             reduce using rule 66 (valor -> STRING .)
+    OR              reduce using rule 66 (valor -> STRING .)
+    ,               reduce using rule 66 (valor -> STRING .)
+    NUMBER          reduce using rule 66 (valor -> STRING .)
+    STRING          reduce using rule 66 (valor -> STRING .)
+    TRUE            reduce using rule 66 (valor -> STRING .)
+    FALSE           reduce using rule 66 (valor -> STRING .)
+    RKEY            reduce using rule 66 (valor -> STRING .)
+    RPAREN          reduce using rule 66 (valor -> STRING .)
+    LPAREN          reduce using rule 66 (valor -> STRING .)
+    RCOR            reduce using rule 66 (valor -> STRING .)
+    :               reduce using rule 66 (valor -> STRING .)
+
+
+state 33
+
+    (67) valor -> TRUE .
+
+    COMMA           reduce using rule 67 (valor -> TRUE .)
+    ;               reduce using rule 67 (valor -> TRUE .)
+    SEMICOLON       reduce using rule 67 (valor -> TRUE .)
+    ?               reduce using rule 67 (valor -> TRUE .)
+    PLUS            reduce using rule 67 (valor -> TRUE .)
+    MINUS           reduce using rule 67 (valor -> TRUE .)
+    MULT            reduce using rule 67 (valor -> TRUE .)
+    DIVIDE          reduce using rule 67 (valor -> TRUE .)
+    MOD             reduce using rule 67 (valor -> TRUE .)
+    EQUALS          reduce using rule 67 (valor -> TRUE .)
+    DIFFERENT       reduce using rule 67 (valor -> TRUE .)
+    LTE             reduce using rule 67 (valor -> TRUE .)
+    GTE             reduce using rule 67 (valor -> TRUE .)
+    GT              reduce using rule 67 (valor -> TRUE .)
+    LT              reduce using rule 67 (valor -> TRUE .)
+    AND             reduce using rule 67 (valor -> TRUE .)
+    OR              reduce using rule 67 (valor -> TRUE .)
+    ,               reduce using rule 67 (valor -> TRUE .)
+    NUMBER          reduce using rule 67 (valor -> TRUE .)
+    STRING          reduce using rule 67 (valor -> TRUE .)
+    TRUE            reduce using rule 67 (valor -> TRUE .)
+    FALSE           reduce using rule 67 (valor -> TRUE .)
+    RKEY            reduce using rule 67 (valor -> TRUE .)
+    RPAREN          reduce using rule 67 (valor -> TRUE .)
+    LPAREN          reduce using rule 67 (valor -> TRUE .)
+    RCOR            reduce using rule 67 (valor -> TRUE .)
+    :               reduce using rule 67 (valor -> TRUE .)
+
+
+state 34
+
+    (68) valor -> FALSE .
+
+    COMMA           reduce using rule 68 (valor -> FALSE .)
+    ;               reduce using rule 68 (valor -> FALSE .)
+    SEMICOLON       reduce using rule 68 (valor -> FALSE .)
+    ?               reduce using rule 68 (valor -> FALSE .)
+    PLUS            reduce using rule 68 (valor -> FALSE .)
+    MINUS           reduce using rule 68 (valor -> FALSE .)
+    MULT            reduce using rule 68 (valor -> FALSE .)
+    DIVIDE          reduce using rule 68 (valor -> FALSE .)
+    MOD             reduce using rule 68 (valor -> FALSE .)
+    EQUALS          reduce using rule 68 (valor -> FALSE .)
+    DIFFERENT       reduce using rule 68 (valor -> FALSE .)
+    LTE             reduce using rule 68 (valor -> FALSE .)
+    GTE             reduce using rule 68 (valor -> FALSE .)
+    GT              reduce using rule 68 (valor -> FALSE .)
+    LT              reduce using rule 68 (valor -> FALSE .)
+    AND             reduce using rule 68 (valor -> FALSE .)
+    OR              reduce using rule 68 (valor -> FALSE .)
+    ,               reduce using rule 68 (valor -> FALSE .)
+    NUMBER          reduce using rule 68 (valor -> FALSE .)
+    STRING          reduce using rule 68 (valor -> FALSE .)
+    TRUE            reduce using rule 68 (valor -> FALSE .)
+    FALSE           reduce using rule 68 (valor -> FALSE .)
+    RKEY            reduce using rule 68 (valor -> FALSE .)
+    RPAREN          reduce using rule 68 (valor -> FALSE .)
+    LPAREN          reduce using rule 68 (valor -> FALSE .)
+    RCOR            reduce using rule 68 (valor -> FALSE .)
+    :               reduce using rule 68 (valor -> FALSE .)
+
+
+state 35
+
+    (8) variavelEspecificacao -> ID LCOR NUMBER . RCOR
+    (9) variavelEspecificacao -> ID LCOR NUMBER . RCOR ASSIGN LKEY sequenciaValor RKEY
+
+    RCOR            shift and go to state 42
+
+
+state 36
+
+    (76) variavelEspecificacaoSeq -> variavelEspecificacao COMMA variavelEspecificacaoSeq .
+
+    ;               reduce using rule 76 (variavelEspecificacaoSeq -> variavelEspecificacao COMMA variavelEspecificacaoSeq .)
+
+
+state 37
+
+    (6) variavelEspecificacao -> ID .
+    (7) variavelEspecificacao -> ID . ASSIGN valor
+    (8) variavelEspecificacao -> ID . LCOR NUMBER RCOR
+    (9) variavelEspecificacao -> ID . LCOR NUMBER RCOR ASSIGN LKEY sequenciaValor RKEY
+
+    COMMA           reduce using rule 6 (variavelEspecificacao -> ID .)
+    ;               reduce using rule 6 (variavelEspecificacao -> ID .)
+    ASSIGN          shift and go to state 22
+    LCOR            shift and go to state 23
+
+
+state 38
+
+    (3) declaracao -> ID LPAREN listaParametro RPAREN LKEY . bloco RKEY
+    (15) bloco -> . variavelDeclaracaoList listaComando
+    (74) variavelDeclaracaoList -> . variavelDeclaracao variavelDeclaracaoList
+    (75) variavelDeclaracaoList -> . ε
+    (5) variavelDeclaracao -> . tipo variavelEspecificacaoSeq ;
+    (10) tipo -> . INT
+    (11) tipo -> . STRING
+    (12) tipo -> . BOOLEAN
+
+    ε               shift and go to state 46
+    INT             shift and go to state 8
+    STRING          shift and go to state 9
+    BOOLEAN         shift and go to state 10
+
+    bloco                          shift and go to state 43
+    variavelDeclaracaoList         shift and go to state 44
+    variavelDeclaracao             shift and go to state 45
+    tipo                           shift and go to state 47
+
+state 39
+
+    (72) sequenciaParametro -> parametro COMMA sequenciaParametro .
+
+    RPAREN          reduce using rule 72 (sequenciaParametro -> parametro COMMA sequenciaParametro .)
+
+
+state 40
+
+    (14) parametro -> tipo ID LCOR . RCOR
+
+    RCOR            shift and go to state 48
+
+
+state 41
+
+    (4) declaracao -> tipo ID LPAREN listaParametro RPAREN . LKEY bloco RKEY
+
+    LKEY            shift and go to state 49
+
+
+state 42
+
+    (8) variavelEspecificacao -> ID LCOR NUMBER RCOR .
+    (9) variavelEspecificacao -> ID LCOR NUMBER RCOR . ASSIGN LKEY sequenciaValor RKEY
+
+    COMMA           reduce using rule 8 (variavelEspecificacao -> ID LCOR NUMBER RCOR .)
+    ;               reduce using rule 8 (variavelEspecificacao -> ID LCOR NUMBER RCOR .)
+    ASSIGN          shift and go to state 50
+
+
+state 43
+
+    (3) declaracao -> ID LPAREN listaParametro RPAREN LKEY bloco . RKEY
+
+    RKEY            shift and go to state 51
+
+
+state 44
+
+    (15) bloco -> variavelDeclaracaoList . listaComando
+    (80) listaComando -> . comando listaComando
+    (81) listaComando -> . ε
+    (16) comando -> . comandoIf
+    (17) comando -> . comandoWhile
+    (18) comando -> . comandoFor
+    (19) comando -> . comandoBreak
+    (20) comando -> . comandoReturn
+    (21) comando -> . comandoRead
+    (22) comando -> . comandoWrite
+    (23) comando -> . expressaoAtrib SEMICOLON
+    (24) comando -> . chamadaDeFuncao SEMICOLON
+    (25) comandoIf -> . IF LPAREN expressao RPAREN LKEY bloco RKEY
+    (26) comandoIf -> . IF LPAREN expressao LPAREN LKEY bloco RKEY ELSE LKEY bloco RKEY
+    (27) comandoWhile -> . WHILE LPAREN expressao RPAREN LKEY bloco RKEY
+    (28) comandoFor -> . FOR LPAREN expressaoAtrib SEMICOLON expressao SEMICOLON expressaoAtrib RPAREN LKEY bloco RKEY
+    (29) comandoBreak -> . BREAK SEMICOLON
+    (32) comandoReturn -> . RETURN SEMICOLON
+    (33) comandoReturn -> . RETURN expressao SEMICOLON
+    (30) comandoRead -> . READ variavel SEMICOLON
+    (31) comandoWrite -> . WRITE listaExpressao SEMICOLON
+    (54) expressaoAtrib -> . variavel opAtrib expressao
+    (34) chamadaDeFuncao -> . ID LPAREN listaExpressao RPAREN
+    (55) variavel -> . ID
+    (56) variavel -> . ID LCOR expressao RCOR
+
+    ε               shift and go to state 54
+    IF              shift and go to state 64
+    WHILE           shift and go to state 65
+    FOR             shift and go to state 66
+    BREAK           shift and go to state 67
+    RETURN          shift and go to state 68
+    READ            shift and go to state 69
+    WRITE           shift and go to state 71
+    ID              shift and go to state 72
+
+    listaComando                   shift and go to state 52
+    comando                        shift and go to state 53
+    comandoIf                      shift and go to state 55
+    comandoWhile                   shift and go to state 56
+    comandoFor                     shift and go to state 57
+    comandoBreak                   shift and go to state 58
+    comandoReturn                  shift and go to state 59
+    comandoRead                    shift and go to state 60
+    comandoWrite                   shift and go to state 61
+    expressaoAtrib                 shift and go to state 62
+    chamadaDeFuncao                shift and go to state 63
+    variavel                       shift and go to state 70
+
+state 45
+
+    (74) variavelDeclaracaoList -> variavelDeclaracao . variavelDeclaracaoList
+    (74) variavelDeclaracaoList -> . variavelDeclaracao variavelDeclaracaoList
+    (75) variavelDeclaracaoList -> . ε
+    (5) variavelDeclaracao -> . tipo variavelEspecificacaoSeq ;
+    (10) tipo -> . INT
+    (11) tipo -> . STRING
+    (12) tipo -> . BOOLEAN
+
+    ε               shift and go to state 46
+    INT             shift and go to state 8
+    STRING          shift and go to state 9
+    BOOLEAN         shift and go to state 10
+
+    variavelDeclaracao             shift and go to state 45
+    variavelDeclaracaoList         shift and go to state 73
+    tipo                           shift and go to state 47
+
+state 46
+
+    (75) variavelDeclaracaoList -> ε .
+
+    ε               reduce using rule 75 (variavelDeclaracaoList -> ε .)
+    IF              reduce using rule 75 (variavelDeclaracaoList -> ε .)
+    WHILE           reduce using rule 75 (variavelDeclaracaoList -> ε .)
+    FOR             reduce using rule 75 (variavelDeclaracaoList -> ε .)
+    BREAK           reduce using rule 75 (variavelDeclaracaoList -> ε .)
+    RETURN          reduce using rule 75 (variavelDeclaracaoList -> ε .)
+    READ            reduce using rule 75 (variavelDeclaracaoList -> ε .)
+    WRITE           reduce using rule 75 (variavelDeclaracaoList -> ε .)
+    ID              reduce using rule 75 (variavelDeclaracaoList -> ε .)
+
+
+state 47
+
+    (5) variavelDeclaracao -> tipo . variavelEspecificacaoSeq ;
+    (76) variavelEspecificacaoSeq -> . variavelEspecificacao COMMA variavelEspecificacaoSeq
+    (77) variavelEspecificacaoSeq -> . variavelEspecificacao
+    (6) variavelEspecificacao -> . ID
+    (7) variavelEspecificacao -> . ID ASSIGN valor
+    (8) variavelEspecificacao -> . ID LCOR NUMBER RCOR
+    (9) variavelEspecificacao -> . ID LCOR NUMBER RCOR ASSIGN LKEY sequenciaValor RKEY
+
+    ID              shift and go to state 37
+
+    variavelEspecificacaoSeq       shift and go to state 14
+    variavelEspecificacao          shift and go to state 15
+
+state 48
+
+    (14) parametro -> tipo ID LCOR RCOR .
+
+    COMMA           reduce using rule 14 (parametro -> tipo ID LCOR RCOR .)
+    RPAREN          reduce using rule 14 (parametro -> tipo ID LCOR RCOR .)
+
+
+state 49
+
+    (4) declaracao -> tipo ID LPAREN listaParametro RPAREN LKEY . bloco RKEY
+    (15) bloco -> . variavelDeclaracaoList listaComando
+    (74) variavelDeclaracaoList -> . variavelDeclaracao variavelDeclaracaoList
+    (75) variavelDeclaracaoList -> . ε
+    (5) variavelDeclaracao -> . tipo variavelEspecificacaoSeq ;
+    (10) tipo -> . INT
+    (11) tipo -> . STRING
+    (12) tipo -> . BOOLEAN
+
+    ε               shift and go to state 46
+    INT             shift and go to state 8
+    STRING          shift and go to state 9
+    BOOLEAN         shift and go to state 10
+
+    tipo                           shift and go to state 47
+    bloco                          shift and go to state 74
+    variavelDeclaracaoList         shift and go to state 44
+    variavelDeclaracao             shift and go to state 45
+
+state 50
+
+    (9) variavelEspecificacao -> ID LCOR NUMBER RCOR ASSIGN . LKEY sequenciaValor RKEY
+
+    LKEY            shift and go to state 75
+
+
+state 51
+
+    (3) declaracao -> ID LPAREN listaParametro RPAREN LKEY bloco RKEY .
+
+    ID              reduce using rule 3 (declaracao -> ID LPAREN listaParametro RPAREN LKEY bloco RKEY .)
+    INT             reduce using rule 3 (declaracao -> ID LPAREN listaParametro RPAREN LKEY bloco RKEY .)
+    STRING          reduce using rule 3 (declaracao -> ID LPAREN listaParametro RPAREN LKEY bloco RKEY .)
+    BOOLEAN         reduce using rule 3 (declaracao -> ID LPAREN listaParametro RPAREN LKEY bloco RKEY .)
+    $end            reduce using rule 3 (declaracao -> ID LPAREN listaParametro RPAREN LKEY bloco RKEY .)
+
+
+state 52
+
+    (15) bloco -> variavelDeclaracaoList listaComando .
+
+    RKEY            reduce using rule 15 (bloco -> variavelDeclaracaoList listaComando .)
+
+
+state 53
+
+    (80) listaComando -> comando . listaComando
+    (80) listaComando -> . comando listaComando
+    (81) listaComando -> . ε
+    (16) comando -> . comandoIf
+    (17) comando -> . comandoWhile
+    (18) comando -> . comandoFor
+    (19) comando -> . comandoBreak
+    (20) comando -> . comandoReturn
+    (21) comando -> . comandoRead
+    (22) comando -> . comandoWrite
+    (23) comando -> . expressaoAtrib SEMICOLON
+    (24) comando -> . chamadaDeFuncao SEMICOLON
+    (25) comandoIf -> . IF LPAREN expressao RPAREN LKEY bloco RKEY
+    (26) comandoIf -> . IF LPAREN expressao LPAREN LKEY bloco RKEY ELSE LKEY bloco RKEY
+    (27) comandoWhile -> . WHILE LPAREN expressao RPAREN LKEY bloco RKEY
+    (28) comandoFor -> . FOR LPAREN expressaoAtrib SEMICOLON expressao SEMICOLON expressaoAtrib RPAREN LKEY bloco RKEY
+    (29) comandoBreak -> . BREAK SEMICOLON
+    (32) comandoReturn -> . RETURN SEMICOLON
+    (33) comandoReturn -> . RETURN expressao SEMICOLON
+    (30) comandoRead -> . READ variavel SEMICOLON
+    (31) comandoWrite -> . WRITE listaExpressao SEMICOLON
+    (54) expressaoAtrib -> . variavel opAtrib expressao
+    (34) chamadaDeFuncao -> . ID LPAREN listaExpressao RPAREN
+    (55) variavel -> . ID
+    (56) variavel -> . ID LCOR expressao RCOR
+
+    ε               shift and go to state 54
+    IF              shift and go to state 64
+    WHILE           shift and go to state 65
+    FOR             shift and go to state 66
+    BREAK           shift and go to state 67
+    RETURN          shift and go to state 68
+    READ            shift and go to state 69
+    WRITE           shift and go to state 71
+    ID              shift and go to state 72
+
+    comando                        shift and go to state 53
+    listaComando                   shift and go to state 76
+    comandoIf                      shift and go to state 55
+    comandoWhile                   shift and go to state 56
+    comandoFor                     shift and go to state 57
+    comandoBreak                   shift and go to state 58
+    comandoReturn                  shift and go to state 59
+    comandoRead                    shift and go to state 60
+    comandoWrite                   shift and go to state 61
+    expressaoAtrib                 shift and go to state 62
+    chamadaDeFuncao                shift and go to state 63
+    variavel                       shift and go to state 70
+
+state 54
+
+    (81) listaComando -> ε .
+
+    RKEY            reduce using rule 81 (listaComando -> ε .)
+
+
+state 55
+
+    (16) comando -> comandoIf .
+
+    ε               reduce using rule 16 (comando -> comandoIf .)
+    IF              reduce using rule 16 (comando -> comandoIf .)
+    WHILE           reduce using rule 16 (comando -> comandoIf .)
+    FOR             reduce using rule 16 (comando -> comandoIf .)
+    BREAK           reduce using rule 16 (comando -> comandoIf .)
+    RETURN          reduce using rule 16 (comando -> comandoIf .)
+    READ            reduce using rule 16 (comando -> comandoIf .)
+    WRITE           reduce using rule 16 (comando -> comandoIf .)
+    ID              reduce using rule 16 (comando -> comandoIf .)
+
+
+state 56
+
+    (17) comando -> comandoWhile .
+
+    ε               reduce using rule 17 (comando -> comandoWhile .)
+    IF              reduce using rule 17 (comando -> comandoWhile .)
+    WHILE           reduce using rule 17 (comando -> comandoWhile .)
+    FOR             reduce using rule 17 (comando -> comandoWhile .)
+    BREAK           reduce using rule 17 (comando -> comandoWhile .)
+    RETURN          reduce using rule 17 (comando -> comandoWhile .)
+    READ            reduce using rule 17 (comando -> comandoWhile .)
+    WRITE           reduce using rule 17 (comando -> comandoWhile .)
+    ID              reduce using rule 17 (comando -> comandoWhile .)
+
+
+state 57
+
+    (18) comando -> comandoFor .
+
+    ε               reduce using rule 18 (comando -> comandoFor .)
+    IF              reduce using rule 18 (comando -> comandoFor .)
+    WHILE           reduce using rule 18 (comando -> comandoFor .)
+    FOR             reduce using rule 18 (comando -> comandoFor .)
+    BREAK           reduce using rule 18 (comando -> comandoFor .)
+    RETURN          reduce using rule 18 (comando -> comandoFor .)
+    READ            reduce using rule 18 (comando -> comandoFor .)
+    WRITE           reduce using rule 18 (comando -> comandoFor .)
+    ID              reduce using rule 18 (comando -> comandoFor .)
+
+
+state 58
+
+    (19) comando -> comandoBreak .
+
+    ε               reduce using rule 19 (comando -> comandoBreak .)
+    IF              reduce using rule 19 (comando -> comandoBreak .)
+    WHILE           reduce using rule 19 (comando -> comandoBreak .)
+    FOR             reduce using rule 19 (comando -> comandoBreak .)
+    BREAK           reduce using rule 19 (comando -> comandoBreak .)
+    RETURN          reduce using rule 19 (comando -> comandoBreak .)
+    READ            reduce using rule 19 (comando -> comandoBreak .)
+    WRITE           reduce using rule 19 (comando -> comandoBreak .)
+    ID              reduce using rule 19 (comando -> comandoBreak .)
+
+
+state 59
+
+    (20) comando -> comandoReturn .
+
+    ε               reduce using rule 20 (comando -> comandoReturn .)
+    IF              reduce using rule 20 (comando -> comandoReturn .)
+    WHILE           reduce using rule 20 (comando -> comandoReturn .)
+    FOR             reduce using rule 20 (comando -> comandoReturn .)
+    BREAK           reduce using rule 20 (comando -> comandoReturn .)
+    RETURN          reduce using rule 20 (comando -> comandoReturn .)
+    READ            reduce using rule 20 (comando -> comandoReturn .)
+    WRITE           reduce using rule 20 (comando -> comandoReturn .)
+    ID              reduce using rule 20 (comando -> comandoReturn .)
+
+
+state 60
+
+    (21) comando -> comandoRead .
+
+    ε               reduce using rule 21 (comando -> comandoRead .)
+    IF              reduce using rule 21 (comando -> comandoRead .)
+    WHILE           reduce using rule 21 (comando -> comandoRead .)
+    FOR             reduce using rule 21 (comando -> comandoRead .)
+    BREAK           reduce using rule 21 (comando -> comandoRead .)
+    RETURN          reduce using rule 21 (comando -> comandoRead .)
+    READ            reduce using rule 21 (comando -> comandoRead .)
+    WRITE           reduce using rule 21 (comando -> comandoRead .)
+    ID              reduce using rule 21 (comando -> comandoRead .)
+
+
+state 61
+
+    (22) comando -> comandoWrite .
+
+    ε               reduce using rule 22 (comando -> comandoWrite .)
+    IF              reduce using rule 22 (comando -> comandoWrite .)
+    WHILE           reduce using rule 22 (comando -> comandoWrite .)
+    FOR             reduce using rule 22 (comando -> comandoWrite .)
+    BREAK           reduce using rule 22 (comando -> comandoWrite .)
+    RETURN          reduce using rule 22 (comando -> comandoWrite .)
+    READ            reduce using rule 22 (comando -> comandoWrite .)
+    WRITE           reduce using rule 22 (comando -> comandoWrite .)
+    ID              reduce using rule 22 (comando -> comandoWrite .)
+
+
+state 62
+
+    (23) comando -> expressaoAtrib . SEMICOLON
+
+    SEMICOLON       shift and go to state 77
+
+
+state 63
+
+    (24) comando -> chamadaDeFuncao . SEMICOLON
+
+    SEMICOLON       shift and go to state 78
+
+
+state 64
+
+    (25) comandoIf -> IF . LPAREN expressao RPAREN LKEY bloco RKEY
+    (26) comandoIf -> IF . LPAREN expressao LPAREN LKEY bloco RKEY ELSE LKEY bloco RKEY
+
+    LPAREN          shift and go to state 79
+
+
+state 65
+
+    (27) comandoWhile -> WHILE . LPAREN expressao RPAREN LKEY bloco RKEY
+
+    LPAREN          shift and go to state 80
+
+
+state 66
+
+    (28) comandoFor -> FOR . LPAREN expressaoAtrib SEMICOLON expressao SEMICOLON expressaoAtrib RPAREN LKEY bloco RKEY
+
+    LPAREN          shift and go to state 81
+
+
+state 67
+
+    (29) comandoBreak -> BREAK . SEMICOLON
+
+    SEMICOLON       shift and go to state 82
+
+
+state 68
+
+    (32) comandoReturn -> RETURN . SEMICOLON
+    (33) comandoReturn -> RETURN . expressao SEMICOLON
+    (57) expressao -> . expressao op expressao
+    (58) expressao -> . NOT expressao
+    (59) expressao -> . MINUS expressao
+    (60) expressao -> . expressao ? expressao : expressao
+    (61) expressao -> . chamadaDeFuncao
+    (62) expressao -> . variavel
+    (63) expressao -> . valor
+    (64) expressao -> . LPAREN expressao RPAREN
+    (34) chamadaDeFuncao -> . ID LPAREN listaExpressao RPAREN
+    (55) variavel -> . ID
+    (56) variavel -> . ID LCOR expressao RCOR
+    (65) valor -> . NUMBER
+    (66) valor -> . STRING
+    (67) valor -> . TRUE
+    (68) valor -> . FALSE
+
+    SEMICOLON       shift and go to state 83
+    NOT             shift and go to state 85
+    MINUS           shift and go to state 86
+    LPAREN          shift and go to state 90
+    ID              shift and go to state 72
+    NUMBER          shift and go to state 31
+    STRING          shift and go to state 32
+    TRUE            shift and go to state 33
+    FALSE           shift and go to state 34
+
+    expressao                      shift and go to state 84
+    chamadaDeFuncao                shift and go to state 87
+    variavel                       shift and go to state 88
+    valor                          shift and go to state 89
+
+state 69
+
+    (30) comandoRead -> READ . variavel SEMICOLON
+    (55) variavel -> . ID
+    (56) variavel -> . ID LCOR expressao RCOR
+
+    ID              shift and go to state 92
+
+    variavel                       shift and go to state 91
+
+state 70
+
+    (54) expressaoAtrib -> variavel . opAtrib expressao
+    (48) opAtrib -> . ASSIGN
+    (49) opAtrib -> . PLUSASSIGN
+    (50) opAtrib -> . MINUSASSIGN
+    (51) opAtrib -> . MULTASSIGN
+    (52) opAtrib -> . DIVIDEASSIGN
+    (53) opAtrib -> . MODASSIGN
+
+    ASSIGN          shift and go to state 94
+    PLUSASSIGN      shift and go to state 95
+    MINUSASSIGN     shift and go to state 96
+    MULTASSIGN      shift and go to state 97
+    DIVIDEASSIGN    shift and go to state 98
+    MODASSIGN       shift and go to state 99
+
+    opAtrib                        shift and go to state 93
+
+state 71
+
+    (31) comandoWrite -> WRITE . listaExpressao SEMICOLON
+    (84) listaExpressao -> . sequenciaExpressao
+    (85) listaExpressao -> . ε
+    (86) sequenciaExpressao -> . expressao , sequenciaExpressao
+    (87) sequenciaExpressao -> . expressao
+    (57) expressao -> . expressao op expressao
+    (58) expressao -> . NOT expressao
+    (59) expressao -> . MINUS expressao
+    (60) expressao -> . expressao ? expressao : expressao
+    (61) expressao -> . chamadaDeFuncao
+    (62) expressao -> . variavel
+    (63) expressao -> . valor
+    (64) expressao -> . LPAREN expressao RPAREN
+    (34) chamadaDeFuncao -> . ID LPAREN listaExpressao RPAREN
+    (55) variavel -> . ID
+    (56) variavel -> . ID LCOR expressao RCOR
+    (65) valor -> . NUMBER
+    (66) valor -> . STRING
+    (67) valor -> . TRUE
+    (68) valor -> . FALSE
+
+    ε               shift and go to state 102
+    NOT             shift and go to state 85
+    MINUS           shift and go to state 86
+    LPAREN          shift and go to state 90
+    ID              shift and go to state 72
+    NUMBER          shift and go to state 31
+    STRING          shift and go to state 32
+    TRUE            shift and go to state 33
+    FALSE           shift and go to state 34
+
+    listaExpressao                 shift and go to state 100
+    sequenciaExpressao             shift and go to state 101
+    expressao                      shift and go to state 103
+    chamadaDeFuncao                shift and go to state 87
+    variavel                       shift and go to state 88
+    valor                          shift and go to state 89
+
+state 72
+
+    (34) chamadaDeFuncao -> ID . LPAREN listaExpressao RPAREN
+    (55) variavel -> ID .
+    (56) variavel -> ID . LCOR expressao RCOR
+
+  ! shift/reduce conflict for LPAREN resolved as shift
+    LPAREN          shift and go to state 104
+    ASSIGN          reduce using rule 55 (variavel -> ID .)
+    PLUSASSIGN      reduce using rule 55 (variavel -> ID .)
+    MINUSASSIGN     reduce using rule 55 (variavel -> ID .)
+    MULTASSIGN      reduce using rule 55 (variavel -> ID .)
+    DIVIDEASSIGN    reduce using rule 55 (variavel -> ID .)
+    MODASSIGN       reduce using rule 55 (variavel -> ID .)
+    SEMICOLON       reduce using rule 55 (variavel -> ID .)
+    ?               reduce using rule 55 (variavel -> ID .)
+    PLUS            reduce using rule 55 (variavel -> ID .)
+    MINUS           reduce using rule 55 (variavel -> ID .)
+    MULT            reduce using rule 55 (variavel -> ID .)
+    DIVIDE          reduce using rule 55 (variavel -> ID .)
+    MOD             reduce using rule 55 (variavel -> ID .)
+    EQUALS          reduce using rule 55 (variavel -> ID .)
+    DIFFERENT       reduce using rule 55 (variavel -> ID .)
+    LTE             reduce using rule 55 (variavel -> ID .)
+    GTE             reduce using rule 55 (variavel -> ID .)
+    GT              reduce using rule 55 (variavel -> ID .)
+    LT              reduce using rule 55 (variavel -> ID .)
+    AND             reduce using rule 55 (variavel -> ID .)
+    OR              reduce using rule 55 (variavel -> ID .)
+    ,               reduce using rule 55 (variavel -> ID .)
+    RPAREN          reduce using rule 55 (variavel -> ID .)
+    RCOR            reduce using rule 55 (variavel -> ID .)
+    :               reduce using rule 55 (variavel -> ID .)
+    LCOR            shift and go to state 105
+
+  ! LPAREN          [ reduce using rule 55 (variavel -> ID .) ]
+
+
+state 73
+
+    (74) variavelDeclaracaoList -> variavelDeclaracao variavelDeclaracaoList .
+
+    ε               reduce using rule 74 (variavelDeclaracaoList -> variavelDeclaracao variavelDeclaracaoList .)
+    IF              reduce using rule 74 (variavelDeclaracaoList -> variavelDeclaracao variavelDeclaracaoList .)
+    WHILE           reduce using rule 74 (variavelDeclaracaoList -> variavelDeclaracao variavelDeclaracaoList .)
+    FOR             reduce using rule 74 (variavelDeclaracaoList -> variavelDeclaracao variavelDeclaracaoList .)
+    BREAK           reduce using rule 74 (variavelDeclaracaoList -> variavelDeclaracao variavelDeclaracaoList .)
+    RETURN          reduce using rule 74 (variavelDeclaracaoList -> variavelDeclaracao variavelDeclaracaoList .)
+    READ            reduce using rule 74 (variavelDeclaracaoList -> variavelDeclaracao variavelDeclaracaoList .)
+    WRITE           reduce using rule 74 (variavelDeclaracaoList -> variavelDeclaracao variavelDeclaracaoList .)
+    ID              reduce using rule 74 (variavelDeclaracaoList -> variavelDeclaracao variavelDeclaracaoList .)
+
+
+state 74
+
+    (4) declaracao -> tipo ID LPAREN listaParametro RPAREN LKEY bloco . RKEY
+
+    RKEY            shift and go to state 106
+
+
+state 75
+
+    (9) variavelEspecificacao -> ID LCOR NUMBER RCOR ASSIGN LKEY . sequenciaValor RKEY
+    (82) sequenciaValor -> . valor sequenciaValor
+    (83) sequenciaValor -> . valor
+    (65) valor -> . NUMBER
+    (66) valor -> . STRING
+    (67) valor -> . TRUE
+    (68) valor -> . FALSE
+
+    NUMBER          shift and go to state 31
+    STRING          shift and go to state 32
+    TRUE            shift and go to state 33
+    FALSE           shift and go to state 34
+
+    sequenciaValor                 shift and go to state 107
+    valor                          shift and go to state 108
+
+state 76
+
+    (80) listaComando -> comando listaComando .
+
+    RKEY            reduce using rule 80 (listaComando -> comando listaComando .)
+
+
+state 77
+
+    (23) comando -> expressaoAtrib SEMICOLON .
+
+    ε               reduce using rule 23 (comando -> expressaoAtrib SEMICOLON .)
+    IF              reduce using rule 23 (comando -> expressaoAtrib SEMICOLON .)
+    WHILE           reduce using rule 23 (comando -> expressaoAtrib SEMICOLON .)
+    FOR             reduce using rule 23 (comando -> expressaoAtrib SEMICOLON .)
+    BREAK           reduce using rule 23 (comando -> expressaoAtrib SEMICOLON .)
+    RETURN          reduce using rule 23 (comando -> expressaoAtrib SEMICOLON .)
+    READ            reduce using rule 23 (comando -> expressaoAtrib SEMICOLON .)
+    WRITE           reduce using rule 23 (comando -> expressaoAtrib SEMICOLON .)
+    ID              reduce using rule 23 (comando -> expressaoAtrib SEMICOLON .)
+
+
+state 78
+
+    (24) comando -> chamadaDeFuncao SEMICOLON .
+
+    ε               reduce using rule 24 (comando -> chamadaDeFuncao SEMICOLON .)
+    IF              reduce using rule 24 (comando -> chamadaDeFuncao SEMICOLON .)
+    WHILE           reduce using rule 24 (comando -> chamadaDeFuncao SEMICOLON .)
+    FOR             reduce using rule 24 (comando -> chamadaDeFuncao SEMICOLON .)
+    BREAK           reduce using rule 24 (comando -> chamadaDeFuncao SEMICOLON .)
+    RETURN          reduce using rule 24 (comando -> chamadaDeFuncao SEMICOLON .)
+    READ            reduce using rule 24 (comando -> chamadaDeFuncao SEMICOLON .)
+    WRITE           reduce using rule 24 (comando -> chamadaDeFuncao SEMICOLON .)
+    ID              reduce using rule 24 (comando -> chamadaDeFuncao SEMICOLON .)
+
+
+state 79
+
+    (25) comandoIf -> IF LPAREN . expressao RPAREN LKEY bloco RKEY
+    (26) comandoIf -> IF LPAREN . expressao LPAREN LKEY bloco RKEY ELSE LKEY bloco RKEY
+    (57) expressao -> . expressao op expressao
+    (58) expressao -> . NOT expressao
+    (59) expressao -> . MINUS expressao
+    (60) expressao -> . expressao ? expressao : expressao
+    (61) expressao -> . chamadaDeFuncao
+    (62) expressao -> . variavel
+    (63) expressao -> . valor
+    (64) expressao -> . LPAREN expressao RPAREN
+    (34) chamadaDeFuncao -> . ID LPAREN listaExpressao RPAREN
+    (55) variavel -> . ID
+    (56) variavel -> . ID LCOR expressao RCOR
+    (65) valor -> . NUMBER
+    (66) valor -> . STRING
+    (67) valor -> . TRUE
+    (68) valor -> . FALSE
+
+    NOT             shift and go to state 85
+    MINUS           shift and go to state 86
+    LPAREN          shift and go to state 90
+    ID              shift and go to state 72
+    NUMBER          shift and go to state 31
+    STRING          shift and go to state 32
+    TRUE            shift and go to state 33
+    FALSE           shift and go to state 34
+
+    expressao                      shift and go to state 109
+    chamadaDeFuncao                shift and go to state 87
+    variavel                       shift and go to state 88
+    valor                          shift and go to state 89
+
+state 80
+
+    (27) comandoWhile -> WHILE LPAREN . expressao RPAREN LKEY bloco RKEY
+    (57) expressao -> . expressao op expressao
+    (58) expressao -> . NOT expressao
+    (59) expressao -> . MINUS expressao
+    (60) expressao -> . expressao ? expressao : expressao
+    (61) expressao -> . chamadaDeFuncao
+    (62) expressao -> . variavel
+    (63) expressao -> . valor
+    (64) expressao -> . LPAREN expressao RPAREN
+    (34) chamadaDeFuncao -> . ID LPAREN listaExpressao RPAREN
+    (55) variavel -> . ID
+    (56) variavel -> . ID LCOR expressao RCOR
+    (65) valor -> . NUMBER
+    (66) valor -> . STRING
+    (67) valor -> . TRUE
+    (68) valor -> . FALSE
+
+    NOT             shift and go to state 85
+    MINUS           shift and go to state 86
+    LPAREN          shift and go to state 90
+    ID              shift and go to state 72
+    NUMBER          shift and go to state 31
+    STRING          shift and go to state 32
+    TRUE            shift and go to state 33
+    FALSE           shift and go to state 34
+
+    expressao                      shift and go to state 110
+    chamadaDeFuncao                shift and go to state 87
+    variavel                       shift and go to state 88
+    valor                          shift and go to state 89
+
+state 81
+
+    (28) comandoFor -> FOR LPAREN . expressaoAtrib SEMICOLON expressao SEMICOLON expressaoAtrib RPAREN LKEY bloco RKEY
+    (54) expressaoAtrib -> . variavel opAtrib expressao
+    (55) variavel -> . ID
+    (56) variavel -> . ID LCOR expressao RCOR
+
+    ID              shift and go to state 92
+
+    expressaoAtrib                 shift and go to state 111
+    variavel                       shift and go to state 70
+
+state 82
+
+    (29) comandoBreak -> BREAK SEMICOLON .
+
+    ε               reduce using rule 29 (comandoBreak -> BREAK SEMICOLON .)
+    IF              reduce using rule 29 (comandoBreak -> BREAK SEMICOLON .)
+    WHILE           reduce using rule 29 (comandoBreak -> BREAK SEMICOLON .)
+    FOR             reduce using rule 29 (comandoBreak -> BREAK SEMICOLON .)
+    BREAK           reduce using rule 29 (comandoBreak -> BREAK SEMICOLON .)
+    RETURN          reduce using rule 29 (comandoBreak -> BREAK SEMICOLON .)
+    READ            reduce using rule 29 (comandoBreak -> BREAK SEMICOLON .)
+    WRITE           reduce using rule 29 (comandoBreak -> BREAK SEMICOLON .)
+    ID              reduce using rule 29 (comandoBreak -> BREAK SEMICOLON .)
+
+
+state 83
+
+    (32) comandoReturn -> RETURN SEMICOLON .
+
+    ε               reduce using rule 32 (comandoReturn -> RETURN SEMICOLON .)
+    IF              reduce using rule 32 (comandoReturn -> RETURN SEMICOLON .)
+    WHILE           reduce using rule 32 (comandoReturn -> RETURN SEMICOLON .)
+    FOR             reduce using rule 32 (comandoReturn -> RETURN SEMICOLON .)
+    BREAK           reduce using rule 32 (comandoReturn -> RETURN SEMICOLON .)
+    RETURN          reduce using rule 32 (comandoReturn -> RETURN SEMICOLON .)
+    READ            reduce using rule 32 (comandoReturn -> RETURN SEMICOLON .)
+    WRITE           reduce using rule 32 (comandoReturn -> RETURN SEMICOLON .)
+    ID              reduce using rule 32 (comandoReturn -> RETURN SEMICOLON .)
+
+
+state 84
+
+    (33) comandoReturn -> RETURN expressao . SEMICOLON
+    (57) expressao -> expressao . op expressao
+    (60) expressao -> expressao . ? expressao : expressao
+    (35) op -> . PLUS
+    (36) op -> . MINUS
+    (37) op -> . MULT
+    (38) op -> . DIVIDE
+    (39) op -> . MOD
+    (40) op -> . EQUALS
+    (41) op -> . DIFFERENT
+    (42) op -> . LTE
+    (43) op -> . GTE
+    (44) op -> . GT
+    (45) op -> . LT
+    (46) op -> . AND
+    (47) op -> . OR
+
+    SEMICOLON       shift and go to state 112
+    ?               shift and go to state 114
+    PLUS            shift and go to state 115
+    MINUS           shift and go to state 116
+    MULT            shift and go to state 117
+    DIVIDE          shift and go to state 118
+    MOD             shift and go to state 119
+    EQUALS          shift and go to state 120
+    DIFFERENT       shift and go to state 121
+    LTE             shift and go to state 122
+    GTE             shift and go to state 123
+    GT              shift and go to state 124
+    LT              shift and go to state 125
+    AND             shift and go to state 126
+    OR              shift and go to state 127
+
+    op                             shift and go to state 113
+
+state 85
+
+    (58) expressao -> NOT . expressao
+    (57) expressao -> . expressao op expressao
+    (58) expressao -> . NOT expressao
+    (59) expressao -> . MINUS expressao
+    (60) expressao -> . expressao ? expressao : expressao
+    (61) expressao -> . chamadaDeFuncao
+    (62) expressao -> . variavel
+    (63) expressao -> . valor
+    (64) expressao -> . LPAREN expressao RPAREN
+    (34) chamadaDeFuncao -> . ID LPAREN listaExpressao RPAREN
+    (55) variavel -> . ID
+    (56) variavel -> . ID LCOR expressao RCOR
+    (65) valor -> . NUMBER
+    (66) valor -> . STRING
+    (67) valor -> . TRUE
+    (68) valor -> . FALSE
+
+    NOT             shift and go to state 85
+    MINUS           shift and go to state 86
+    LPAREN          shift and go to state 90
+    ID              shift and go to state 72
+    NUMBER          shift and go to state 31
+    STRING          shift and go to state 32
+    TRUE            shift and go to state 33
+    FALSE           shift and go to state 34
+
+    expressao                      shift and go to state 128
+    chamadaDeFuncao                shift and go to state 87
+    variavel                       shift and go to state 88
+    valor                          shift and go to state 89
+
+state 86
+
+    (59) expressao -> MINUS . expressao
+    (57) expressao -> . expressao op expressao
+    (58) expressao -> . NOT expressao
+    (59) expressao -> . MINUS expressao
+    (60) expressao -> . expressao ? expressao : expressao
+    (61) expressao -> . chamadaDeFuncao
+    (62) expressao -> . variavel
+    (63) expressao -> . valor
+    (64) expressao -> . LPAREN expressao RPAREN
+    (34) chamadaDeFuncao -> . ID LPAREN listaExpressao RPAREN
+    (55) variavel -> . ID
+    (56) variavel -> . ID LCOR expressao RCOR
+    (65) valor -> . NUMBER
+    (66) valor -> . STRING
+    (67) valor -> . TRUE
+    (68) valor -> . FALSE
+
+    NOT             shift and go to state 85
+    MINUS           shift and go to state 86
+    LPAREN          shift and go to state 90
+    ID              shift and go to state 72
+    NUMBER          shift and go to state 31
+    STRING          shift and go to state 32
+    TRUE            shift and go to state 33
+    FALSE           shift and go to state 34
+
+    expressao                      shift and go to state 129
+    chamadaDeFuncao                shift and go to state 87
+    variavel                       shift and go to state 88
+    valor                          shift and go to state 89
+
+state 87
+
+    (61) expressao -> chamadaDeFuncao .
+
+    SEMICOLON       reduce using rule 61 (expressao -> chamadaDeFuncao .)
+    ?               reduce using rule 61 (expressao -> chamadaDeFuncao .)
+    PLUS            reduce using rule 61 (expressao -> chamadaDeFuncao .)
+    MINUS           reduce using rule 61 (expressao -> chamadaDeFuncao .)
+    MULT            reduce using rule 61 (expressao -> chamadaDeFuncao .)
+    DIVIDE          reduce using rule 61 (expressao -> chamadaDeFuncao .)
+    MOD             reduce using rule 61 (expressao -> chamadaDeFuncao .)
+    EQUALS          reduce using rule 61 (expressao -> chamadaDeFuncao .)
+    DIFFERENT       reduce using rule 61 (expressao -> chamadaDeFuncao .)
+    LTE             reduce using rule 61 (expressao -> chamadaDeFuncao .)
+    GTE             reduce using rule 61 (expressao -> chamadaDeFuncao .)
+    GT              reduce using rule 61 (expressao -> chamadaDeFuncao .)
+    LT              reduce using rule 61 (expressao -> chamadaDeFuncao .)
+    AND             reduce using rule 61 (expressao -> chamadaDeFuncao .)
+    OR              reduce using rule 61 (expressao -> chamadaDeFuncao .)
+    ,               reduce using rule 61 (expressao -> chamadaDeFuncao .)
+    RPAREN          reduce using rule 61 (expressao -> chamadaDeFuncao .)
+    LPAREN          reduce using rule 61 (expressao -> chamadaDeFuncao .)
+    RCOR            reduce using rule 61 (expressao -> chamadaDeFuncao .)
+    :               reduce using rule 61 (expressao -> chamadaDeFuncao .)
+
+
+state 88
+
+    (62) expressao -> variavel .
+
+    SEMICOLON       reduce using rule 62 (expressao -> variavel .)
+    ?               reduce using rule 62 (expressao -> variavel .)
+    PLUS            reduce using rule 62 (expressao -> variavel .)
+    MINUS           reduce using rule 62 (expressao -> variavel .)
+    MULT            reduce using rule 62 (expressao -> variavel .)
+    DIVIDE          reduce using rule 62 (expressao -> variavel .)
+    MOD             reduce using rule 62 (expressao -> variavel .)
+    EQUALS          reduce using rule 62 (expressao -> variavel .)
+    DIFFERENT       reduce using rule 62 (expressao -> variavel .)
+    LTE             reduce using rule 62 (expressao -> variavel .)
+    GTE             reduce using rule 62 (expressao -> variavel .)
+    GT              reduce using rule 62 (expressao -> variavel .)
+    LT              reduce using rule 62 (expressao -> variavel .)
+    AND             reduce using rule 62 (expressao -> variavel .)
+    OR              reduce using rule 62 (expressao -> variavel .)
+    ,               reduce using rule 62 (expressao -> variavel .)
+    RPAREN          reduce using rule 62 (expressao -> variavel .)
+    LPAREN          reduce using rule 62 (expressao -> variavel .)
+    RCOR            reduce using rule 62 (expressao -> variavel .)
+    :               reduce using rule 62 (expressao -> variavel .)
+
+
+state 89
+
+    (63) expressao -> valor .
+
+    SEMICOLON       reduce using rule 63 (expressao -> valor .)
+    ?               reduce using rule 63 (expressao -> valor .)
+    PLUS            reduce using rule 63 (expressao -> valor .)
+    MINUS           reduce using rule 63 (expressao -> valor .)
+    MULT            reduce using rule 63 (expressao -> valor .)
+    DIVIDE          reduce using rule 63 (expressao -> valor .)
+    MOD             reduce using rule 63 (expressao -> valor .)
+    EQUALS          reduce using rule 63 (expressao -> valor .)
+    DIFFERENT       reduce using rule 63 (expressao -> valor .)
+    LTE             reduce using rule 63 (expressao -> valor .)
+    GTE             reduce using rule 63 (expressao -> valor .)
+    GT              reduce using rule 63 (expressao -> valor .)
+    LT              reduce using rule 63 (expressao -> valor .)
+    AND             reduce using rule 63 (expressao -> valor .)
+    OR              reduce using rule 63 (expressao -> valor .)
+    ,               reduce using rule 63 (expressao -> valor .)
+    RPAREN          reduce using rule 63 (expressao -> valor .)
+    LPAREN          reduce using rule 63 (expressao -> valor .)
+    RCOR            reduce using rule 63 (expressao -> valor .)
+    :               reduce using rule 63 (expressao -> valor .)
+
+
+state 90
+
+    (64) expressao -> LPAREN . expressao RPAREN
+    (57) expressao -> . expressao op expressao
+    (58) expressao -> . NOT expressao
+    (59) expressao -> . MINUS expressao
+    (60) expressao -> . expressao ? expressao : expressao
+    (61) expressao -> . chamadaDeFuncao
+    (62) expressao -> . variavel
+    (63) expressao -> . valor
+    (64) expressao -> . LPAREN expressao RPAREN
+    (34) chamadaDeFuncao -> . ID LPAREN listaExpressao RPAREN
+    (55) variavel -> . ID
+    (56) variavel -> . ID LCOR expressao RCOR
+    (65) valor -> . NUMBER
+    (66) valor -> . STRING
+    (67) valor -> . TRUE
+    (68) valor -> . FALSE
+
+    NOT             shift and go to state 85
+    MINUS           shift and go to state 86
+    LPAREN          shift and go to state 90
+    ID              shift and go to state 72
+    NUMBER          shift and go to state 31
+    STRING          shift and go to state 32
+    TRUE            shift and go to state 33
+    FALSE           shift and go to state 34
+
+    expressao                      shift and go to state 130
+    chamadaDeFuncao                shift and go to state 87
+    variavel                       shift and go to state 88
+    valor                          shift and go to state 89
+
+state 91
+
+    (30) comandoRead -> READ variavel . SEMICOLON
+
+    SEMICOLON       shift and go to state 131
+
+
+state 92
+
+    (55) variavel -> ID .
+    (56) variavel -> ID . LCOR expressao RCOR
+
+    SEMICOLON       reduce using rule 55 (variavel -> ID .)
+    ASSIGN          reduce using rule 55 (variavel -> ID .)
+    PLUSASSIGN      reduce using rule 55 (variavel -> ID .)
+    MINUSASSIGN     reduce using rule 55 (variavel -> ID .)
+    MULTASSIGN      reduce using rule 55 (variavel -> ID .)
+    DIVIDEASSIGN    reduce using rule 55 (variavel -> ID .)
+    MODASSIGN       reduce using rule 55 (variavel -> ID .)
+    LCOR            shift and go to state 105
+
+
+state 93
+
+    (54) expressaoAtrib -> variavel opAtrib . expressao
+    (57) expressao -> . expressao op expressao
+    (58) expressao -> . NOT expressao
+    (59) expressao -> . MINUS expressao
+    (60) expressao -> . expressao ? expressao : expressao
+    (61) expressao -> . chamadaDeFuncao
+    (62) expressao -> . variavel
+    (63) expressao -> . valor
+    (64) expressao -> . LPAREN expressao RPAREN
+    (34) chamadaDeFuncao -> . ID LPAREN listaExpressao RPAREN
+    (55) variavel -> . ID
+    (56) variavel -> . ID LCOR expressao RCOR
+    (65) valor -> . NUMBER
+    (66) valor -> . STRING
+    (67) valor -> . TRUE
+    (68) valor -> . FALSE
+
+    NOT             shift and go to state 85
+    MINUS           shift and go to state 86
+    LPAREN          shift and go to state 90
+    ID              shift and go to state 72
+    NUMBER          shift and go to state 31
+    STRING          shift and go to state 32
+    TRUE            shift and go to state 33
+    FALSE           shift and go to state 34
+
+    variavel                       shift and go to state 88
+    expressao                      shift and go to state 132
+    chamadaDeFuncao                shift and go to state 87
+    valor                          shift and go to state 89
+
+state 94
+
+    (48) opAtrib -> ASSIGN .
+
+    NOT             reduce using rule 48 (opAtrib -> ASSIGN .)
+    MINUS           reduce using rule 48 (opAtrib -> ASSIGN .)
+    LPAREN          reduce using rule 48 (opAtrib -> ASSIGN .)
+    ID              reduce using rule 48 (opAtrib -> ASSIGN .)
+    NUMBER          reduce using rule 48 (opAtrib -> ASSIGN .)
+    STRING          reduce using rule 48 (opAtrib -> ASSIGN .)
+    TRUE            reduce using rule 48 (opAtrib -> ASSIGN .)
+    FALSE           reduce using rule 48 (opAtrib -> ASSIGN .)
+
+
+state 95
+
+    (49) opAtrib -> PLUSASSIGN .
+
+    NOT             reduce using rule 49 (opAtrib -> PLUSASSIGN .)
+    MINUS           reduce using rule 49 (opAtrib -> PLUSASSIGN .)
+    LPAREN          reduce using rule 49 (opAtrib -> PLUSASSIGN .)
+    ID              reduce using rule 49 (opAtrib -> PLUSASSIGN .)
+    NUMBER          reduce using rule 49 (opAtrib -> PLUSASSIGN .)
+    STRING          reduce using rule 49 (opAtrib -> PLUSASSIGN .)
+    TRUE            reduce using rule 49 (opAtrib -> PLUSASSIGN .)
+    FALSE           reduce using rule 49 (opAtrib -> PLUSASSIGN .)
+
+
+state 96
+
+    (50) opAtrib -> MINUSASSIGN .
+
+    NOT             reduce using rule 50 (opAtrib -> MINUSASSIGN .)
+    MINUS           reduce using rule 50 (opAtrib -> MINUSASSIGN .)
+    LPAREN          reduce using rule 50 (opAtrib -> MINUSASSIGN .)
+    ID              reduce using rule 50 (opAtrib -> MINUSASSIGN .)
+    NUMBER          reduce using rule 50 (opAtrib -> MINUSASSIGN .)
+    STRING          reduce using rule 50 (opAtrib -> MINUSASSIGN .)
+    TRUE            reduce using rule 50 (opAtrib -> MINUSASSIGN .)
+    FALSE           reduce using rule 50 (opAtrib -> MINUSASSIGN .)
+
+
+state 97
+
+    (51) opAtrib -> MULTASSIGN .
+
+    NOT             reduce using rule 51 (opAtrib -> MULTASSIGN .)
+    MINUS           reduce using rule 51 (opAtrib -> MULTASSIGN .)
+    LPAREN          reduce using rule 51 (opAtrib -> MULTASSIGN .)
+    ID              reduce using rule 51 (opAtrib -> MULTASSIGN .)
+    NUMBER          reduce using rule 51 (opAtrib -> MULTASSIGN .)
+    STRING          reduce using rule 51 (opAtrib -> MULTASSIGN .)
+    TRUE            reduce using rule 51 (opAtrib -> MULTASSIGN .)
+    FALSE           reduce using rule 51 (opAtrib -> MULTASSIGN .)
+
+
+state 98
+
+    (52) opAtrib -> DIVIDEASSIGN .
+
+    NOT             reduce using rule 52 (opAtrib -> DIVIDEASSIGN .)
+    MINUS           reduce using rule 52 (opAtrib -> DIVIDEASSIGN .)
+    LPAREN          reduce using rule 52 (opAtrib -> DIVIDEASSIGN .)
+    ID              reduce using rule 52 (opAtrib -> DIVIDEASSIGN .)
+    NUMBER          reduce using rule 52 (opAtrib -> DIVIDEASSIGN .)
+    STRING          reduce using rule 52 (opAtrib -> DIVIDEASSIGN .)
+    TRUE            reduce using rule 52 (opAtrib -> DIVIDEASSIGN .)
+    FALSE           reduce using rule 52 (opAtrib -> DIVIDEASSIGN .)
+
+
+state 99
+
+    (53) opAtrib -> MODASSIGN .
+
+    NOT             reduce using rule 53 (opAtrib -> MODASSIGN .)
+    MINUS           reduce using rule 53 (opAtrib -> MODASSIGN .)
+    LPAREN          reduce using rule 53 (opAtrib -> MODASSIGN .)
+    ID              reduce using rule 53 (opAtrib -> MODASSIGN .)
+    NUMBER          reduce using rule 53 (opAtrib -> MODASSIGN .)
+    STRING          reduce using rule 53 (opAtrib -> MODASSIGN .)
+    TRUE            reduce using rule 53 (opAtrib -> MODASSIGN .)
+    FALSE           reduce using rule 53 (opAtrib -> MODASSIGN .)
+
+
+state 100
+
+    (31) comandoWrite -> WRITE listaExpressao . SEMICOLON
+
+    SEMICOLON       shift and go to state 133
+
+
+state 101
+
+    (84) listaExpressao -> sequenciaExpressao .
+
+    SEMICOLON       reduce using rule 84 (listaExpressao -> sequenciaExpressao .)
+    RPAREN          reduce using rule 84 (listaExpressao -> sequenciaExpressao .)
+
+
+state 102
+
+    (85) listaExpressao -> ε .
+
+    SEMICOLON       reduce using rule 85 (listaExpressao -> ε .)
+    RPAREN          reduce using rule 85 (listaExpressao -> ε .)
+
+
+state 103
+
+    (86) sequenciaExpressao -> expressao . , sequenciaExpressao
+    (87) sequenciaExpressao -> expressao .
+    (57) expressao -> expressao . op expressao
+    (60) expressao -> expressao . ? expressao : expressao
+    (35) op -> . PLUS
+    (36) op -> . MINUS
+    (37) op -> . MULT
+    (38) op -> . DIVIDE
+    (39) op -> . MOD
+    (40) op -> . EQUALS
+    (41) op -> . DIFFERENT
+    (42) op -> . LTE
+    (43) op -> . GTE
+    (44) op -> . GT
+    (45) op -> . LT
+    (46) op -> . AND
+    (47) op -> . OR
+
+    ,               shift and go to state 134
+    SEMICOLON       reduce using rule 87 (sequenciaExpressao -> expressao .)
+    RPAREN          reduce using rule 87 (sequenciaExpressao -> expressao .)
+    ?               shift and go to state 114
+    PLUS            shift and go to state 115
+    MINUS           shift and go to state 116
+    MULT            shift and go to state 117
+    DIVIDE          shift and go to state 118
+    MOD             shift and go to state 119
+    EQUALS          shift and go to state 120
+    DIFFERENT       shift and go to state 121
+    LTE             shift and go to state 122
+    GTE             shift and go to state 123
+    GT              shift and go to state 124
+    LT              shift and go to state 125
+    AND             shift and go to state 126
+    OR              shift and go to state 127
+
+    op                             shift and go to state 113
+
+state 104
+
+    (34) chamadaDeFuncao -> ID LPAREN . listaExpressao RPAREN
+    (84) listaExpressao -> . sequenciaExpressao
+    (85) listaExpressao -> . ε
+    (86) sequenciaExpressao -> . expressao , sequenciaExpressao
+    (87) sequenciaExpressao -> . expressao
+    (57) expressao -> . expressao op expressao
+    (58) expressao -> . NOT expressao
+    (59) expressao -> . MINUS expressao
+    (60) expressao -> . expressao ? expressao : expressao
+    (61) expressao -> . chamadaDeFuncao
+    (62) expressao -> . variavel
+    (63) expressao -> . valor
+    (64) expressao -> . LPAREN expressao RPAREN
+    (34) chamadaDeFuncao -> . ID LPAREN listaExpressao RPAREN
+    (55) variavel -> . ID
+    (56) variavel -> . ID LCOR expressao RCOR
+    (65) valor -> . NUMBER
+    (66) valor -> . STRING
+    (67) valor -> . TRUE
+    (68) valor -> . FALSE
+
+    ε               shift and go to state 102
+    NOT             shift and go to state 85
+    MINUS           shift and go to state 86
+    LPAREN          shift and go to state 90
+    ID              shift and go to state 72
+    NUMBER          shift and go to state 31
+    STRING          shift and go to state 32
+    TRUE            shift and go to state 33
+    FALSE           shift and go to state 34
+
+    listaExpressao                 shift and go to state 135
+    sequenciaExpressao             shift and go to state 101
+    expressao                      shift and go to state 103
+    chamadaDeFuncao                shift and go to state 87
+    variavel                       shift and go to state 88
+    valor                          shift and go to state 89
+
+state 105
+
+    (56) variavel -> ID LCOR . expressao RCOR
+    (57) expressao -> . expressao op expressao
+    (58) expressao -> . NOT expressao
+    (59) expressao -> . MINUS expressao
+    (60) expressao -> . expressao ? expressao : expressao
+    (61) expressao -> . chamadaDeFuncao
+    (62) expressao -> . variavel
+    (63) expressao -> . valor
+    (64) expressao -> . LPAREN expressao RPAREN
+    (34) chamadaDeFuncao -> . ID LPAREN listaExpressao RPAREN
+    (55) variavel -> . ID
+    (56) variavel -> . ID LCOR expressao RCOR
+    (65) valor -> . NUMBER
+    (66) valor -> . STRING
+    (67) valor -> . TRUE
+    (68) valor -> . FALSE
+
+    NOT             shift and go to state 85
+    MINUS           shift and go to state 86
+    LPAREN          shift and go to state 90
+    ID              shift and go to state 72
+    NUMBER          shift and go to state 31
+    STRING          shift and go to state 32
+    TRUE            shift and go to state 33
+    FALSE           shift and go to state 34
+
+    expressao                      shift and go to state 136
+    chamadaDeFuncao                shift and go to state 87
+    variavel                       shift and go to state 88
+    valor                          shift and go to state 89
+
+state 106
+
+    (4) declaracao -> tipo ID LPAREN listaParametro RPAREN LKEY bloco RKEY .
+
+    ID              reduce using rule 4 (declaracao -> tipo ID LPAREN listaParametro RPAREN LKEY bloco RKEY .)
+    INT             reduce using rule 4 (declaracao -> tipo ID LPAREN listaParametro RPAREN LKEY bloco RKEY .)
+    STRING          reduce using rule 4 (declaracao -> tipo ID LPAREN listaParametro RPAREN LKEY bloco RKEY .)
+    BOOLEAN         reduce using rule 4 (declaracao -> tipo ID LPAREN listaParametro RPAREN LKEY bloco RKEY .)
+    $end            reduce using rule 4 (declaracao -> tipo ID LPAREN listaParametro RPAREN LKEY bloco RKEY .)
+
+
+state 107
+
+    (9) variavelEspecificacao -> ID LCOR NUMBER RCOR ASSIGN LKEY sequenciaValor . RKEY
+
+    RKEY            shift and go to state 137
+
+
+state 108
+
+    (82) sequenciaValor -> valor . sequenciaValor
+    (83) sequenciaValor -> valor .
+    (82) sequenciaValor -> . valor sequenciaValor
+    (83) sequenciaValor -> . valor
+    (65) valor -> . NUMBER
+    (66) valor -> . STRING
+    (67) valor -> . TRUE
+    (68) valor -> . FALSE
+
+    RKEY            reduce using rule 83 (sequenciaValor -> valor .)
+    NUMBER          shift and go to state 31
+    STRING          shift and go to state 32
+    TRUE            shift and go to state 33
+    FALSE           shift and go to state 34
+
+    valor                          shift and go to state 108
+    sequenciaValor                 shift and go to state 138
+
+state 109
+
+    (25) comandoIf -> IF LPAREN expressao . RPAREN LKEY bloco RKEY
+    (26) comandoIf -> IF LPAREN expressao . LPAREN LKEY bloco RKEY ELSE LKEY bloco RKEY
+    (57) expressao -> expressao . op expressao
+    (60) expressao -> expressao . ? expressao : expressao
+    (35) op -> . PLUS
+    (36) op -> . MINUS
+    (37) op -> . MULT
+    (38) op -> . DIVIDE
+    (39) op -> . MOD
+    (40) op -> . EQUALS
+    (41) op -> . DIFFERENT
+    (42) op -> . LTE
+    (43) op -> . GTE
+    (44) op -> . GT
+    (45) op -> . LT
+    (46) op -> . AND
+    (47) op -> . OR
+
+    RPAREN          shift and go to state 140
+    LPAREN          shift and go to state 139
+    ?               shift and go to state 114
+    PLUS            shift and go to state 115
+    MINUS           shift and go to state 116
+    MULT            shift and go to state 117
+    DIVIDE          shift and go to state 118
+    MOD             shift and go to state 119
+    EQUALS          shift and go to state 120
+    DIFFERENT       shift and go to state 121
+    LTE             shift and go to state 122
+    GTE             shift and go to state 123
+    GT              shift and go to state 124
+    LT              shift and go to state 125
+    AND             shift and go to state 126
+    OR              shift and go to state 127
+
+    op                             shift and go to state 113
+
+state 110
+
+    (27) comandoWhile -> WHILE LPAREN expressao . RPAREN LKEY bloco RKEY
+    (57) expressao -> expressao . op expressao
+    (60) expressao -> expressao . ? expressao : expressao
+    (35) op -> . PLUS
+    (36) op -> . MINUS
+    (37) op -> . MULT
+    (38) op -> . DIVIDE
+    (39) op -> . MOD
+    (40) op -> . EQUALS
+    (41) op -> . DIFFERENT
+    (42) op -> . LTE
+    (43) op -> . GTE
+    (44) op -> . GT
+    (45) op -> . LT
+    (46) op -> . AND
+    (47) op -> . OR
+
+    RPAREN          shift and go to state 141
+    ?               shift and go to state 114
+    PLUS            shift and go to state 115
+    MINUS           shift and go to state 116
+    MULT            shift and go to state 117
+    DIVIDE          shift and go to state 118
+    MOD             shift and go to state 119
+    EQUALS          shift and go to state 120
+    DIFFERENT       shift and go to state 121
+    LTE             shift and go to state 122
+    GTE             shift and go to state 123
+    GT              shift and go to state 124
+    LT              shift and go to state 125
+    AND             shift and go to state 126
+    OR              shift and go to state 127
+
+    op                             shift and go to state 113
+
+state 111
+
+    (28) comandoFor -> FOR LPAREN expressaoAtrib . SEMICOLON expressao SEMICOLON expressaoAtrib RPAREN LKEY bloco RKEY
+
+    SEMICOLON       shift and go to state 142
+
+
+state 112
+
+    (33) comandoReturn -> RETURN expressao SEMICOLON .
+
+    ε               reduce using rule 33 (comandoReturn -> RETURN expressao SEMICOLON .)
+    IF              reduce using rule 33 (comandoReturn -> RETURN expressao SEMICOLON .)
+    WHILE           reduce using rule 33 (comandoReturn -> RETURN expressao SEMICOLON .)
+    FOR             reduce using rule 33 (comandoReturn -> RETURN expressao SEMICOLON .)
+    BREAK           reduce using rule 33 (comandoReturn -> RETURN expressao SEMICOLON .)
+    RETURN          reduce using rule 33 (comandoReturn -> RETURN expressao SEMICOLON .)
+    READ            reduce using rule 33 (comandoReturn -> RETURN expressao SEMICOLON .)
+    WRITE           reduce using rule 33 (comandoReturn -> RETURN expressao SEMICOLON .)
+    ID              reduce using rule 33 (comandoReturn -> RETURN expressao SEMICOLON .)
+
+
+state 113
+
+    (57) expressao -> expressao op . expressao
+    (57) expressao -> . expressao op expressao
+    (58) expressao -> . NOT expressao
+    (59) expressao -> . MINUS expressao
+    (60) expressao -> . expressao ? expressao : expressao
+    (61) expressao -> . chamadaDeFuncao
+    (62) expressao -> . variavel
+    (63) expressao -> . valor
+    (64) expressao -> . LPAREN expressao RPAREN
+    (34) chamadaDeFuncao -> . ID LPAREN listaExpressao RPAREN
+    (55) variavel -> . ID
+    (56) variavel -> . ID LCOR expressao RCOR
+    (65) valor -> . NUMBER
+    (66) valor -> . STRING
+    (67) valor -> . TRUE
+    (68) valor -> . FALSE
+
+    NOT             shift and go to state 85
+    MINUS           shift and go to state 86
+    LPAREN          shift and go to state 90
+    ID              shift and go to state 72
+    NUMBER          shift and go to state 31
+    STRING          shift and go to state 32
+    TRUE            shift and go to state 33
+    FALSE           shift and go to state 34
+
+    expressao                      shift and go to state 143
+    chamadaDeFuncao                shift and go to state 87
+    variavel                       shift and go to state 88
+    valor                          shift and go to state 89
+
+state 114
+
+    (60) expressao -> expressao ? . expressao : expressao
+    (57) expressao -> . expressao op expressao
+    (58) expressao -> . NOT expressao
+    (59) expressao -> . MINUS expressao
+    (60) expressao -> . expressao ? expressao : expressao
+    (61) expressao -> . chamadaDeFuncao
+    (62) expressao -> . variavel
+    (63) expressao -> . valor
+    (64) expressao -> . LPAREN expressao RPAREN
+    (34) chamadaDeFuncao -> . ID LPAREN listaExpressao RPAREN
+    (55) variavel -> . ID
+    (56) variavel -> . ID LCOR expressao RCOR
+    (65) valor -> . NUMBER
+    (66) valor -> . STRING
+    (67) valor -> . TRUE
+    (68) valor -> . FALSE
+
+    NOT             shift and go to state 85
+    MINUS           shift and go to state 86
+    LPAREN          shift and go to state 90
+    ID              shift and go to state 72
+    NUMBER          shift and go to state 31
+    STRING          shift and go to state 32
+    TRUE            shift and go to state 33
+    FALSE           shift and go to state 34
+
+    expressao                      shift and go to state 144
+    chamadaDeFuncao                shift and go to state 87
+    variavel                       shift and go to state 88
+    valor                          shift and go to state 89
+
+state 115
+
+    (35) op -> PLUS .
+
+    NOT             reduce using rule 35 (op -> PLUS .)
+    MINUS           reduce using rule 35 (op -> PLUS .)
+    LPAREN          reduce using rule 35 (op -> PLUS .)
+    ID              reduce using rule 35 (op -> PLUS .)
+    NUMBER          reduce using rule 35 (op -> PLUS .)
+    STRING          reduce using rule 35 (op -> PLUS .)
+    TRUE            reduce using rule 35 (op -> PLUS .)
+    FALSE           reduce using rule 35 (op -> PLUS .)
+
+
+state 116
+
+    (36) op -> MINUS .
+
+    NOT             reduce using rule 36 (op -> MINUS .)
+    MINUS           reduce using rule 36 (op -> MINUS .)
+    LPAREN          reduce using rule 36 (op -> MINUS .)
+    ID              reduce using rule 36 (op -> MINUS .)
+    NUMBER          reduce using rule 36 (op -> MINUS .)
+    STRING          reduce using rule 36 (op -> MINUS .)
+    TRUE            reduce using rule 36 (op -> MINUS .)
+    FALSE           reduce using rule 36 (op -> MINUS .)
+
+
+state 117
+
+    (37) op -> MULT .
+
+    NOT             reduce using rule 37 (op -> MULT .)
+    MINUS           reduce using rule 37 (op -> MULT .)
+    LPAREN          reduce using rule 37 (op -> MULT .)
+    ID              reduce using rule 37 (op -> MULT .)
+    NUMBER          reduce using rule 37 (op -> MULT .)
+    STRING          reduce using rule 37 (op -> MULT .)
+    TRUE            reduce using rule 37 (op -> MULT .)
+    FALSE           reduce using rule 37 (op -> MULT .)
+
+
+state 118
+
+    (38) op -> DIVIDE .
+
+    NOT             reduce using rule 38 (op -> DIVIDE .)
+    MINUS           reduce using rule 38 (op -> DIVIDE .)
+    LPAREN          reduce using rule 38 (op -> DIVIDE .)
+    ID              reduce using rule 38 (op -> DIVIDE .)
+    NUMBER          reduce using rule 38 (op -> DIVIDE .)
+    STRING          reduce using rule 38 (op -> DIVIDE .)
+    TRUE            reduce using rule 38 (op -> DIVIDE .)
+    FALSE           reduce using rule 38 (op -> DIVIDE .)
+
+
+state 119
+
+    (39) op -> MOD .
+
+    NOT             reduce using rule 39 (op -> MOD .)
+    MINUS           reduce using rule 39 (op -> MOD .)
+    LPAREN          reduce using rule 39 (op -> MOD .)
+    ID              reduce using rule 39 (op -> MOD .)
+    NUMBER          reduce using rule 39 (op -> MOD .)
+    STRING          reduce using rule 39 (op -> MOD .)
+    TRUE            reduce using rule 39 (op -> MOD .)
+    FALSE           reduce using rule 39 (op -> MOD .)
+
+
+state 120
+
+    (40) op -> EQUALS .
+
+    NOT             reduce using rule 40 (op -> EQUALS .)
+    MINUS           reduce using rule 40 (op -> EQUALS .)
+    LPAREN          reduce using rule 40 (op -> EQUALS .)
+    ID              reduce using rule 40 (op -> EQUALS .)
+    NUMBER          reduce using rule 40 (op -> EQUALS .)
+    STRING          reduce using rule 40 (op -> EQUALS .)
+    TRUE            reduce using rule 40 (op -> EQUALS .)
+    FALSE           reduce using rule 40 (op -> EQUALS .)
+
+
+state 121
+
+    (41) op -> DIFFERENT .
+
+    NOT             reduce using rule 41 (op -> DIFFERENT .)
+    MINUS           reduce using rule 41 (op -> DIFFERENT .)
+    LPAREN          reduce using rule 41 (op -> DIFFERENT .)
+    ID              reduce using rule 41 (op -> DIFFERENT .)
+    NUMBER          reduce using rule 41 (op -> DIFFERENT .)
+    STRING          reduce using rule 41 (op -> DIFFERENT .)
+    TRUE            reduce using rule 41 (op -> DIFFERENT .)
+    FALSE           reduce using rule 41 (op -> DIFFERENT .)
+
+
+state 122
+
+    (42) op -> LTE .
+
+    NOT             reduce using rule 42 (op -> LTE .)
+    MINUS           reduce using rule 42 (op -> LTE .)
+    LPAREN          reduce using rule 42 (op -> LTE .)
+    ID              reduce using rule 42 (op -> LTE .)
+    NUMBER          reduce using rule 42 (op -> LTE .)
+    STRING          reduce using rule 42 (op -> LTE .)
+    TRUE            reduce using rule 42 (op -> LTE .)
+    FALSE           reduce using rule 42 (op -> LTE .)
+
+
+state 123
+
+    (43) op -> GTE .
+
+    NOT             reduce using rule 43 (op -> GTE .)
+    MINUS           reduce using rule 43 (op -> GTE .)
+    LPAREN          reduce using rule 43 (op -> GTE .)
+    ID              reduce using rule 43 (op -> GTE .)
+    NUMBER          reduce using rule 43 (op -> GTE .)
+    STRING          reduce using rule 43 (op -> GTE .)
+    TRUE            reduce using rule 43 (op -> GTE .)
+    FALSE           reduce using rule 43 (op -> GTE .)
+
+
+state 124
+
+    (44) op -> GT .
+
+    NOT             reduce using rule 44 (op -> GT .)
+    MINUS           reduce using rule 44 (op -> GT .)
+    LPAREN          reduce using rule 44 (op -> GT .)
+    ID              reduce using rule 44 (op -> GT .)
+    NUMBER          reduce using rule 44 (op -> GT .)
+    STRING          reduce using rule 44 (op -> GT .)
+    TRUE            reduce using rule 44 (op -> GT .)
+    FALSE           reduce using rule 44 (op -> GT .)
+
+
+state 125
+
+    (45) op -> LT .
+
+    NOT             reduce using rule 45 (op -> LT .)
+    MINUS           reduce using rule 45 (op -> LT .)
+    LPAREN          reduce using rule 45 (op -> LT .)
+    ID              reduce using rule 45 (op -> LT .)
+    NUMBER          reduce using rule 45 (op -> LT .)
+    STRING          reduce using rule 45 (op -> LT .)
+    TRUE            reduce using rule 45 (op -> LT .)
+    FALSE           reduce using rule 45 (op -> LT .)
+
+
+state 126
+
+    (46) op -> AND .
+
+    NOT             reduce using rule 46 (op -> AND .)
+    MINUS           reduce using rule 46 (op -> AND .)
+    LPAREN          reduce using rule 46 (op -> AND .)
+    ID              reduce using rule 46 (op -> AND .)
+    NUMBER          reduce using rule 46 (op -> AND .)
+    STRING          reduce using rule 46 (op -> AND .)
+    TRUE            reduce using rule 46 (op -> AND .)
+    FALSE           reduce using rule 46 (op -> AND .)
+
+
+state 127
+
+    (47) op -> OR .
+
+    NOT             reduce using rule 47 (op -> OR .)
+    MINUS           reduce using rule 47 (op -> OR .)
+    LPAREN          reduce using rule 47 (op -> OR .)
+    ID              reduce using rule 47 (op -> OR .)
+    NUMBER          reduce using rule 47 (op -> OR .)
+    STRING          reduce using rule 47 (op -> OR .)
+    TRUE            reduce using rule 47 (op -> OR .)
+    FALSE           reduce using rule 47 (op -> OR .)
+
+
+state 128
+
+    (58) expressao -> NOT expressao .
+    (57) expressao -> expressao . op expressao
+    (60) expressao -> expressao . ? expressao : expressao
+    (35) op -> . PLUS
+    (36) op -> . MINUS
+    (37) op -> . MULT
+    (38) op -> . DIVIDE
+    (39) op -> . MOD
+    (40) op -> . EQUALS
+    (41) op -> . DIFFERENT
+    (42) op -> . LTE
+    (43) op -> . GTE
+    (44) op -> . GT
+    (45) op -> . LT
+    (46) op -> . AND
+    (47) op -> . OR
+
+  ! shift/reduce conflict for ? resolved as shift
+  ! shift/reduce conflict for PLUS resolved as shift
+  ! shift/reduce conflict for MINUS resolved as shift
+  ! shift/reduce conflict for MULT resolved as shift
+  ! shift/reduce conflict for DIVIDE resolved as shift
+  ! shift/reduce conflict for MOD resolved as shift
+  ! shift/reduce conflict for EQUALS resolved as shift
+  ! shift/reduce conflict for DIFFERENT resolved as shift
+  ! shift/reduce conflict for LTE resolved as shift
+  ! shift/reduce conflict for GTE resolved as shift
+  ! shift/reduce conflict for GT resolved as shift
+  ! shift/reduce conflict for LT resolved as shift
+  ! shift/reduce conflict for AND resolved as shift
+  ! shift/reduce conflict for OR resolved as shift
+    SEMICOLON       reduce using rule 58 (expressao -> NOT expressao .)
+    ,               reduce using rule 58 (expressao -> NOT expressao .)
+    RPAREN          reduce using rule 58 (expressao -> NOT expressao .)
+    LPAREN          reduce using rule 58 (expressao -> NOT expressao .)
+    RCOR            reduce using rule 58 (expressao -> NOT expressao .)
+    :               reduce using rule 58 (expressao -> NOT expressao .)
+    ?               shift and go to state 114
+    PLUS            shift and go to state 115
+    MINUS           shift and go to state 116
+    MULT            shift and go to state 117
+    DIVIDE          shift and go to state 118
+    MOD             shift and go to state 119
+    EQUALS          shift and go to state 120
+    DIFFERENT       shift and go to state 121
+    LTE             shift and go to state 122
+    GTE             shift and go to state 123
+    GT              shift and go to state 124
+    LT              shift and go to state 125
+    AND             shift and go to state 126
+    OR              shift and go to state 127
+
+  ! ?               [ reduce using rule 58 (expressao -> NOT expressao .) ]
+  ! PLUS            [ reduce using rule 58 (expressao -> NOT expressao .) ]
+  ! MINUS           [ reduce using rule 58 (expressao -> NOT expressao .) ]
+  ! MULT            [ reduce using rule 58 (expressao -> NOT expressao .) ]
+  ! DIVIDE          [ reduce using rule 58 (expressao -> NOT expressao .) ]
+  ! MOD             [ reduce using rule 58 (expressao -> NOT expressao .) ]
+  ! EQUALS          [ reduce using rule 58 (expressao -> NOT expressao .) ]
+  ! DIFFERENT       [ reduce using rule 58 (expressao -> NOT expressao .) ]
+  ! LTE             [ reduce using rule 58 (expressao -> NOT expressao .) ]
+  ! GTE             [ reduce using rule 58 (expressao -> NOT expressao .) ]
+  ! GT              [ reduce using rule 58 (expressao -> NOT expressao .) ]
+  ! LT              [ reduce using rule 58 (expressao -> NOT expressao .) ]
+  ! AND             [ reduce using rule 58 (expressao -> NOT expressao .) ]
+  ! OR              [ reduce using rule 58 (expressao -> NOT expressao .) ]
+
+    op                             shift and go to state 113
+
+state 129
+
+    (59) expressao -> MINUS expressao .
+    (57) expressao -> expressao . op expressao
+    (60) expressao -> expressao . ? expressao : expressao
+    (35) op -> . PLUS
+    (36) op -> . MINUS
+    (37) op -> . MULT
+    (38) op -> . DIVIDE
+    (39) op -> . MOD
+    (40) op -> . EQUALS
+    (41) op -> . DIFFERENT
+    (42) op -> . LTE
+    (43) op -> . GTE
+    (44) op -> . GT
+    (45) op -> . LT
+    (46) op -> . AND
+    (47) op -> . OR
+
+  ! shift/reduce conflict for ? resolved as shift
+  ! shift/reduce conflict for PLUS resolved as shift
+  ! shift/reduce conflict for MINUS resolved as shift
+  ! shift/reduce conflict for MULT resolved as shift
+  ! shift/reduce conflict for DIVIDE resolved as shift
+  ! shift/reduce conflict for MOD resolved as shift
+  ! shift/reduce conflict for EQUALS resolved as shift
+  ! shift/reduce conflict for DIFFERENT resolved as shift
+  ! shift/reduce conflict for LTE resolved as shift
+  ! shift/reduce conflict for GTE resolved as shift
+  ! shift/reduce conflict for GT resolved as shift
+  ! shift/reduce conflict for LT resolved as shift
+  ! shift/reduce conflict for AND resolved as shift
+  ! shift/reduce conflict for OR resolved as shift
+    SEMICOLON       reduce using rule 59 (expressao -> MINUS expressao .)
+    ,               reduce using rule 59 (expressao -> MINUS expressao .)
+    RPAREN          reduce using rule 59 (expressao -> MINUS expressao .)
+    LPAREN          reduce using rule 59 (expressao -> MINUS expressao .)
+    RCOR            reduce using rule 59 (expressao -> MINUS expressao .)
+    :               reduce using rule 59 (expressao -> MINUS expressao .)
+    ?               shift and go to state 114
+    PLUS            shift and go to state 115
+    MINUS           shift and go to state 116
+    MULT            shift and go to state 117
+    DIVIDE          shift and go to state 118
+    MOD             shift and go to state 119
+    EQUALS          shift and go to state 120
+    DIFFERENT       shift and go to state 121
+    LTE             shift and go to state 122
+    GTE             shift and go to state 123
+    GT              shift and go to state 124
+    LT              shift and go to state 125
+    AND             shift and go to state 126
+    OR              shift and go to state 127
+
+  ! ?               [ reduce using rule 59 (expressao -> MINUS expressao .) ]
+  ! PLUS            [ reduce using rule 59 (expressao -> MINUS expressao .) ]
+  ! MINUS           [ reduce using rule 59 (expressao -> MINUS expressao .) ]
+  ! MULT            [ reduce using rule 59 (expressao -> MINUS expressao .) ]
+  ! DIVIDE          [ reduce using rule 59 (expressao -> MINUS expressao .) ]
+  ! MOD             [ reduce using rule 59 (expressao -> MINUS expressao .) ]
+  ! EQUALS          [ reduce using rule 59 (expressao -> MINUS expressao .) ]
+  ! DIFFERENT       [ reduce using rule 59 (expressao -> MINUS expressao .) ]
+  ! LTE             [ reduce using rule 59 (expressao -> MINUS expressao .) ]
+  ! GTE             [ reduce using rule 59 (expressao -> MINUS expressao .) ]
+  ! GT              [ reduce using rule 59 (expressao -> MINUS expressao .) ]
+  ! LT              [ reduce using rule 59 (expressao -> MINUS expressao .) ]
+  ! AND             [ reduce using rule 59 (expressao -> MINUS expressao .) ]
+  ! OR              [ reduce using rule 59 (expressao -> MINUS expressao .) ]
+
+    op                             shift and go to state 113
+
+state 130
+
+    (64) expressao -> LPAREN expressao . RPAREN
+    (57) expressao -> expressao . op expressao
+    (60) expressao -> expressao . ? expressao : expressao
+    (35) op -> . PLUS
+    (36) op -> . MINUS
+    (37) op -> . MULT
+    (38) op -> . DIVIDE
+    (39) op -> . MOD
+    (40) op -> . EQUALS
+    (41) op -> . DIFFERENT
+    (42) op -> . LTE
+    (43) op -> . GTE
+    (44) op -> . GT
+    (45) op -> . LT
+    (46) op -> . AND
+    (47) op -> . OR
+
+    RPAREN          shift and go to state 145
+    ?               shift and go to state 114
+    PLUS            shift and go to state 115
+    MINUS           shift and go to state 116
+    MULT            shift and go to state 117
+    DIVIDE          shift and go to state 118
+    MOD             shift and go to state 119
+    EQUALS          shift and go to state 120
+    DIFFERENT       shift and go to state 121
+    LTE             shift and go to state 122
+    GTE             shift and go to state 123
+    GT              shift and go to state 124
+    LT              shift and go to state 125
+    AND             shift and go to state 126
+    OR              shift and go to state 127
+
+    op                             shift and go to state 113
+
+state 131
+
+    (30) comandoRead -> READ variavel SEMICOLON .
+
+    ε               reduce using rule 30 (comandoRead -> READ variavel SEMICOLON .)
+    IF              reduce using rule 30 (comandoRead -> READ variavel SEMICOLON .)
+    WHILE           reduce using rule 30 (comandoRead -> READ variavel SEMICOLON .)
+    FOR             reduce using rule 30 (comandoRead -> READ variavel SEMICOLON .)
+    BREAK           reduce using rule 30 (comandoRead -> READ variavel SEMICOLON .)
+    RETURN          reduce using rule 30 (comandoRead -> READ variavel SEMICOLON .)
+    READ            reduce using rule 30 (comandoRead -> READ variavel SEMICOLON .)
+    WRITE           reduce using rule 30 (comandoRead -> READ variavel SEMICOLON .)
+    ID              reduce using rule 30 (comandoRead -> READ variavel SEMICOLON .)
+
+
+state 132
+
+    (54) expressaoAtrib -> variavel opAtrib expressao .
+    (57) expressao -> expressao . op expressao
+    (60) expressao -> expressao . ? expressao : expressao
+    (35) op -> . PLUS
+    (36) op -> . MINUS
+    (37) op -> . MULT
+    (38) op -> . DIVIDE
+    (39) op -> . MOD
+    (40) op -> . EQUALS
+    (41) op -> . DIFFERENT
+    (42) op -> . LTE
+    (43) op -> . GTE
+    (44) op -> . GT
+    (45) op -> . LT
+    (46) op -> . AND
+    (47) op -> . OR
+
+    SEMICOLON       reduce using rule 54 (expressaoAtrib -> variavel opAtrib expressao .)
+    RPAREN          reduce using rule 54 (expressaoAtrib -> variavel opAtrib expressao .)
+    ?               shift and go to state 114
+    PLUS            shift and go to state 115
+    MINUS           shift and go to state 116
+    MULT            shift and go to state 117
+    DIVIDE          shift and go to state 118
+    MOD             shift and go to state 119
+    EQUALS          shift and go to state 120
+    DIFFERENT       shift and go to state 121
+    LTE             shift and go to state 122
+    GTE             shift and go to state 123
+    GT              shift and go to state 124
+    LT              shift and go to state 125
+    AND             shift and go to state 126
+    OR              shift and go to state 127
+
+    op                             shift and go to state 113
+
+state 133
+
+    (31) comandoWrite -> WRITE listaExpressao SEMICOLON .
+
+    ε               reduce using rule 31 (comandoWrite -> WRITE listaExpressao SEMICOLON .)
+    IF              reduce using rule 31 (comandoWrite -> WRITE listaExpressao SEMICOLON .)
+    WHILE           reduce using rule 31 (comandoWrite -> WRITE listaExpressao SEMICOLON .)
+    FOR             reduce using rule 31 (comandoWrite -> WRITE listaExpressao SEMICOLON .)
+    BREAK           reduce using rule 31 (comandoWrite -> WRITE listaExpressao SEMICOLON .)
+    RETURN          reduce using rule 31 (comandoWrite -> WRITE listaExpressao SEMICOLON .)
+    READ            reduce using rule 31 (comandoWrite -> WRITE listaExpressao SEMICOLON .)
+    WRITE           reduce using rule 31 (comandoWrite -> WRITE listaExpressao SEMICOLON .)
+    ID              reduce using rule 31 (comandoWrite -> WRITE listaExpressao SEMICOLON .)
+
+
+state 134
+
+    (86) sequenciaExpressao -> expressao , . sequenciaExpressao
+    (86) sequenciaExpressao -> . expressao , sequenciaExpressao
+    (87) sequenciaExpressao -> . expressao
+    (57) expressao -> . expressao op expressao
+    (58) expressao -> . NOT expressao
+    (59) expressao -> . MINUS expressao
+    (60) expressao -> . expressao ? expressao : expressao
+    (61) expressao -> . chamadaDeFuncao
+    (62) expressao -> . variavel
+    (63) expressao -> . valor
+    (64) expressao -> . LPAREN expressao RPAREN
+    (34) chamadaDeFuncao -> . ID LPAREN listaExpressao RPAREN
+    (55) variavel -> . ID
+    (56) variavel -> . ID LCOR expressao RCOR
+    (65) valor -> . NUMBER
+    (66) valor -> . STRING
+    (67) valor -> . TRUE
+    (68) valor -> . FALSE
+
+    NOT             shift and go to state 85
+    MINUS           shift and go to state 86
+    LPAREN          shift and go to state 90
+    ID              shift and go to state 72
+    NUMBER          shift and go to state 31
+    STRING          shift and go to state 32
+    TRUE            shift and go to state 33
+    FALSE           shift and go to state 34
+
+    expressao                      shift and go to state 103
+    sequenciaExpressao             shift and go to state 146
+    chamadaDeFuncao                shift and go to state 87
+    variavel                       shift and go to state 88
+    valor                          shift and go to state 89
+
+state 135
+
+    (34) chamadaDeFuncao -> ID LPAREN listaExpressao . RPAREN
+
+    RPAREN          shift and go to state 147
+
+
+state 136
+
+    (56) variavel -> ID LCOR expressao . RCOR
+    (57) expressao -> expressao . op expressao
+    (60) expressao -> expressao . ? expressao : expressao
+    (35) op -> . PLUS
+    (36) op -> . MINUS
+    (37) op -> . MULT
+    (38) op -> . DIVIDE
+    (39) op -> . MOD
+    (40) op -> . EQUALS
+    (41) op -> . DIFFERENT
+    (42) op -> . LTE
+    (43) op -> . GTE
+    (44) op -> . GT
+    (45) op -> . LT
+    (46) op -> . AND
+    (47) op -> . OR
+
+    RCOR            shift and go to state 148
+    ?               shift and go to state 114
+    PLUS            shift and go to state 115
+    MINUS           shift and go to state 116
+    MULT            shift and go to state 117
+    DIVIDE          shift and go to state 118
+    MOD             shift and go to state 119
+    EQUALS          shift and go to state 120
+    DIFFERENT       shift and go to state 121
+    LTE             shift and go to state 122
+    GTE             shift and go to state 123
+    GT              shift and go to state 124
+    LT              shift and go to state 125
+    AND             shift and go to state 126
+    OR              shift and go to state 127
+
+    op                             shift and go to state 113
+
+state 137
+
+    (9) variavelEspecificacao -> ID LCOR NUMBER RCOR ASSIGN LKEY sequenciaValor RKEY .
+
+    COMMA           reduce using rule 9 (variavelEspecificacao -> ID LCOR NUMBER RCOR ASSIGN LKEY sequenciaValor RKEY .)
+    ;               reduce using rule 9 (variavelEspecificacao -> ID LCOR NUMBER RCOR ASSIGN LKEY sequenciaValor RKEY .)
+
+
+state 138
+
+    (82) sequenciaValor -> valor sequenciaValor .
+
+    RKEY            reduce using rule 82 (sequenciaValor -> valor sequenciaValor .)
+
+
+state 139
+
+    (26) comandoIf -> IF LPAREN expressao LPAREN . LKEY bloco RKEY ELSE LKEY bloco RKEY
+
+    LKEY            shift and go to state 149
+
+
+state 140
+
+    (25) comandoIf -> IF LPAREN expressao RPAREN . LKEY bloco RKEY
+
+    LKEY            shift and go to state 150
+
+
+state 141
+
+    (27) comandoWhile -> WHILE LPAREN expressao RPAREN . LKEY bloco RKEY
+
+    LKEY            shift and go to state 151
+
+
+state 142
+
+    (28) comandoFor -> FOR LPAREN expressaoAtrib SEMICOLON . expressao SEMICOLON expressaoAtrib RPAREN LKEY bloco RKEY
+    (57) expressao -> . expressao op expressao
+    (58) expressao -> . NOT expressao
+    (59) expressao -> . MINUS expressao
+    (60) expressao -> . expressao ? expressao : expressao
+    (61) expressao -> . chamadaDeFuncao
+    (62) expressao -> . variavel
+    (63) expressao -> . valor
+    (64) expressao -> . LPAREN expressao RPAREN
+    (34) chamadaDeFuncao -> . ID LPAREN listaExpressao RPAREN
+    (55) variavel -> . ID
+    (56) variavel -> . ID LCOR expressao RCOR
+    (65) valor -> . NUMBER
+    (66) valor -> . STRING
+    (67) valor -> . TRUE
+    (68) valor -> . FALSE
+
+    NOT             shift and go to state 85
+    MINUS           shift and go to state 86
+    LPAREN          shift and go to state 90
+    ID              shift and go to state 72
+    NUMBER          shift and go to state 31
+    STRING          shift and go to state 32
+    TRUE            shift and go to state 33
+    FALSE           shift and go to state 34
+
+    expressao                      shift and go to state 152
+    chamadaDeFuncao                shift and go to state 87
+    variavel                       shift and go to state 88
+    valor                          shift and go to state 89
+
+state 143
+
+    (57) expressao -> expressao op expressao .
+    (57) expressao -> expressao . op expressao
+    (60) expressao -> expressao . ? expressao : expressao
+    (35) op -> . PLUS
+    (36) op -> . MINUS
+    (37) op -> . MULT
+    (38) op -> . DIVIDE
+    (39) op -> . MOD
+    (40) op -> . EQUALS
+    (41) op -> . DIFFERENT
+    (42) op -> . LTE
+    (43) op -> . GTE
+    (44) op -> . GT
+    (45) op -> . LT
+    (46) op -> . AND
+    (47) op -> . OR
+
+  ! shift/reduce conflict for ? resolved as shift
+  ! shift/reduce conflict for PLUS resolved as shift
+  ! shift/reduce conflict for MINUS resolved as shift
+  ! shift/reduce conflict for MULT resolved as shift
+  ! shift/reduce conflict for DIVIDE resolved as shift
+  ! shift/reduce conflict for MOD resolved as shift
+  ! shift/reduce conflict for EQUALS resolved as shift
+  ! shift/reduce conflict for DIFFERENT resolved as shift
+  ! shift/reduce conflict for LTE resolved as shift
+  ! shift/reduce conflict for GTE resolved as shift
+  ! shift/reduce conflict for GT resolved as shift
+  ! shift/reduce conflict for LT resolved as shift
+  ! shift/reduce conflict for AND resolved as shift
+  ! shift/reduce conflict for OR resolved as shift
+    SEMICOLON       reduce using rule 57 (expressao -> expressao op expressao .)
+    ,               reduce using rule 57 (expressao -> expressao op expressao .)
+    RPAREN          reduce using rule 57 (expressao -> expressao op expressao .)
+    LPAREN          reduce using rule 57 (expressao -> expressao op expressao .)
+    RCOR            reduce using rule 57 (expressao -> expressao op expressao .)
+    :               reduce using rule 57 (expressao -> expressao op expressao .)
+    ?               shift and go to state 114
+    PLUS            shift and go to state 115
+    MINUS           shift and go to state 116
+    MULT            shift and go to state 117
+    DIVIDE          shift and go to state 118
+    MOD             shift and go to state 119
+    EQUALS          shift and go to state 120
+    DIFFERENT       shift and go to state 121
+    LTE             shift and go to state 122
+    GTE             shift and go to state 123
+    GT              shift and go to state 124
+    LT              shift and go to state 125
+    AND             shift and go to state 126
+    OR              shift and go to state 127
+
+  ! ?               [ reduce using rule 57 (expressao -> expressao op expressao .) ]
+  ! PLUS            [ reduce using rule 57 (expressao -> expressao op expressao .) ]
+  ! MINUS           [ reduce using rule 57 (expressao -> expressao op expressao .) ]
+  ! MULT            [ reduce using rule 57 (expressao -> expressao op expressao .) ]
+  ! DIVIDE          [ reduce using rule 57 (expressao -> expressao op expressao .) ]
+  ! MOD             [ reduce using rule 57 (expressao -> expressao op expressao .) ]
+  ! EQUALS          [ reduce using rule 57 (expressao -> expressao op expressao .) ]
+  ! DIFFERENT       [ reduce using rule 57 (expressao -> expressao op expressao .) ]
+  ! LTE             [ reduce using rule 57 (expressao -> expressao op expressao .) ]
+  ! GTE             [ reduce using rule 57 (expressao -> expressao op expressao .) ]
+  ! GT              [ reduce using rule 57 (expressao -> expressao op expressao .) ]
+  ! LT              [ reduce using rule 57 (expressao -> expressao op expressao .) ]
+  ! AND             [ reduce using rule 57 (expressao -> expressao op expressao .) ]
+  ! OR              [ reduce using rule 57 (expressao -> expressao op expressao .) ]
+
+    op                             shift and go to state 113
+
+state 144
+
+    (60) expressao -> expressao ? expressao . : expressao
+    (57) expressao -> expressao . op expressao
+    (60) expressao -> expressao . ? expressao : expressao
+    (35) op -> . PLUS
+    (36) op -> . MINUS
+    (37) op -> . MULT
+    (38) op -> . DIVIDE
+    (39) op -> . MOD
+    (40) op -> . EQUALS
+    (41) op -> . DIFFERENT
+    (42) op -> . LTE
+    (43) op -> . GTE
+    (44) op -> . GT
+    (45) op -> . LT
+    (46) op -> . AND
+    (47) op -> . OR
+
+    :               shift and go to state 153
+    ?               shift and go to state 114
+    PLUS            shift and go to state 115
+    MINUS           shift and go to state 116
+    MULT            shift and go to state 117
+    DIVIDE          shift and go to state 118
+    MOD             shift and go to state 119
+    EQUALS          shift and go to state 120
+    DIFFERENT       shift and go to state 121
+    LTE             shift and go to state 122
+    GTE             shift and go to state 123
+    GT              shift and go to state 124
+    LT              shift and go to state 125
+    AND             shift and go to state 126
+    OR              shift and go to state 127
+
+    op                             shift and go to state 113
+
+state 145
+
+    (64) expressao -> LPAREN expressao RPAREN .
+
+    SEMICOLON       reduce using rule 64 (expressao -> LPAREN expressao RPAREN .)
+    ?               reduce using rule 64 (expressao -> LPAREN expressao RPAREN .)
+    PLUS            reduce using rule 64 (expressao -> LPAREN expressao RPAREN .)
+    MINUS           reduce using rule 64 (expressao -> LPAREN expressao RPAREN .)
+    MULT            reduce using rule 64 (expressao -> LPAREN expressao RPAREN .)
+    DIVIDE          reduce using rule 64 (expressao -> LPAREN expressao RPAREN .)
+    MOD             reduce using rule 64 (expressao -> LPAREN expressao RPAREN .)
+    EQUALS          reduce using rule 64 (expressao -> LPAREN expressao RPAREN .)
+    DIFFERENT       reduce using rule 64 (expressao -> LPAREN expressao RPAREN .)
+    LTE             reduce using rule 64 (expressao -> LPAREN expressao RPAREN .)
+    GTE             reduce using rule 64 (expressao -> LPAREN expressao RPAREN .)
+    GT              reduce using rule 64 (expressao -> LPAREN expressao RPAREN .)
+    LT              reduce using rule 64 (expressao -> LPAREN expressao RPAREN .)
+    AND             reduce using rule 64 (expressao -> LPAREN expressao RPAREN .)
+    OR              reduce using rule 64 (expressao -> LPAREN expressao RPAREN .)
+    ,               reduce using rule 64 (expressao -> LPAREN expressao RPAREN .)
+    RPAREN          reduce using rule 64 (expressao -> LPAREN expressao RPAREN .)
+    LPAREN          reduce using rule 64 (expressao -> LPAREN expressao RPAREN .)
+    RCOR            reduce using rule 64 (expressao -> LPAREN expressao RPAREN .)
+    :               reduce using rule 64 (expressao -> LPAREN expressao RPAREN .)
+
+
+state 146
+
+    (86) sequenciaExpressao -> expressao , sequenciaExpressao .
+
+    SEMICOLON       reduce using rule 86 (sequenciaExpressao -> expressao , sequenciaExpressao .)
+    RPAREN          reduce using rule 86 (sequenciaExpressao -> expressao , sequenciaExpressao .)
+
+
+state 147
+
+    (34) chamadaDeFuncao -> ID LPAREN listaExpressao RPAREN .
+
+    SEMICOLON       reduce using rule 34 (chamadaDeFuncao -> ID LPAREN listaExpressao RPAREN .)
+    ?               reduce using rule 34 (chamadaDeFuncao -> ID LPAREN listaExpressao RPAREN .)
+    PLUS            reduce using rule 34 (chamadaDeFuncao -> ID LPAREN listaExpressao RPAREN .)
+    MINUS           reduce using rule 34 (chamadaDeFuncao -> ID LPAREN listaExpressao RPAREN .)
+    MULT            reduce using rule 34 (chamadaDeFuncao -> ID LPAREN listaExpressao RPAREN .)
+    DIVIDE          reduce using rule 34 (chamadaDeFuncao -> ID LPAREN listaExpressao RPAREN .)
+    MOD             reduce using rule 34 (chamadaDeFuncao -> ID LPAREN listaExpressao RPAREN .)
+    EQUALS          reduce using rule 34 (chamadaDeFuncao -> ID LPAREN listaExpressao RPAREN .)
+    DIFFERENT       reduce using rule 34 (chamadaDeFuncao -> ID LPAREN listaExpressao RPAREN .)
+    LTE             reduce using rule 34 (chamadaDeFuncao -> ID LPAREN listaExpressao RPAREN .)
+    GTE             reduce using rule 34 (chamadaDeFuncao -> ID LPAREN listaExpressao RPAREN .)
+    GT              reduce using rule 34 (chamadaDeFuncao -> ID LPAREN listaExpressao RPAREN .)
+    LT              reduce using rule 34 (chamadaDeFuncao -> ID LPAREN listaExpressao RPAREN .)
+    AND             reduce using rule 34 (chamadaDeFuncao -> ID LPAREN listaExpressao RPAREN .)
+    OR              reduce using rule 34 (chamadaDeFuncao -> ID LPAREN listaExpressao RPAREN .)
+    ,               reduce using rule 34 (chamadaDeFuncao -> ID LPAREN listaExpressao RPAREN .)
+    RPAREN          reduce using rule 34 (chamadaDeFuncao -> ID LPAREN listaExpressao RPAREN .)
+    LPAREN          reduce using rule 34 (chamadaDeFuncao -> ID LPAREN listaExpressao RPAREN .)
+    RCOR            reduce using rule 34 (chamadaDeFuncao -> ID LPAREN listaExpressao RPAREN .)
+    :               reduce using rule 34 (chamadaDeFuncao -> ID LPAREN listaExpressao RPAREN .)
+
+
+state 148
+
+    (56) variavel -> ID LCOR expressao RCOR .
+
+    ASSIGN          reduce using rule 56 (variavel -> ID LCOR expressao RCOR .)
+    PLUSASSIGN      reduce using rule 56 (variavel -> ID LCOR expressao RCOR .)
+    MINUSASSIGN     reduce using rule 56 (variavel -> ID LCOR expressao RCOR .)
+    MULTASSIGN      reduce using rule 56 (variavel -> ID LCOR expressao RCOR .)
+    DIVIDEASSIGN    reduce using rule 56 (variavel -> ID LCOR expressao RCOR .)
+    MODASSIGN       reduce using rule 56 (variavel -> ID LCOR expressao RCOR .)
+    SEMICOLON       reduce using rule 56 (variavel -> ID LCOR expressao RCOR .)
+    ?               reduce using rule 56 (variavel -> ID LCOR expressao RCOR .)
+    PLUS            reduce using rule 56 (variavel -> ID LCOR expressao RCOR .)
+    MINUS           reduce using rule 56 (variavel -> ID LCOR expressao RCOR .)
+    MULT            reduce using rule 56 (variavel -> ID LCOR expressao RCOR .)
+    DIVIDE          reduce using rule 56 (variavel -> ID LCOR expressao RCOR .)
+    MOD             reduce using rule 56 (variavel -> ID LCOR expressao RCOR .)
+    EQUALS          reduce using rule 56 (variavel -> ID LCOR expressao RCOR .)
+    DIFFERENT       reduce using rule 56 (variavel -> ID LCOR expressao RCOR .)
+    LTE             reduce using rule 56 (variavel -> ID LCOR expressao RCOR .)
+    GTE             reduce using rule 56 (variavel -> ID LCOR expressao RCOR .)
+    GT              reduce using rule 56 (variavel -> ID LCOR expressao RCOR .)
+    LT              reduce using rule 56 (variavel -> ID LCOR expressao RCOR .)
+    AND             reduce using rule 56 (variavel -> ID LCOR expressao RCOR .)
+    OR              reduce using rule 56 (variavel -> ID LCOR expressao RCOR .)
+    ,               reduce using rule 56 (variavel -> ID LCOR expressao RCOR .)
+    RPAREN          reduce using rule 56 (variavel -> ID LCOR expressao RCOR .)
+    LPAREN          reduce using rule 56 (variavel -> ID LCOR expressao RCOR .)
+    RCOR            reduce using rule 56 (variavel -> ID LCOR expressao RCOR .)
+    :               reduce using rule 56 (variavel -> ID LCOR expressao RCOR .)
+
+
+state 149
+
+    (26) comandoIf -> IF LPAREN expressao LPAREN LKEY . bloco RKEY ELSE LKEY bloco RKEY
+    (15) bloco -> . variavelDeclaracaoList listaComando
+    (74) variavelDeclaracaoList -> . variavelDeclaracao variavelDeclaracaoList
+    (75) variavelDeclaracaoList -> . ε
+    (5) variavelDeclaracao -> . tipo variavelEspecificacaoSeq ;
+    (10) tipo -> . INT
+    (11) tipo -> . STRING
+    (12) tipo -> . BOOLEAN
+
+    ε               shift and go to state 46
+    INT             shift and go to state 8
+    STRING          shift and go to state 9
+    BOOLEAN         shift and go to state 10
+
+    bloco                          shift and go to state 154
+    variavelDeclaracaoList         shift and go to state 44
+    variavelDeclaracao             shift and go to state 45
+    tipo                           shift and go to state 47
+
+state 150
+
+    (25) comandoIf -> IF LPAREN expressao RPAREN LKEY . bloco RKEY
+    (15) bloco -> . variavelDeclaracaoList listaComando
+    (74) variavelDeclaracaoList -> . variavelDeclaracao variavelDeclaracaoList
+    (75) variavelDeclaracaoList -> . ε
+    (5) variavelDeclaracao -> . tipo variavelEspecificacaoSeq ;
+    (10) tipo -> . INT
+    (11) tipo -> . STRING
+    (12) tipo -> . BOOLEAN
+
+    ε               shift and go to state 46
+    INT             shift and go to state 8
+    STRING          shift and go to state 9
+    BOOLEAN         shift and go to state 10
+
+    bloco                          shift and go to state 155
+    variavelDeclaracaoList         shift and go to state 44
+    variavelDeclaracao             shift and go to state 45
+    tipo                           shift and go to state 47
+
+state 151
+
+    (27) comandoWhile -> WHILE LPAREN expressao RPAREN LKEY . bloco RKEY
+    (15) bloco -> . variavelDeclaracaoList listaComando
+    (74) variavelDeclaracaoList -> . variavelDeclaracao variavelDeclaracaoList
+    (75) variavelDeclaracaoList -> . ε
+    (5) variavelDeclaracao -> . tipo variavelEspecificacaoSeq ;
+    (10) tipo -> . INT
+    (11) tipo -> . STRING
+    (12) tipo -> . BOOLEAN
+
+    ε               shift and go to state 46
+    INT             shift and go to state 8
+    STRING          shift and go to state 9
+    BOOLEAN         shift and go to state 10
+
+    bloco                          shift and go to state 156
+    variavelDeclaracaoList         shift and go to state 44
+    variavelDeclaracao             shift and go to state 45
+    tipo                           shift and go to state 47
+
+state 152
+
+    (28) comandoFor -> FOR LPAREN expressaoAtrib SEMICOLON expressao . SEMICOLON expressaoAtrib RPAREN LKEY bloco RKEY
+    (57) expressao -> expressao . op expressao
+    (60) expressao -> expressao . ? expressao : expressao
+    (35) op -> . PLUS
+    (36) op -> . MINUS
+    (37) op -> . MULT
+    (38) op -> . DIVIDE
+    (39) op -> . MOD
+    (40) op -> . EQUALS
+    (41) op -> . DIFFERENT
+    (42) op -> . LTE
+    (43) op -> . GTE
+    (44) op -> . GT
+    (45) op -> . LT
+    (46) op -> . AND
+    (47) op -> . OR
+
+    SEMICOLON       shift and go to state 157
+    ?               shift and go to state 114
+    PLUS            shift and go to state 115
+    MINUS           shift and go to state 116
+    MULT            shift and go to state 117
+    DIVIDE          shift and go to state 118
+    MOD             shift and go to state 119
+    EQUALS          shift and go to state 120
+    DIFFERENT       shift and go to state 121
+    LTE             shift and go to state 122
+    GTE             shift and go to state 123
+    GT              shift and go to state 124
+    LT              shift and go to state 125
+    AND             shift and go to state 126
+    OR              shift and go to state 127
+
+    op                             shift and go to state 113
+
+state 153
+
+    (60) expressao -> expressao ? expressao : . expressao
+    (57) expressao -> . expressao op expressao
+    (58) expressao -> . NOT expressao
+    (59) expressao -> . MINUS expressao
+    (60) expressao -> . expressao ? expressao : expressao
+    (61) expressao -> . chamadaDeFuncao
+    (62) expressao -> . variavel
+    (63) expressao -> . valor
+    (64) expressao -> . LPAREN expressao RPAREN
+    (34) chamadaDeFuncao -> . ID LPAREN listaExpressao RPAREN
+    (55) variavel -> . ID
+    (56) variavel -> . ID LCOR expressao RCOR
+    (65) valor -> . NUMBER
+    (66) valor -> . STRING
+    (67) valor -> . TRUE
+    (68) valor -> . FALSE
+
+    NOT             shift and go to state 85
+    MINUS           shift and go to state 86
+    LPAREN          shift and go to state 90
+    ID              shift and go to state 72
+    NUMBER          shift and go to state 31
+    STRING          shift and go to state 32
+    TRUE            shift and go to state 33
+    FALSE           shift and go to state 34
+
+    expressao                      shift and go to state 158
+    chamadaDeFuncao                shift and go to state 87
+    variavel                       shift and go to state 88
+    valor                          shift and go to state 89
+
+state 154
+
+    (26) comandoIf -> IF LPAREN expressao LPAREN LKEY bloco . RKEY ELSE LKEY bloco RKEY
+
+    RKEY            shift and go to state 159
+
+
+state 155
+
+    (25) comandoIf -> IF LPAREN expressao RPAREN LKEY bloco . RKEY
+
+    RKEY            shift and go to state 160
+
+
+state 156
+
+    (27) comandoWhile -> WHILE LPAREN expressao RPAREN LKEY bloco . RKEY
+
+    RKEY            shift and go to state 161
+
+
+state 157
+
+    (28) comandoFor -> FOR LPAREN expressaoAtrib SEMICOLON expressao SEMICOLON . expressaoAtrib RPAREN LKEY bloco RKEY
+    (54) expressaoAtrib -> . variavel opAtrib expressao
+    (55) variavel -> . ID
+    (56) variavel -> . ID LCOR expressao RCOR
+
+    ID              shift and go to state 92
+
+    expressaoAtrib                 shift and go to state 162
+    variavel                       shift and go to state 70
+
+state 158
+
+    (60) expressao -> expressao ? expressao : expressao .
+    (57) expressao -> expressao . op expressao
+    (60) expressao -> expressao . ? expressao : expressao
+    (35) op -> . PLUS
+    (36) op -> . MINUS
+    (37) op -> . MULT
+    (38) op -> . DIVIDE
+    (39) op -> . MOD
+    (40) op -> . EQUALS
+    (41) op -> . DIFFERENT
+    (42) op -> . LTE
+    (43) op -> . GTE
+    (44) op -> . GT
+    (45) op -> . LT
+    (46) op -> . AND
+    (47) op -> . OR
+
+  ! shift/reduce conflict for ? resolved as shift
+  ! shift/reduce conflict for PLUS resolved as shift
+  ! shift/reduce conflict for MINUS resolved as shift
+  ! shift/reduce conflict for MULT resolved as shift
+  ! shift/reduce conflict for DIVIDE resolved as shift
+  ! shift/reduce conflict for MOD resolved as shift
+  ! shift/reduce conflict for EQUALS resolved as shift
+  ! shift/reduce conflict for DIFFERENT resolved as shift
+  ! shift/reduce conflict for LTE resolved as shift
+  ! shift/reduce conflict for GTE resolved as shift
+  ! shift/reduce conflict for GT resolved as shift
+  ! shift/reduce conflict for LT resolved as shift
+  ! shift/reduce conflict for AND resolved as shift
+  ! shift/reduce conflict for OR resolved as shift
+    SEMICOLON       reduce using rule 60 (expressao -> expressao ? expressao : expressao .)
+    ,               reduce using rule 60 (expressao -> expressao ? expressao : expressao .)
+    RPAREN          reduce using rule 60 (expressao -> expressao ? expressao : expressao .)
+    LPAREN          reduce using rule 60 (expressao -> expressao ? expressao : expressao .)
+    RCOR            reduce using rule 60 (expressao -> expressao ? expressao : expressao .)
+    :               reduce using rule 60 (expressao -> expressao ? expressao : expressao .)
+    ?               shift and go to state 114
+    PLUS            shift and go to state 115
+    MINUS           shift and go to state 116
+    MULT            shift and go to state 117
+    DIVIDE          shift and go to state 118
+    MOD             shift and go to state 119
+    EQUALS          shift and go to state 120
+    DIFFERENT       shift and go to state 121
+    LTE             shift and go to state 122
+    GTE             shift and go to state 123
+    GT              shift and go to state 124
+    LT              shift and go to state 125
+    AND             shift and go to state 126
+    OR              shift and go to state 127
+
+  ! ?               [ reduce using rule 60 (expressao -> expressao ? expressao : expressao .) ]
+  ! PLUS            [ reduce using rule 60 (expressao -> expressao ? expressao : expressao .) ]
+  ! MINUS           [ reduce using rule 60 (expressao -> expressao ? expressao : expressao .) ]
+  ! MULT            [ reduce using rule 60 (expressao -> expressao ? expressao : expressao .) ]
+  ! DIVIDE          [ reduce using rule 60 (expressao -> expressao ? expressao : expressao .) ]
+  ! MOD             [ reduce using rule 60 (expressao -> expressao ? expressao : expressao .) ]
+  ! EQUALS          [ reduce using rule 60 (expressao -> expressao ? expressao : expressao .) ]
+  ! DIFFERENT       [ reduce using rule 60 (expressao -> expressao ? expressao : expressao .) ]
+  ! LTE             [ reduce using rule 60 (expressao -> expressao ? expressao : expressao .) ]
+  ! GTE             [ reduce using rule 60 (expressao -> expressao ? expressao : expressao .) ]
+  ! GT              [ reduce using rule 60 (expressao -> expressao ? expressao : expressao .) ]
+  ! LT              [ reduce using rule 60 (expressao -> expressao ? expressao : expressao .) ]
+  ! AND             [ reduce using rule 60 (expressao -> expressao ? expressao : expressao .) ]
+  ! OR              [ reduce using rule 60 (expressao -> expressao ? expressao : expressao .) ]
+
+    op                             shift and go to state 113
+
+state 159
+
+    (26) comandoIf -> IF LPAREN expressao LPAREN LKEY bloco RKEY . ELSE LKEY bloco RKEY
+
+    ELSE            shift and go to state 163
+
+
+state 160
+
+    (25) comandoIf -> IF LPAREN expressao RPAREN LKEY bloco RKEY .
+
+    ε               reduce using rule 25 (comandoIf -> IF LPAREN expressao RPAREN LKEY bloco RKEY .)
+    IF              reduce using rule 25 (comandoIf -> IF LPAREN expressao RPAREN LKEY bloco RKEY .)
+    WHILE           reduce using rule 25 (comandoIf -> IF LPAREN expressao RPAREN LKEY bloco RKEY .)
+    FOR             reduce using rule 25 (comandoIf -> IF LPAREN expressao RPAREN LKEY bloco RKEY .)
+    BREAK           reduce using rule 25 (comandoIf -> IF LPAREN expressao RPAREN LKEY bloco RKEY .)
+    RETURN          reduce using rule 25 (comandoIf -> IF LPAREN expressao RPAREN LKEY bloco RKEY .)
+    READ            reduce using rule 25 (comandoIf -> IF LPAREN expressao RPAREN LKEY bloco RKEY .)
+    WRITE           reduce using rule 25 (comandoIf -> IF LPAREN expressao RPAREN LKEY bloco RKEY .)
+    ID              reduce using rule 25 (comandoIf -> IF LPAREN expressao RPAREN LKEY bloco RKEY .)
+
+
+state 161
+
+    (27) comandoWhile -> WHILE LPAREN expressao RPAREN LKEY bloco RKEY .
+
+    ε               reduce using rule 27 (comandoWhile -> WHILE LPAREN expressao RPAREN LKEY bloco RKEY .)
+    IF              reduce using rule 27 (comandoWhile -> WHILE LPAREN expressao RPAREN LKEY bloco RKEY .)
+    WHILE           reduce using rule 27 (comandoWhile -> WHILE LPAREN expressao RPAREN LKEY bloco RKEY .)
+    FOR             reduce using rule 27 (comandoWhile -> WHILE LPAREN expressao RPAREN LKEY bloco RKEY .)
+    BREAK           reduce using rule 27 (comandoWhile -> WHILE LPAREN expressao RPAREN LKEY bloco RKEY .)
+    RETURN          reduce using rule 27 (comandoWhile -> WHILE LPAREN expressao RPAREN LKEY bloco RKEY .)
+    READ            reduce using rule 27 (comandoWhile -> WHILE LPAREN expressao RPAREN LKEY bloco RKEY .)
+    WRITE           reduce using rule 27 (comandoWhile -> WHILE LPAREN expressao RPAREN LKEY bloco RKEY .)
+    ID              reduce using rule 27 (comandoWhile -> WHILE LPAREN expressao RPAREN LKEY bloco RKEY .)
+
+
+state 162
+
+    (28) comandoFor -> FOR LPAREN expressaoAtrib SEMICOLON expressao SEMICOLON expressaoAtrib . RPAREN LKEY bloco RKEY
+
+    RPAREN          shift and go to state 164
+
+
+state 163
+
+    (26) comandoIf -> IF LPAREN expressao LPAREN LKEY bloco RKEY ELSE . LKEY bloco RKEY
+
+    LKEY            shift and go to state 165
+
+
+state 164
+
+    (28) comandoFor -> FOR LPAREN expressaoAtrib SEMICOLON expressao SEMICOLON expressaoAtrib RPAREN . LKEY bloco RKEY
+
+    LKEY            shift and go to state 166
+
+
+state 165
+
+    (26) comandoIf -> IF LPAREN expressao LPAREN LKEY bloco RKEY ELSE LKEY . bloco RKEY
+    (15) bloco -> . variavelDeclaracaoList listaComando
+    (74) variavelDeclaracaoList -> . variavelDeclaracao variavelDeclaracaoList
+    (75) variavelDeclaracaoList -> . ε
+    (5) variavelDeclaracao -> . tipo variavelEspecificacaoSeq ;
+    (10) tipo -> . INT
+    (11) tipo -> . STRING
+    (12) tipo -> . BOOLEAN
+
+    ε               shift and go to state 46
+    INT             shift and go to state 8
+    STRING          shift and go to state 9
+    BOOLEAN         shift and go to state 10
+
+    bloco                          shift and go to state 167
+    variavelDeclaracaoList         shift and go to state 44
+    variavelDeclaracao             shift and go to state 45
+    tipo                           shift and go to state 47
+
+state 166
+
+    (28) comandoFor -> FOR LPAREN expressaoAtrib SEMICOLON expressao SEMICOLON expressaoAtrib RPAREN LKEY . bloco RKEY
+    (15) bloco -> . variavelDeclaracaoList listaComando
+    (74) variavelDeclaracaoList -> . variavelDeclaracao variavelDeclaracaoList
+    (75) variavelDeclaracaoList -> . ε
+    (5) variavelDeclaracao -> . tipo variavelEspecificacaoSeq ;
+    (10) tipo -> . INT
+    (11) tipo -> . STRING
+    (12) tipo -> . BOOLEAN
+
+    ε               shift and go to state 46
+    INT             shift and go to state 8
+    STRING          shift and go to state 9
+    BOOLEAN         shift and go to state 10
+
+    bloco                          shift and go to state 168
+    variavelDeclaracaoList         shift and go to state 44
+    variavelDeclaracao             shift and go to state 45
+    tipo                           shift and go to state 47
+
+state 167
+
+    (26) comandoIf -> IF LPAREN expressao LPAREN LKEY bloco RKEY ELSE LKEY bloco . RKEY
+
+    RKEY            shift and go to state 169
+
+
+state 168
+
+    (28) comandoFor -> FOR LPAREN expressaoAtrib SEMICOLON expressao SEMICOLON expressaoAtrib RPAREN LKEY bloco . RKEY
+
+    RKEY            shift and go to state 170
+
+
+state 169
+
+    (26) comandoIf -> IF LPAREN expressao LPAREN LKEY bloco RKEY ELSE LKEY bloco RKEY .
+
+    ε               reduce using rule 26 (comandoIf -> IF LPAREN expressao LPAREN LKEY bloco RKEY ELSE LKEY bloco RKEY .)
+    IF              reduce using rule 26 (comandoIf -> IF LPAREN expressao LPAREN LKEY bloco RKEY ELSE LKEY bloco RKEY .)
+    WHILE           reduce using rule 26 (comandoIf -> IF LPAREN expressao LPAREN LKEY bloco RKEY ELSE LKEY bloco RKEY .)
+    FOR             reduce using rule 26 (comandoIf -> IF LPAREN expressao LPAREN LKEY bloco RKEY ELSE LKEY bloco RKEY .)
+    BREAK           reduce using rule 26 (comandoIf -> IF LPAREN expressao LPAREN LKEY bloco RKEY ELSE LKEY bloco RKEY .)
+    RETURN          reduce using rule 26 (comandoIf -> IF LPAREN expressao LPAREN LKEY bloco RKEY ELSE LKEY bloco RKEY .)
+    READ            reduce using rule 26 (comandoIf -> IF LPAREN expressao LPAREN LKEY bloco RKEY ELSE LKEY bloco RKEY .)
+    WRITE           reduce using rule 26 (comandoIf -> IF LPAREN expressao LPAREN LKEY bloco RKEY ELSE LKEY bloco RKEY .)
+    ID              reduce using rule 26 (comandoIf -> IF LPAREN expressao LPAREN LKEY bloco RKEY ELSE LKEY bloco RKEY .)
+
+
+state 170
+
+    (28) comandoFor -> FOR LPAREN expressaoAtrib SEMICOLON expressao SEMICOLON expressaoAtrib RPAREN LKEY bloco RKEY .
+
+    ε               reduce using rule 28 (comandoFor -> FOR LPAREN expressaoAtrib SEMICOLON expressao SEMICOLON expressaoAtrib RPAREN LKEY bloco RKEY .)
+    IF              reduce using rule 28 (comandoFor -> FOR LPAREN expressaoAtrib SEMICOLON expressao SEMICOLON expressaoAtrib RPAREN LKEY bloco RKEY .)
+    WHILE           reduce using rule 28 (comandoFor -> FOR LPAREN expressaoAtrib SEMICOLON expressao SEMICOLON expressaoAtrib RPAREN LKEY bloco RKEY .)
+    FOR             reduce using rule 28 (comandoFor -> FOR LPAREN expressaoAtrib SEMICOLON expressao SEMICOLON expressaoAtrib RPAREN LKEY bloco RKEY .)
+    BREAK           reduce using rule 28 (comandoFor -> FOR LPAREN expressaoAtrib SEMICOLON expressao SEMICOLON expressaoAtrib RPAREN LKEY bloco RKEY .)
+    RETURN          reduce using rule 28 (comandoFor -> FOR LPAREN expressaoAtrib SEMICOLON expressao SEMICOLON expressaoAtrib RPAREN LKEY bloco RKEY .)
+    READ            reduce using rule 28 (comandoFor -> FOR LPAREN expressaoAtrib SEMICOLON expressao SEMICOLON expressaoAtrib RPAREN LKEY bloco RKEY .)
+    WRITE           reduce using rule 28 (comandoFor -> FOR LPAREN expressaoAtrib SEMICOLON expressao SEMICOLON expressaoAtrib RPAREN LKEY bloco RKEY .)
+    ID              reduce using rule 28 (comandoFor -> FOR LPAREN expressaoAtrib SEMICOLON expressao SEMICOLON expressaoAtrib RPAREN LKEY bloco RKEY .)
+
+WARNING: 
+WARNING: Conflicts:
+WARNING: 
+WARNING: shift/reduce conflict for LPAREN in state 72 resolved as shift
+WARNING: shift/reduce conflict for ? in state 128 resolved as shift
+WARNING: shift/reduce conflict for PLUS in state 128 resolved as shift
+WARNING: shift/reduce conflict for MINUS in state 128 resolved as shift
+WARNING: shift/reduce conflict for MULT in state 128 resolved as shift
+WARNING: shift/reduce conflict for DIVIDE in state 128 resolved as shift
+WARNING: shift/reduce conflict for MOD in state 128 resolved as shift
+WARNING: shift/reduce conflict for EQUALS in state 128 resolved as shift
+WARNING: shift/reduce conflict for DIFFERENT in state 128 resolved as shift
+WARNING: shift/reduce conflict for LTE in state 128 resolved as shift
+WARNING: shift/reduce conflict for GTE in state 128 resolved as shift
+WARNING: shift/reduce conflict for GT in state 128 resolved as shift
+WARNING: shift/reduce conflict for LT in state 128 resolved as shift
+WARNING: shift/reduce conflict for AND in state 128 resolved as shift
+WARNING: shift/reduce conflict for OR in state 128 resolved as shift
+WARNING: shift/reduce conflict for ? in state 129 resolved as shift
+WARNING: shift/reduce conflict for PLUS in state 129 resolved as shift
+WARNING: shift/reduce conflict for MINUS in state 129 resolved as shift
+WARNING: shift/reduce conflict for MULT in state 129 resolved as shift
+WARNING: shift/reduce conflict for DIVIDE in state 129 resolved as shift
+WARNING: shift/reduce conflict for MOD in state 129 resolved as shift
+WARNING: shift/reduce conflict for EQUALS in state 129 resolved as shift
+WARNING: shift/reduce conflict for DIFFERENT in state 129 resolved as shift
+WARNING: shift/reduce conflict for LTE in state 129 resolved as shift
+WARNING: shift/reduce conflict for GTE in state 129 resolved as shift
+WARNING: shift/reduce conflict for GT in state 129 resolved as shift
+WARNING: shift/reduce conflict for LT in state 129 resolved as shift
+WARNING: shift/reduce conflict for AND in state 129 resolved as shift
+WARNING: shift/reduce conflict for OR in state 129 resolved as shift
+WARNING: shift/reduce conflict for ? in state 143 resolved as shift
+WARNING: shift/reduce conflict for PLUS in state 143 resolved as shift
+WARNING: shift/reduce conflict for MINUS in state 143 resolved as shift
+WARNING: shift/reduce conflict for MULT in state 143 resolved as shift
+WARNING: shift/reduce conflict for DIVIDE in state 143 resolved as shift
+WARNING: shift/reduce conflict for MOD in state 143 resolved as shift
+WARNING: shift/reduce conflict for EQUALS in state 143 resolved as shift
+WARNING: shift/reduce conflict for DIFFERENT in state 143 resolved as shift
+WARNING: shift/reduce conflict for LTE in state 143 resolved as shift
+WARNING: shift/reduce conflict for GTE in state 143 resolved as shift
+WARNING: shift/reduce conflict for GT in state 143 resolved as shift
+WARNING: shift/reduce conflict for LT in state 143 resolved as shift
+WARNING: shift/reduce conflict for AND in state 143 resolved as shift
+WARNING: shift/reduce conflict for OR in state 143 resolved as shift
+WARNING: shift/reduce conflict for ? in state 158 resolved as shift
+WARNING: shift/reduce conflict for PLUS in state 158 resolved as shift
+WARNING: shift/reduce conflict for MINUS in state 158 resolved as shift
+WARNING: shift/reduce conflict for MULT in state 158 resolved as shift
+WARNING: shift/reduce conflict for DIVIDE in state 158 resolved as shift
+WARNING: shift/reduce conflict for MOD in state 158 resolved as shift
+WARNING: shift/reduce conflict for EQUALS in state 158 resolved as shift
+WARNING: shift/reduce conflict for DIFFERENT in state 158 resolved as shift
+WARNING: shift/reduce conflict for LTE in state 158 resolved as shift
+WARNING: shift/reduce conflict for GTE in state 158 resolved as shift
+WARNING: shift/reduce conflict for GT in state 158 resolved as shift
+WARNING: shift/reduce conflict for LT in state 158 resolved as shift
+WARNING: shift/reduce conflict for AND in state 158 resolved as shift
+WARNING: shift/reduce conflict for OR in state 158 resolved as shift

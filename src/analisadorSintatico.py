@@ -44,9 +44,9 @@ def p_program(p):
 
 def p_declaracao(p):
     '''
-    declaracao ::= variaveldeclaracao
-                | id '(' listaParametro ')' '{' bloco '}'
-                | tipo id '(' listaParametro ')' '{' bloco '}'
+    declaracao ::= variavelDeclaracao
+                | ID LPAREN listaParametro RPAREN LKEY bloco RKEY
+                | tipo ID LPAREN listaParametro RPAREN LKEY bloco RKEY
     '''
     if len(p) == 2:
         p[0] = (p[1], "Declaração")
@@ -58,17 +58,17 @@ def p_declaracao(p):
 
 def p_variavelDeclaracao(p):
     '''
-    variaveldeclaracao ::= tipo variavelEspecificacaoSeq ';'
+    variavelDeclaracao ::= tipo variavelEspecificacaoSeq ';'
     '''
     p[0] = (p[1], p[2], p[3], "Declaração Variavel")
 
 
 def p_variavelEspecificacao(p):
     '''
-    variavelEspecificacao ::= id
-                            | id '=' valor
-                            | id '[' num ']'
-                            | id '[' num ']' '=' '{' sequenciaValor '}'
+    variavelEspecificacao ::= ID
+                            | ID ASSIGN valor
+                            | ID LCOR NUMBER RCOR
+                            | ID LCOR NUMBER RCOR ASSIGN LKEY sequenciaValor RKEY
     '''
     if len(p) == 2:
         p[0] = (p[1], "Especificacao de variavel")
@@ -82,17 +82,17 @@ def p_variavelEspecificacao(p):
 
 def p_tipo(p):
     '''
-    tipo ::= int
-          |  string
-          |  bool
+    tipo ::= INT
+          |  STRING
+          |  BOOLEAN
     '''
     p[0] = (p[1], "tipo")
 
 
 def p_parametro(p):
     '''
-    parametro ::= tipo id
-                | tipo id '[' ']'
+    parametro ::= tipo ID
+                | tipo ID LCOR RCOR
     '''
     if len(p) == 3:
         p[0] = (p[1], p[2], "Parametro")
@@ -102,7 +102,7 @@ def p_parametro(p):
 
 def p_bloco(p):
     '''
-    bloco ::= variaveldeclaracaoList listaComando
+    bloco ::= variavelDeclaracaoList listaComando
     '''
     p[0] = (p[1], p[2], "bloco")
 
@@ -116,8 +116,8 @@ def p_comando(p):
              |  comandoReturn
              |  comandoRead
              |  comandoWrite
-             |  expressaoAtrib ';'
-             |  chamadaDeFuncao ';'
+             |  expressaoAtrib SEMICOLON
+             |  chamadaDeFuncao SEMICOLON
     '''
     if len(p) == 2:
         p[0] = (p[1], "Comandos")
@@ -127,8 +127,8 @@ def p_comando(p):
 
 def p_comandoIf(p):
     '''
-    comandoIf ::= if '(' expressao ')' '{' bloco '}'
-                | if '(' expressao ')' '{' bloco '}' else '{' bloco '}'
+    comandoIf ::= IF LPAREN expressao RPAREN LKEY bloco RKEY
+                | IF LPAREN expressao LPAREN LKEY bloco RKEY ELSE LKEY bloco RKEY
     '''
     if len(p) == 8:
         p[0] = (p[1], p[2], p[3], p[4], p[5], p[6], p[7], "IF")
@@ -139,7 +139,7 @@ def p_comandoIf(p):
 
 def p_comandoWhile(p):
     '''
-    comandoWhile ::= while '(' expressao ')' '{' bloco '}'
+    comandoWhile ::= WHILE LPAREN expressao RPAREN LKEY bloco RKEY
     '''
     if len(p) == 8:
         p[0] = (p[1], p[2], p[3], p[4], p[5], p[6], p[7], "WHILE")
@@ -147,7 +147,7 @@ def p_comandoWhile(p):
 
 def p_comandoFor(p):
     '''
-    comandoFor ::= for '(' expressaoAtrib ';' expressao ';' expressaoAtrib ')' '{' bloco '}'
+    comandoFor ::= FOR LPAREN expressaoAtrib SEMICOLON expressao SEMICOLON expressaoAtrib RPAREN LKEY bloco RKEY
     '''
     if len(p) == 12:
         p[0] = (p[1], p[2], p[3], p[4], p[5], p[6], p[7], p[8], p[9], p[10], p[11], "FOR")
@@ -155,7 +155,7 @@ def p_comandoFor(p):
 
 def p_comandoBreak(p):
     '''
-    comandoBreak ::= break ';'
+    comandoBreak ::= BREAK SEMICOLON
     '''
     if len(p) == 4:
         p[0] = (p[1], p[2], "BREAK")
@@ -163,7 +163,7 @@ def p_comandoBreak(p):
 
 def p_comandoRead(p):
     '''
-    comandoRead ::= read variavel ';'
+    comandoRead ::= READ variavel SEMICOLON
     '''
     if len(p) == 4:
         p[0] = (p[1], p[2], p[3], "READ")
@@ -171,7 +171,7 @@ def p_comandoRead(p):
 
 def p_comandoWrite(p):
     '''
-    comandoWrite ::= write listaExpressao ';'
+    comandoWrite ::= WRITE listaExpressao SEMICOLON
     '''
     if len(p) == 4:
         p[0] = (p[1], p[2], p[3], "WRITE")
@@ -179,8 +179,8 @@ def p_comandoWrite(p):
 
 def p_comandoReturn(p):
     '''
-    comandoReturn ::= return ';'
-                     | return expressao ';'
+    comandoReturn ::= RETURN SEMICOLON
+                     | RETURN expressao SEMICOLON
     '''
     if len(p) == 3:
         p[0] = (p[1], p[2], "RETURN")
@@ -190,7 +190,7 @@ def p_comandoReturn(p):
 
 def p_chamadaDeFuncao(p):
     '''
-    chamadaDeFuncao ::= id '(' listaExpressao ')'
+    chamadaDeFuncao ::= ID LPAREN listaExpressao RPAREN
     '''
     p[0] = (p[1], p[2], p[3], p[4], "Chamada de função")
 
@@ -273,8 +273,8 @@ def p_expressaoAtrib(p):
 
 def p_variavel(p):
     '''
-    variavel ::= id
-               | id '[' expressao ']'
+    variavel ::= ID
+               | ID LCOR expressao RCOR
     '''
     if len(p) == 2:
         p[0] = (p[1], "Variável")
@@ -285,13 +285,13 @@ def p_variavel(p):
 def p_expressao(p):
     '''
     expressao ::= expressao op expressao
-             | '!' expressao
-             | '-' expressao
+             | NOT expressao
+             | MINUS expressao
              | expressao '?' expressao ':' expressao
              | chamadaDeFuncao
              | variavel
              | valor
-             | '(' expressao ')'
+             | LPAREN expressao RPAREN
     '''
     if len(p) == 2:
         p[0] = (p[1], p[2], "Expressão")
@@ -308,9 +308,10 @@ def p_expressao(p):
 
 def p_valor(p):
     '''
-    valor ::= num
-            | string
-            | logica
+    valor ::= NUMBER
+            | STRING
+            | TRUE
+            | FALSE
     '''
     p[0] = (p[1], "Valor")
 
@@ -332,7 +333,7 @@ def p_listaParametroNull(p):
 
 def p_sequenciaParametro(p):
     '''
-    sequenciaParametro ::= parametro ',' sequenciaParametro
+    sequenciaParametro ::= parametro COMMA sequenciaParametro
                           |  parametro
     '''
     if len(p) == 2:
@@ -355,7 +356,7 @@ def p_variavelDeclaracaoList(p):
 
 def p_variavelEspecificacaoSeq(p):
     '''
-    variavelEspecificacaoSeq ::= variavelEspecificacao ',' variavelEspecificacaoSeq
+    variavelEspecificacaoSeq ::= variavelEspecificacao COMMA variavelEspecificacaoSeq
                                |   variavelEspecificacao
     '''
     if len(p) == 2:

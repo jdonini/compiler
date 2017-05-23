@@ -12,20 +12,18 @@ tokens = [
     'ID', 'NUMBER', 'PLUS', 'MINUS', 'MULT', 'DIVIDE', 'EQUALS', 'DIFFERENT',
     'GT', 'GTE', 'LT', 'LTE',  'OR', 'AND', 'NOT', 'ASSIGN', 'PLUSASSIGN',
     'MINUSASSIGN', 'MULTASSIGN', 'DIVIDEASSIGN', 'MODASSIGN', 'TERNARY',
-    'DOT', 'STRING', 'MOD'
+    'STRING', 'MOD'
     ]
 
 # De acordo com a linguagem itilizada, foi definida as palavras_reservadas
 palavras_reservadas = {
     'if': 'IF',
-    'then': 'THEN',
     'else': 'ELSE',
     'while': 'WHILE',
     'for': 'FOR',
     'return': 'RETURN',
     'int': 'INT',
     'bool': 'BOOLEAN',
-    # 'string': 'STRING',
     'true': 'TRUE',
     'false': 'FALSE',
     'break': 'BREAK',
@@ -69,7 +67,7 @@ t_MULTASSIGN = r'\*='
 t_DIVIDEASSIGN = r'/='
 t_MODASSIGN = r'%='
 t_TERNARY = r'\? :'
-t_DOT = r'\.'
+# t_DOT = r'\.'
 t_STRING = r'\".*?\"'
 # Ignora tabs e espaços
 t_ignore = ' \t\v\r'
