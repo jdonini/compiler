@@ -1,9 +1,10 @@
 int v[10];
+
 /*
  Procedimento de ordenação por troca
  Observe como um parâmetro de arranjo é declarado
 */
-// Testando comentário linha
+
 void bubblesort(int v[], int n) {
  int i=0, j;
  bool trocou = true;
@@ -31,6 +32,3 @@ void main() {
  write v[i], " ";
  }
 }
-
-%%%
-%

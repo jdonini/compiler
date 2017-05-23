@@ -1,3 +1,4 @@
+# coding: utf-8
 import ply.lex as lex
 import re
 import os
@@ -121,36 +122,36 @@ def t_error(t):
     t.lexer.skip(1)
 
 
-def buscar_arquivos():
-    # verifica todos os arquivos do diretorio test
-    arquivos = []
-    numero_arquivo = ''
-    resposta = False
-    contador = 1
-
-    for base, dirs, files in os.walk('/home/juliano/Workspace/Compiladores/test/'):
-        arquivos.append(files)
-
-        for file in files:
-            print(str(contador)+". "+file)
-            contador += 1
-
-        if resposta is False:
-            numero_arquivo = input('\nNúmero do Teste: ')
-            for file in files:
-                if file == files[int(numero_arquivo)-1]:
-                    break
-            print("Você escolheu \"%s\" \n" % files[int(numero_arquivo)-1])
-
-            return files[int(numero_arquivo)-1]
+# def buscar_arquivos():
+#     # verifica todos os arquivos do diretorio test
+#     arquivos = []
+#     numero_arquivo = ''
+#     resposta = False
+#     contador = 1
+#
+#     for base, dirs, files in os.walk('/Users/juliano/Workspace/Compiladores/test/'):
+#         arquivos.append(files)
+#
+#         for file in files:
+#             print(str(contador)+". "+file)
+#             contador += 1
+#
+#         if resposta is False:
+#             numero_arquivo = input('\nNúmero do Teste: ')
+#             for file in files:
+#                 if file == files[int(numero_arquivo)-1]:
+#                     break
+#             print("Você escolheu \"%s\" \n" % files[int(numero_arquivo)-1])
+#
+#             return files[int(numero_arquivo)-1]
 
 
 analisador_lexer = lex.lex()
-arquivo = buscar_arquivos()
+# arquivo = buscar_arquivos()
 
 
 def buscar_arquivos_teste(arquivo):
-    diretorio_teste = '/home/juliano/Workspace/Compiladores/test/'
+    diretorio_teste = '/Users/juliano/Workspace/Compiladores/test/'
     teste = diretorio_teste + arquivo
     arquivo_teste = open(teste, "r")
     cadeia_caracteres = arquivo_teste.read()
@@ -159,11 +160,11 @@ def buscar_arquivos_teste(arquivo):
 
 
 # usa a cadeia_caracteres como entrada para o A.Lex
-analisador_lexer.input(buscar_arquivos_teste(arquivo))
+# analisador_lexer.input(buscar_arquivos_teste(arquivo))
 
 
 def escrever_arquivos_resultado(arquivo):
-    diretorio_resultado = '/home/juliano/Workspace/Compiladores/result/'
+    diretorio_resultado = '/Users/juliano/Workspace/Compiladores/result/'
     time = datetime.datetime.now()
     resultado = diretorio_resultado + arquivo + \
         "__" + ("%s-%s-%s" % (time.day, time.month, time.year)) + \
@@ -185,4 +186,4 @@ def test_output_lexer(resultado):
             file.close()
 
 
-test_output_lexer(escrever_arquivos_resultado(arquivo))
+# test_output_lexer(escrever_arquivos_resultado(arquivo))

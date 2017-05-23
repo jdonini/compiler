@@ -1,15 +1,15 @@
 <program> ::= <sequenciaDeclaracao>
 
-<declaracao> ::= <variaveldeclaracao>
+<declaracao> ::= <variavelDeclaracao>
        | id '(' <listaParametro> ')' '{' <bloco> '}'
        | <tipo> id '(' <listaParametro> ')' '{' <bloco> '}'
 
-<variaveldeclaracao> ::= <tipo> <variavelSpecificacaoSeq> ';'
+<variavelDeclaracao> ::= <tipo> <variavelEspecificacaoSeq> ';'
 
-<variavelSpecificacao> ::= id
+<variavelEspecificacao> ::= id
            | id '=' <valor>
            | id '[' num ']'
-           | id '[' num ']' '=' '{' <sequenciavalor> '}'
+           | id '[' num ']' '=' '{' <sequenciaValor> '}'
 
 <tipo> ::= "int"
         |  "stringing"
@@ -18,7 +18,7 @@
 <parametro> ::= <tipo> id
               | <tipo> id '[' ']'
 
-<bloco> ::= <variaveldeclaracaoList> <listacomando>
+<bloco> ::= <variavelDeclaracaoList> <listaComando>
 
 <comando> ::= <comandoIf>
           |   <comandoWhile>
@@ -41,12 +41,12 @@
 
 <comandoRead> ::= "read" <variavel> ';'
 
-<comandoWrite> ::= "write" <listaexpressaoeracao> ';'
+<comandoWrite> ::= "write" <listaExpressao> ';'
 
 <comandoReturn> ::= "return" ';'
-                  | "return" <expressao> ';'
+                 | "return" <expressao> ';'
 
-<chamadaDeFuncao> ::= id '(' <listaexpressaoeracao> ')'
+<chamadaDeFuncao> ::= id '(' <listaExpressao> ')'
 
 <op> ::= '-' | '!' | '*' | '/' | '%' | '+' | '<' | '<=' | '>' | '>=' | '==' | '!=' | '&&' | '||'
 
@@ -55,7 +55,7 @@
 <expressaoAtrib> ::= <variavel> <opAtrib>  <expressao>
 
 <variavel> ::= id
-             | id '[' <expressao> ']'
+            | id '[' <expressao> ']'
 
 <expressao> ::= <expressao> <op> <expressao>
              | '!' <expressao>
@@ -71,28 +71,28 @@
           | logica
 
 <listaParametro> ::= <sequenciaParametro>
-                    | ε
+                  | ε
 
 <sequenciaParametro> ::= <parametro> ',' <sequenciaParametro>
                       |  <parametro>
 
-<variaveldeclaracaoList> ::= <variaveldeclaracao> <variaveldeclaracaoList>
+<variavelDeclaracaoList> ::= <variavelDeclaracao> <variavelDeclaracaoList>
                           | ε
 
-<variavelSpecificacaoSeq> ::= <variavelSpecificacao> ',' <variavelSpecificacaoSeq>
-                          |   <variavelSpecificacao>
+<variavelEspecificacaoSeq> ::= <variavelEspecificacao> ',' <variavelEspecificacaoSeq>
+                           |   <variavelEspecificacao>
 
 <sequenciaDeclaracao> ::= <declaracao> <sequenciaDeclaracao>
-                      |   <declaracao>
+                       |   <declaracao>
 
-<listacomando> ::= <comando> <listacomando>
+<listaComando> ::= <comando> <listaComando>
                 | ε
 
-<sequenciavalor> ::= <valor> <sequenciavalor>
+<sequenciaValor> ::= <valor> <sequenciaValor>
                   |  <valor>
 
-<listaexpressaoeracao> ::= <sequenciaexpressaoeracao>
-                          | ε
+<listaExpressao> ::= <sequenciaExpressao>
+                  | ε
 
-<sequenciaexpressaoeracao> ::= <expressao> ',' <sequenciaexpressaoeracao>
-                            |  <expressao>
+<sequenciaExpressao> ::= <expressao> ',' <sequenciaExpressao>
+                      |  <expressao>
