@@ -12,7 +12,7 @@ tokens = [
     'ID', 'NUMBER', 'PLUS', 'MINUS', 'MULT', 'DIVIDE', 'EQUALS', 'DIFFERENT',
     'GT', 'GTE', 'LT', 'LTE',  'OR', 'AND', 'NOT', 'ASSIGN', 'PLUSASSIGN',
     'MINUSASSIGN', 'MULTASSIGN', 'DIVIDEASSIGN', 'MODASSIGN', 'TERNARY',
-    'DOT', 'STRING',
+    'DOT', 'STRING', 'MOD'
     ]
 
 # De acordo com a linguagem itilizada, foi definida as palavras_reservadas
@@ -39,7 +39,7 @@ tokens += list(palavras_reservadas.values())
 # passando T como paramentro, vamos analisar os tokens na função
 
 # implementando utilizando expressoes regulares
-t_ignore_COMMENT = r'\#.*'
+# t_ignore_COMMENT = r'\#.*'
 t_LPAREN = r'\('
 t_RPAREN = r'\)'
 t_LCOR = '\['
@@ -54,6 +54,7 @@ t_MULT = r'\*'
 t_DIVIDE = r'/'
 t_EQUALS = r'=='
 t_DIFFERENT = r'!='
+t_MOD = r'%'
 t_GT = r'>'
 t_GTE = r'=>'
 t_LT = r'<'

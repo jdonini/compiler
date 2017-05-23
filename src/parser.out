@@ -1,1 +1,240 @@
 Created by PLY version 3.10 (http://www.dabeaz.com/ply)
+
+Unused terminals:
+
+    LPAREN
+    RPAREN
+    LCOR
+    RCOR
+    LKEY
+    RKEY
+    COMMA
+    SEMICOLON
+    ID
+    NUMBER
+    NOT
+    TERNARY
+    DOT
+    STRING
+    IF
+    THEN
+    ELSE
+    WHILE
+    FOR
+    RETURN
+    INT
+    BOOLEAN
+    TRUE
+    FALSE
+    BREAK
+    READ
+    WRITE
+    MAIN
+
+Grammar
+
+Rule 0     S' -> program
+Rule 1     program -> sequenciaDeclaracao
+Rule 2     declaracao -> variaveldeclaracao
+Rule 3     declaracao -> id ( listaParametro ) { bloco }
+Rule 4     declaracao -> tipo id ( listaParametro ) { bloco }
+Rule 5     variaveldeclaracao -> tipo variavelEspecificacaoSeq ;
+Rule 6     variavelEspecificacao -> id
+Rule 7     variavelEspecificacao -> id = valor
+Rule 8     variavelEspecificacao -> id [ num ]
+Rule 9     variavelEspecificacao -> id [ num ] = { sequenciaValor }
+Rule 10    tipo -> int
+Rule 11    tipo -> string
+Rule 12    tipo -> bool
+Rule 13    parametro -> tipo id
+Rule 14    parametro -> tipo id [ ]
+Rule 15    bloco -> variaveldeclaracaoList listaComando
+Rule 16    comando -> comandoIf
+Rule 17    comando -> comandoWhile
+Rule 18    comando -> comandoFor
+Rule 19    comando -> comandoBreak
+Rule 20    comando -> comandoReturn
+Rule 21    comando -> comandoRead
+Rule 22    comando -> comandoWrite
+Rule 23    comando -> expressaoAtrib ;
+Rule 24    comando -> chamadaDeFuncao ;
+Rule 25    comandoIf -> if ( expressao ) { bloco }
+Rule 26    comandoIf -> if ( expressao ) { bloco } else { bloco }
+Rule 27    comandoWhile -> while ( expressao ) { bloco }
+Rule 28    comandoFor -> for ( expressaoAtrib ; expressao ; expressaoAtrib ) { bloco }
+Rule 29    comandoBreak -> break ;
+Rule 30    comandoRead -> read variavel ;
+Rule 31    comandoWrite -> write listaExpressao ;
+Rule 32    comandoReturn -> return ;
+Rule 33    comandoReturn -> return expressao ;
+Rule 34    chamadaDeFuncao -> id ( listaExpressao )
+Rule 35    op -> PLUS
+Rule 36    op -> MINUS
+Rule 37    op -> MULT
+Rule 38    op -> DIVIDE
+Rule 39    op -> MOD
+Rule 40    op -> EQUALS
+Rule 41    op -> DIFFERENT
+Rule 42    op -> LTE
+Rule 43    op -> GTE
+Rule 44    op -> GT
+Rule 45    op -> LT
+Rule 46    op -> AND
+Rule 47    op -> OR
+Rule 48    opAtrib -> ASSIGN
+Rule 49    opAtrib -> PLUSASSIGN
+Rule 50    opAtrib -> MINUSASSIGN
+Rule 51    opAtrib -> MULTASSIGN
+Rule 52    opAtrib -> DIVIDEASSIGN
+Rule 53    opAtrib -> MODASSIGN
+Rule 54    expressaoAtrib -> variavel opAtrib expressao
+Rule 55    variavel -> id
+Rule 56    variavel -> id [ expressao ]
+Rule 57    expressao -> expressao op expressao
+Rule 58    expressao -> ! expressao
+Rule 59    expressao -> - expressao
+Rule 60    expressao -> expressao ? expressao : expressao
+Rule 61    expressao -> chamadaDeFuncao
+Rule 62    expressao -> variavel
+Rule 63    expressao -> valor
+Rule 64    expressao -> ( expressao )
+Rule 65    valor -> num
+Rule 66    valor -> string
+Rule 67    valor -> logica
+Rule 68    listaParametro -> sequenciaParametro
+Rule 69    listaParametro -> ε
+Rule 70    program -> empty
+Rule 71    sequenciaParametro -> parametro , sequenciaParametro
+Rule 72    sequenciaParametro -> parametro
+Rule 73    variavelDeclaracaoList -> variavelDeclaracao variavelDeclaracaoList
+Rule 74    variavelDeclaracaoList -> ε
+Rule 75    variavelEspecificacaoSeq -> variavelEspecificacao , variavelEspecificacaoSeq
+Rule 76    variavelEspecificacaoSeq -> variavelEspecificacao
+Rule 77    sequenciaDeclaracao -> declaracao sequenciaDeclaracao
+Rule 78    sequenciaDeclaracao -> declaracao
+Rule 79    listaComando -> comando listaComando
+Rule 80    listaComando -> ε
+Rule 81    sequenciaValor -> valor sequenciaValor
+Rule 82    sequenciaValor -> valor
+Rule 83    listaExpressao -> sequenciaExpressao
+Rule 84    listaExpressao -> ε
+Rule 85    sequenciaExpressao -> expressao , sequenciaExpressao
+Rule 86    sequenciaExpressao -> expressao
+Rule 87    empty -> <empty>
+
+Terminals, with rules where they appear
+
+!                    : 58
+(                    : 3 4 25 26 27 28 34 64
+)                    : 3 4 25 26 27 28 34 64
+,                    : 71 75 85
+-                    : 59
+:                    : 60
+;                    : 5 23 24 28 28 29 30 31 32 33
+=                    : 7 9
+?                    : 60
+AND                  : 46
+ASSIGN               : 48
+BOOLEAN              : 
+BREAK                : 
+COMMA                : 
+DIFFERENT            : 41
+DIVIDE               : 38
+DIVIDEASSIGN         : 52
+DOT                  : 
+ELSE                 : 
+EQUALS               : 40
+FALSE                : 
+FOR                  : 
+GT                   : 44
+GTE                  : 43
+ID                   : 
+IF                   : 
+INT                  : 
+LCOR                 : 
+LKEY                 : 
+LPAREN               : 
+LT                   : 45
+LTE                  : 42
+MAIN                 : 
+MINUS                : 36
+MINUSASSIGN          : 50
+MOD                  : 39
+MODASSIGN            : 53
+MULT                 : 37
+MULTASSIGN           : 51
+NOT                  : 
+NUMBER               : 
+OR                   : 47
+PLUS                 : 35
+PLUSASSIGN           : 49
+RCOR                 : 
+READ                 : 
+RETURN               : 
+RKEY                 : 
+RPAREN               : 
+SEMICOLON            : 
+STRING               : 
+TERNARY              : 
+THEN                 : 
+TRUE                 : 
+WHILE                : 
+WRITE                : 
+[                    : 8 9 14 56
+]                    : 8 9 14 56
+error                : 
+{                    : 3 4 9 25 26 26 27 28
+}                    : 3 4 9 25 26 26 27 28
+ε                    : 69 74 80 84
+
+Nonterminals, with rules where they appear
+
+bloco                : 3 4 25 26 26 27 28
+bool                 : 12
+break                : 29
+chamadaDeFuncao      : 24 61
+comando              : 79
+comandoBreak         : 19
+comandoFor           : 18
+comandoIf            : 16
+comandoRead          : 21
+comandoReturn        : 20
+comandoWhile         : 17
+comandoWrite         : 22
+declaracao           : 77 78
+else                 : 26
+empty                : 70
+expressao            : 25 26 27 28 33 54 56 57 57 58 59 60 60 60 64 85 86
+expressaoAtrib       : 23 28 28
+for                  : 28
+id                   : 3 4 6 7 8 9 13 14 34 55 56
+if                   : 25 26
+int                  : 10
+listaComando         : 15 79
+listaExpressao       : 31 34
+listaParametro       : 3 4
+logica               : 67
+num                  : 8 9 65
+op                   : 57
+opAtrib              : 54
+parametro            : 71 72
+program              : 0
+read                 : 30
+return               : 32 33
+sequenciaDeclaracao  : 1 77
+sequenciaExpressao   : 83 85
+sequenciaParametro   : 68 71
+sequenciaValor       : 9 81
+string               : 11 66
+tipo                 : 4 5 13 14
+valor                : 7 63 81 82
+variavel             : 30 54 62
+variavelDeclaracao   : 73
+variavelDeclaracaoList : 73
+variavelEspecificacao : 75 76
+variavelEspecificacaoSeq : 5 75
+variaveldeclaracao   : 2
+variaveldeclaracaoList : 15
+while                : 27
+write                : 31
+
