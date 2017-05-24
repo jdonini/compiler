@@ -387,7 +387,7 @@ def p_stmtList(p):
 def p_literalSeq(p):
     '''
     literalSeq : literal
-               | literal literalSeq
+               | literal COMMA literalSeq
     '''
     if len(p) == 2:
         p[0] = ('Valor da sequência', p[1])

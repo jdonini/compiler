@@ -83,7 +83,7 @@ Rule 77    decSeq -> dec decSeq
 Rule 78    stmtList -> stmt stmtList
 Rule 79    stmtList -> ε
 Rule 80    literalSeq -> literal
-Rule 81    literalSeq -> literal literalSeq
+Rule 81    literalSeq -> literal COMMA literalSeq
 Rule 82    expList -> expSeq
 Rule 83    expList -> ε
 Rule 84    expSeq -> exp
@@ -98,7 +98,7 @@ AND                  : 52
 ASSING               : 7 9 35
 BOOLEAN              : 12
 BREAK                : 29
-COMMA                : 71 75 85
+COMMA                : 71 75 81 85
 DIFFERENT            : 47
 DIVIDE               : 44
 DIVIDEASSING         : 39
@@ -549,10 +549,6 @@ state 31
     AND             reduce using rule 63 (literal -> NUMBER .)
     OR              reduce using rule 63 (literal -> NUMBER .)
     ?               reduce using rule 63 (literal -> NUMBER .)
-    NUMBER          reduce using rule 63 (literal -> NUMBER .)
-    STRING_LITERAL  reduce using rule 63 (literal -> NUMBER .)
-    FALSE           reduce using rule 63 (literal -> NUMBER .)
-    TRUE            reduce using rule 63 (literal -> NUMBER .)
     RKEY            reduce using rule 63 (literal -> NUMBER .)
     RPAREN          reduce using rule 63 (literal -> NUMBER .)
     RCOR            reduce using rule 63 (literal -> NUMBER .)
@@ -579,10 +575,6 @@ state 32
     AND             reduce using rule 64 (literal -> STRING_LITERAL .)
     OR              reduce using rule 64 (literal -> STRING_LITERAL .)
     ?               reduce using rule 64 (literal -> STRING_LITERAL .)
-    NUMBER          reduce using rule 64 (literal -> STRING_LITERAL .)
-    STRING_LITERAL  reduce using rule 64 (literal -> STRING_LITERAL .)
-    FALSE           reduce using rule 64 (literal -> STRING_LITERAL .)
-    TRUE            reduce using rule 64 (literal -> STRING_LITERAL .)
     RKEY            reduce using rule 64 (literal -> STRING_LITERAL .)
     RPAREN          reduce using rule 64 (literal -> STRING_LITERAL .)
     RCOR            reduce using rule 64 (literal -> STRING_LITERAL .)
@@ -609,10 +601,6 @@ state 33
     AND             reduce using rule 65 (literal -> FALSE .)
     OR              reduce using rule 65 (literal -> FALSE .)
     ?               reduce using rule 65 (literal -> FALSE .)
-    NUMBER          reduce using rule 65 (literal -> FALSE .)
-    STRING_LITERAL  reduce using rule 65 (literal -> FALSE .)
-    FALSE           reduce using rule 65 (literal -> FALSE .)
-    TRUE            reduce using rule 65 (literal -> FALSE .)
     RKEY            reduce using rule 65 (literal -> FALSE .)
     RPAREN          reduce using rule 65 (literal -> FALSE .)
     RCOR            reduce using rule 65 (literal -> FALSE .)
@@ -639,10 +627,6 @@ state 34
     AND             reduce using rule 66 (literal -> TRUE .)
     OR              reduce using rule 66 (literal -> TRUE .)
     ?               reduce using rule 66 (literal -> TRUE .)
-    NUMBER          reduce using rule 66 (literal -> TRUE .)
-    STRING_LITERAL  reduce using rule 66 (literal -> TRUE .)
-    FALSE           reduce using rule 66 (literal -> TRUE .)
-    TRUE            reduce using rule 66 (literal -> TRUE .)
     RKEY            reduce using rule 66 (literal -> TRUE .)
     RPAREN          reduce using rule 66 (literal -> TRUE .)
     RCOR            reduce using rule 66 (literal -> TRUE .)
@@ -1293,7 +1277,7 @@ state 75
 
     (9) varSpec -> ID LCOR NUMBER RCOR ASSING LKEY . literalSeq RKEY
     (80) literalSeq -> . literal
-    (81) literalSeq -> . literal literalSeq
+    (81) literalSeq -> . literal COMMA literalSeq
     (63) literal -> . NUMBER
     (64) literal -> . STRING_LITERAL
     (65) literal -> . FALSE
@@ -2198,22 +2182,11 @@ state 106
 state 107
 
     (80) literalSeq -> literal .
-    (81) literalSeq -> literal . literalSeq
-    (80) literalSeq -> . literal
-    (81) literalSeq -> . literal literalSeq
-    (63) literal -> . NUMBER
-    (64) literal -> . STRING_LITERAL
-    (65) literal -> . FALSE
-    (66) literal -> . TRUE
+    (81) literalSeq -> literal . COMMA literalSeq
 
     RKEY            reduce using rule 80 (literalSeq -> literal .)
-    NUMBER          shift and go to state 31
-    STRING_LITERAL  shift and go to state 32
-    FALSE           shift and go to state 33
-    TRUE            shift and go to state 34
+    COMMA           shift and go to state 141
 
-    literal                        shift and go to state 107
-    literalSeq                     shift and go to state 141
 
 state 108
 
@@ -3455,24 +3428,35 @@ state 140
 
 state 141
 
-    (81) literalSeq -> literal literalSeq .
+    (81) literalSeq -> literal COMMA . literalSeq
+    (80) literalSeq -> . literal
+    (81) literalSeq -> . literal COMMA literalSeq
+    (63) literal -> . NUMBER
+    (64) literal -> . STRING_LITERAL
+    (65) literal -> . FALSE
+    (66) literal -> . TRUE
 
-    RKEY            reduce using rule 81 (literalSeq -> literal literalSeq .)
+    NUMBER          shift and go to state 31
+    STRING_LITERAL  shift and go to state 32
+    FALSE           shift and go to state 33
+    TRUE            shift and go to state 34
 
+    literal                        shift and go to state 107
+    literalSeq                     shift and go to state 163
 
 state 142
 
     (25) ifStmt -> IF LPAREN exp RPAREN . LKEY block RKEY
     (26) ifStmt -> IF LPAREN exp RPAREN . LKEY block RKEY ELSE LKEY block RKEY
 
-    LKEY            shift and go to state 163
+    LKEY            shift and go to state 164
 
 
 state 143
 
     (27) whileStmt -> WHILE LPAREN exp RPAREN . LKEY block RKEY
 
-    LKEY            shift and go to state 164
+    LKEY            shift and go to state 165
 
 
 state 144
@@ -3515,7 +3499,7 @@ state 144
     FALSE           shift and go to state 33
     TRUE            shift and go to state 34
 
-    exp                            shift and go to state 165
+    exp                            shift and go to state 166
     subCall                        shift and go to state 87
     var                            shift and go to state 88
     literal                        shift and go to state 89
@@ -4422,7 +4406,7 @@ state 158
     (53) exp -> exp . OR exp
     (56) exp -> exp . ? exp : exp
 
-    :               shift and go to state 166
+    :               shift and go to state 167
     PLUS            shift and go to state 112
     MINUS           shift and go to state 113
     MULT            shift and go to state 114
@@ -4530,29 +4514,15 @@ state 162
 
 state 163
 
-    (25) ifStmt -> IF LPAREN exp RPAREN LKEY . block RKEY
-    (26) ifStmt -> IF LPAREN exp RPAREN LKEY . block RKEY ELSE LKEY block RKEY
-    (15) block -> . varDecList stmtList
-    (72) varDecList -> . varDec varDecList
-    (73) varDecList -> . ε
-    (5) varDec -> . type varSpecSeq SEMICOLON
-    (10) type -> . INT
-    (11) type -> . STRING
-    (12) type -> . BOOLEAN
+    (81) literalSeq -> literal COMMA literalSeq .
 
-    ε               shift and go to state 46
-    INT             shift and go to state 8
-    STRING          shift and go to state 9
-    BOOLEAN         shift and go to state 10
+    RKEY            reduce using rule 81 (literalSeq -> literal COMMA literalSeq .)
 
-    block                          shift and go to state 167
-    varDecList                     shift and go to state 44
-    varDec                         shift and go to state 45
-    type                           shift and go to state 47
 
 state 164
 
-    (27) whileStmt -> WHILE LPAREN exp RPAREN LKEY . block RKEY
+    (25) ifStmt -> IF LPAREN exp RPAREN LKEY . block RKEY
+    (26) ifStmt -> IF LPAREN exp RPAREN LKEY . block RKEY ELSE LKEY block RKEY
     (15) block -> . varDecList stmtList
     (72) varDecList -> . varDec varDecList
     (73) varDecList -> . ε
@@ -4573,6 +4543,27 @@ state 164
 
 state 165
 
+    (27) whileStmt -> WHILE LPAREN exp RPAREN LKEY . block RKEY
+    (15) block -> . varDecList stmtList
+    (72) varDecList -> . varDec varDecList
+    (73) varDecList -> . ε
+    (5) varDec -> . type varSpecSeq SEMICOLON
+    (10) type -> . INT
+    (11) type -> . STRING
+    (12) type -> . BOOLEAN
+
+    ε               shift and go to state 46
+    INT             shift and go to state 8
+    STRING          shift and go to state 9
+    BOOLEAN         shift and go to state 10
+
+    block                          shift and go to state 169
+    varDecList                     shift and go to state 44
+    varDec                         shift and go to state 45
+    type                           shift and go to state 47
+
+state 166
+
     (28) forStmt -> FOR LPAREN assing SEMICOLON exp . SEMICOLON assing RPAREN LKEY block RKEY
     (41) exp -> exp . PLUS exp
     (42) exp -> exp . MINUS exp
@@ -4589,7 +4580,7 @@ state 165
     (53) exp -> exp . OR exp
     (56) exp -> exp . ? exp : exp
 
-    SEMICOLON       shift and go to state 169
+    SEMICOLON       shift and go to state 170
     PLUS            shift and go to state 112
     MINUS           shift and go to state 113
     MULT            shift and go to state 114
@@ -4606,7 +4597,7 @@ state 165
     ?               shift and go to state 125
 
 
-state 166
+state 167
 
     (56) exp -> exp ? exp : . exp
     (41) exp -> . exp PLUS exp
@@ -4646,27 +4637,27 @@ state 166
     FALSE           shift and go to state 33
     TRUE            shift and go to state 34
 
-    exp                            shift and go to state 170
+    exp                            shift and go to state 171
     subCall                        shift and go to state 87
     var                            shift and go to state 88
     literal                        shift and go to state 89
 
-state 167
+state 168
 
     (25) ifStmt -> IF LPAREN exp RPAREN LKEY block . RKEY
     (26) ifStmt -> IF LPAREN exp RPAREN LKEY block . RKEY ELSE LKEY block RKEY
-
-    RKEY            shift and go to state 171
-
-
-state 168
-
-    (27) whileStmt -> WHILE LPAREN exp RPAREN LKEY block . RKEY
 
     RKEY            shift and go to state 172
 
 
 state 169
+
+    (27) whileStmt -> WHILE LPAREN exp RPAREN LKEY block . RKEY
+
+    RKEY            shift and go to state 173
+
+
+state 170
 
     (28) forStmt -> FOR LPAREN assing SEMICOLON exp SEMICOLON . assing RPAREN LKEY block RKEY
     (35) assing -> . var ASSING exp
@@ -4680,10 +4671,10 @@ state 169
 
     ID              shift and go to state 92
 
-    assing                         shift and go to state 173
+    assing                         shift and go to state 174
     var                            shift and go to state 70
 
-state 170
+state 171
 
     (56) exp -> exp ? exp : exp .
     (41) exp -> exp . PLUS exp
@@ -4751,7 +4742,7 @@ state 170
   ! ?               [ reduce using rule 56 (exp -> exp ? exp : exp .) ]
 
 
-state 171
+state 172
 
     (25) ifStmt -> IF LPAREN exp RPAREN LKEY block RKEY .
     (26) ifStmt -> IF LPAREN exp RPAREN LKEY block RKEY . ELSE LKEY block RKEY
@@ -4765,10 +4756,10 @@ state 171
     READ            reduce using rule 25 (ifStmt -> IF LPAREN exp RPAREN LKEY block RKEY .)
     WRITE           reduce using rule 25 (ifStmt -> IF LPAREN exp RPAREN LKEY block RKEY .)
     ID              reduce using rule 25 (ifStmt -> IF LPAREN exp RPAREN LKEY block RKEY .)
-    ELSE            shift and go to state 174
+    ELSE            shift and go to state 175
 
 
-state 172
+state 173
 
     (27) whileStmt -> WHILE LPAREN exp RPAREN LKEY block RKEY .
 
@@ -4783,51 +4774,30 @@ state 172
     ID              reduce using rule 27 (whileStmt -> WHILE LPAREN exp RPAREN LKEY block RKEY .)
 
 
-state 173
+state 174
 
     (28) forStmt -> FOR LPAREN assing SEMICOLON exp SEMICOLON assing . RPAREN LKEY block RKEY
 
-    RPAREN          shift and go to state 175
-
-
-state 174
-
-    (26) ifStmt -> IF LPAREN exp RPAREN LKEY block RKEY ELSE . LKEY block RKEY
-
-    LKEY            shift and go to state 176
+    RPAREN          shift and go to state 176
 
 
 state 175
 
-    (28) forStmt -> FOR LPAREN assing SEMICOLON exp SEMICOLON assing RPAREN . LKEY block RKEY
+    (26) ifStmt -> IF LPAREN exp RPAREN LKEY block RKEY ELSE . LKEY block RKEY
 
     LKEY            shift and go to state 177
 
 
 state 176
 
-    (26) ifStmt -> IF LPAREN exp RPAREN LKEY block RKEY ELSE LKEY . block RKEY
-    (15) block -> . varDecList stmtList
-    (72) varDecList -> . varDec varDecList
-    (73) varDecList -> . ε
-    (5) varDec -> . type varSpecSeq SEMICOLON
-    (10) type -> . INT
-    (11) type -> . STRING
-    (12) type -> . BOOLEAN
+    (28) forStmt -> FOR LPAREN assing SEMICOLON exp SEMICOLON assing RPAREN . LKEY block RKEY
 
-    ε               shift and go to state 46
-    INT             shift and go to state 8
-    STRING          shift and go to state 9
-    BOOLEAN         shift and go to state 10
+    LKEY            shift and go to state 178
 
-    block                          shift and go to state 178
-    varDecList                     shift and go to state 44
-    varDec                         shift and go to state 45
-    type                           shift and go to state 47
 
 state 177
 
-    (28) forStmt -> FOR LPAREN assing SEMICOLON exp SEMICOLON assing RPAREN LKEY . block RKEY
+    (26) ifStmt -> IF LPAREN exp RPAREN LKEY block RKEY ELSE LKEY . block RKEY
     (15) block -> . varDecList stmtList
     (72) varDecList -> . varDec varDecList
     (73) varDecList -> . ε
@@ -4848,19 +4818,40 @@ state 177
 
 state 178
 
-    (26) ifStmt -> IF LPAREN exp RPAREN LKEY block RKEY ELSE LKEY block . RKEY
+    (28) forStmt -> FOR LPAREN assing SEMICOLON exp SEMICOLON assing RPAREN LKEY . block RKEY
+    (15) block -> . varDecList stmtList
+    (72) varDecList -> . varDec varDecList
+    (73) varDecList -> . ε
+    (5) varDec -> . type varSpecSeq SEMICOLON
+    (10) type -> . INT
+    (11) type -> . STRING
+    (12) type -> . BOOLEAN
 
-    RKEY            shift and go to state 180
+    ε               shift and go to state 46
+    INT             shift and go to state 8
+    STRING          shift and go to state 9
+    BOOLEAN         shift and go to state 10
 
+    block                          shift and go to state 180
+    varDecList                     shift and go to state 44
+    varDec                         shift and go to state 45
+    type                           shift and go to state 47
 
 state 179
 
-    (28) forStmt -> FOR LPAREN assing SEMICOLON exp SEMICOLON assing RPAREN LKEY block . RKEY
+    (26) ifStmt -> IF LPAREN exp RPAREN LKEY block RKEY ELSE LKEY block . RKEY
 
     RKEY            shift and go to state 181
 
 
 state 180
+
+    (28) forStmt -> FOR LPAREN assing SEMICOLON exp SEMICOLON assing RPAREN LKEY block . RKEY
+
+    RKEY            shift and go to state 182
+
+
+state 181
 
     (26) ifStmt -> IF LPAREN exp RPAREN LKEY block RKEY ELSE LKEY block RKEY .
 
@@ -4875,7 +4866,7 @@ state 180
     ID              reduce using rule 26 (ifStmt -> IF LPAREN exp RPAREN LKEY block RKEY ELSE LKEY block RKEY .)
 
 
-state 181
+state 182
 
     (28) forStmt -> FOR LPAREN assing SEMICOLON exp SEMICOLON assing RPAREN LKEY block RKEY .
 
@@ -5102,17 +5093,17 @@ WARNING: shift/reduce conflict for LT in state 157 resolved as shift
 WARNING: shift/reduce conflict for AND in state 157 resolved as shift
 WARNING: shift/reduce conflict for OR in state 157 resolved as shift
 WARNING: shift/reduce conflict for ? in state 157 resolved as shift
-WARNING: shift/reduce conflict for PLUS in state 170 resolved as shift
-WARNING: shift/reduce conflict for MINUS in state 170 resolved as shift
-WARNING: shift/reduce conflict for MULT in state 170 resolved as shift
-WARNING: shift/reduce conflict for DIVIDE in state 170 resolved as shift
-WARNING: shift/reduce conflict for MOD in state 170 resolved as shift
-WARNING: shift/reduce conflict for EQUALS in state 170 resolved as shift
-WARNING: shift/reduce conflict for DIFFERENT in state 170 resolved as shift
-WARNING: shift/reduce conflict for LTE in state 170 resolved as shift
-WARNING: shift/reduce conflict for GTE in state 170 resolved as shift
-WARNING: shift/reduce conflict for GT in state 170 resolved as shift
-WARNING: shift/reduce conflict for LT in state 170 resolved as shift
-WARNING: shift/reduce conflict for AND in state 170 resolved as shift
-WARNING: shift/reduce conflict for OR in state 170 resolved as shift
-WARNING: shift/reduce conflict for ? in state 170 resolved as shift
+WARNING: shift/reduce conflict for PLUS in state 171 resolved as shift
+WARNING: shift/reduce conflict for MINUS in state 171 resolved as shift
+WARNING: shift/reduce conflict for MULT in state 171 resolved as shift
+WARNING: shift/reduce conflict for DIVIDE in state 171 resolved as shift
+WARNING: shift/reduce conflict for MOD in state 171 resolved as shift
+WARNING: shift/reduce conflict for EQUALS in state 171 resolved as shift
+WARNING: shift/reduce conflict for DIFFERENT in state 171 resolved as shift
+WARNING: shift/reduce conflict for LTE in state 171 resolved as shift
+WARNING: shift/reduce conflict for GTE in state 171 resolved as shift
+WARNING: shift/reduce conflict for GT in state 171 resolved as shift
+WARNING: shift/reduce conflict for LT in state 171 resolved as shift
+WARNING: shift/reduce conflict for AND in state 171 resolved as shift
+WARNING: shift/reduce conflict for OR in state 171 resolved as shift
+WARNING: shift/reduce conflict for ? in state 171 resolved as shift
