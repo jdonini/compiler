@@ -10,9 +10,9 @@ import datetime
 tokens = [
     'LPAREN', 'RPAREN', 'LCOR', 'RCOR', 'LKEY', 'RKEY', 'COMMA', 'SEMICOLON',
     'ID', 'NUMBER', 'PLUS', 'MINUS', 'MULT', 'DIVIDE', 'EQUALS', 'DIFFERENT',
-    'GT', 'GTE', 'LT', 'LTE',  'OR', 'AND', 'NOT', 'ASSIGN', 'PLUSASSIGN',
-    'MINUSASSIGN', 'MULTASSIGN', 'DIVIDEASSIGN', 'MODASSIGN', 'TERNARY',
-    'STRING', 'MOD'
+    'GT', 'GTE', 'LT', 'LTE',  'OR', 'AND', 'NOT', 'ASSING', 'PLUSASSING',
+    'MINUSASSING', 'MULTASSING', 'DIVIDEASSING', 'MODASSING',
+    'MOD', 'NEGUNARY', 'STRING_LITERAL'
     ]
 
 # De acordo com a linguagem itilizada, foi definida as palavras_reservadas
@@ -22,6 +22,7 @@ palavras_reservadas = {
     'while': 'WHILE',
     'for': 'FOR',
     'return': 'RETURN',
+    'string': 'STRING',
     'int': 'INT',
     'bool': 'BOOLEAN',
     'true': 'TRUE',
@@ -29,7 +30,6 @@ palavras_reservadas = {
     'break': 'BREAK',
     'read': 'READ',
     'write': 'WRITE',
-    'main': 'MAIN',
 }
 tokens += list(palavras_reservadas.values())
 
@@ -37,7 +37,6 @@ tokens += list(palavras_reservadas.values())
 # passando T como paramentro, vamos analisar os tokens na função
 
 # implementando utilizando expressoes regulares
-# t_ignore_COMMENT = r'\#.*'
 t_LPAREN = r'\('
 t_RPAREN = r'\)'
 t_LCOR = '\['
@@ -54,22 +53,20 @@ t_EQUALS = r'=='
 t_DIFFERENT = r'!='
 t_MOD = r'%'
 t_GT = r'>'
-t_GTE = r'=>'
+t_GTE = r'>='
 t_LT = r'<'
 t_LTE = r'<='
 t_OR = r'\|\|'
 t_AND = r'&&'
 t_NOT = r'!'
-t_ASSIGN = r'='
-t_PLUSASSIGN = r'\+='
-t_MINUSASSIGN = r'-='
-t_MULTASSIGN = r'\*='
-t_DIVIDEASSIGN = r'/='
-t_MODASSIGN = r'%='
-t_TERNARY = r'\? :'
-# t_DOT = r'\.'
-t_STRING = r'\".*?\"'
-# Ignora tabs e espaços
+t_NEGUNARY = r'-'
+t_ASSING = r'='
+t_PLUSASSING = r'\+='
+t_MINUSASSING = r'-='
+t_MULTASSING = r'\*='
+t_DIVIDEASSING = r'/='
+t_MODASSING = r'%='
+t_STRING_LITERAL = r'\".*?\"'
 t_ignore = ' \t\v\r'
 
 
@@ -80,10 +77,8 @@ def t_id(t):
     return t
 
 
-# Verifica se existe comentário na(s) linha(s)
 def t_comment_multline(t):
     r'(/\*(.|\n)*?\*/)|(//.*)'
-    # ignora tudo que é comentario, porém em toda quebra de linha add +1
     t.lexer.lineno += t.value.count("\n")
     pass
 
@@ -121,28 +116,28 @@ def t_error(t):
     t.lexer.skip(1)
 
 
-# def buscar_arquivos():
-#     # verifica todos os arquivos do diretorio test
-#     arquivos = []
-#     numero_arquivo = ''
-#     resposta = False
-#     contador = 1
-#
-#     for base, dirs, files in os.walk('/Users/juliano/Workspace/Compiladores/test/'):
-#         arquivos.append(files)
-#
-#         for file in files:
-#             print(str(contador)+". "+file)
-#             contador += 1
-#
-#         if resposta is False:
-#             numero_arquivo = input('\nNúmero do Teste: ')
-#             for file in files:
-#                 if file == files[int(numero_arquivo)-1]:
-#                     break
-#             print("Você escolheu \"%s\" \n" % files[int(numero_arquivo)-1])
-#
-#             return files[int(numero_arquivo)-1]
+def buscar_arquivos():
+    # verifica todos os arquivos do diretorio test
+    arquivos = []
+    numero_arquivo = ''
+    resposta = False
+    contador = 1
+
+    for base, dirs, files in os.walk('/Users/juliano/Workspace/Compiladores/test/'):
+        arquivos.append(files)
+
+        for file in files:
+            print(str(contador)+". "+file)
+            contador += 1
+
+        if resposta is False:
+            numero_arquivo = input('\nNúmero do Teste: ')
+            for file in files:
+                if file == files[int(numero_arquivo)-1]:
+                    break
+            print("Você escolheu \"%s\" \n" % files[int(numero_arquivo)-1])
+
+            return files[int(numero_arquivo)-1]
 
 
 analisador_lexer = lex.lex()
@@ -183,6 +178,3 @@ def test_output_lexer(resultado):
         with open(resultado, 'a') as file:
             file.write(result + '\n')
             file.close()
-
-
-# test_output_lexer(escrever_arquivos_resultado(arquivo))

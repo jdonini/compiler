@@ -1,0 +1,4 @@
+while (i < n-1 && trocou) {
+  trocou = false;
+  i += 1;
+}
