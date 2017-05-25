@@ -4,6 +4,7 @@ import re
 import os
 import sys
 import datetime
+from utils import Utils
 
 # Funções seguindo o padrão da doc(http://www.dabeaz.com/ply/ply.html\ply_nn6)
 tokens = [
@@ -61,7 +62,6 @@ t_MODASSIGN = r'%='
 t_STRING_LITERAL = r'\".*?\"'
 t_ignore = ' \t\v\r'
 
-
 def t_id(t):
     r'[a-zA-Z_][a-zA-Z0-9_]*'
     t.type = reserved.get(t.value, 'ID')
@@ -105,56 +105,11 @@ def t_error(t):
     t.lexer.skip(1)
 
 
-path_files_test = '/Users/juliano/Workspace/Compiladores/test/'
-path_files_result = '/Users/juliano/Workspace/Compiladores/result/'
-
-
-def find_files(path_files_test):
-    archives = []
-    number_archives = ''
-    answer = False
-    count = 1
-
-    for base, dirs, files in os.walk(path_files_test):
-        archives.append(files)
-
-        for file in files:
-            print(str(count)+". "+file)
-            count += 1
-
-        if answer is False:
-            number_archives = input('\nNúmero do Teste: ')
-            for file in files:
-                if file == files[int(number_archives)-1]:
-                    break
-            print("Você escolheu \"%s\" \n" % files[int(number_archives)-1])
-
-            return files[int(number_archives)-1]
-
-
+path_files_test = '../test/'
+path_files_result = '../result/'
 analisador_lexico = lex.lex()
-archive = find_files(path_files_test)
-
-
-def find_files_test(archive, path_files_test):
-    test_directory = path_files_test
-    test = test_directory + archive
-    test_archive = open(test, "r")
-    input_string = test_archive.read()
-    test_archive.close()
-    return input_string
-
-
-analisador_lexico.input(find_files_test(archive, path_files_test))
-
-
-def save_archives_test(archive, path_files_result):
-    result_directory = path_files_result
-    time = datetime.datetime.now()
-    result = result_directory + archive + \
-        "__" + ("%s-%s-%s" % (time.day, time.month, time.year)) + \
-        "__" + ("%s:%s:%s" % (time.hour, time.minute, time.second)) + ".txt"
-    return result
+archive = Utils.find_files(path_files_test)
+analisador_lexico.input(Utils.find_files_test(archive, path_files_test))
 
 
 def test_output_lexer(result):
@@ -171,4 +126,4 @@ def test_output_lexer(result):
             file.close()
 
 
-test_output_lexer(save_archives_test(archive, path_files_result))
+test_output_lexer(Utils.save_archives_test(archive, path_files_result))

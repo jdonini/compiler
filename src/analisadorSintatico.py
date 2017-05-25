@@ -5,6 +5,7 @@ import os
 import codecs
 import re
 import datetime
+from utils import Utils
 from sys import stdin
 from analisadorLexico import tokens
 
@@ -425,44 +426,11 @@ def p_error(p):
     p.lexer.skip(1)
 
 
-path_files_test = '/Users/juliano/Workspace/Compiladores/test/'
-
-
-def find_files(path_files_test):
-    archives = []
-    number_archives = ''
-    answer = False
-    count = 1
-
-    for base, dirs, files in os.walk(path_files_test):
-        archives.append(files)
-
-        for file in files:
-            print(str(count)+". "+file)
-            count += 1
-
-        if answer is False:
-            number_archives = input('\nNúmero do Teste: ')
-            for file in files:
-                if file == files[int(number_archives)-1]:
-                    break
-            print("Você escolheu \"%s\" \n" % files[int(number_archives)-1])
-
-            return files[int(number_archives)-1]
-
-
-archive = find_files(path_files_test)
-
-
-def find_files_test(archive, path_files_test):
-    test_directory = path_files_test
-    test = test_directory + archive
-    test_archive = open(test, "r")
-    input_string = test_archive.read()
-    test_archive.close()
-    return input_string
-
-
+path_files_test = '../test/'
+path_files_result = '../result/'
+archive = Utils.find_files(path_files_test)
 parser = yacc.yacc()
-analisador_sintatico = parser.parse(find_files_test(archive, path_files_test))
+analisador_sintatico = parser.parse(Utils.find_files_test(archive, path_files_test))
+
+
 print (analisador_sintatico)
