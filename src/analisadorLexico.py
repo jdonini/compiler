@@ -12,7 +12,7 @@ tokens = [
     'OR', 'AND', 'NOT', 'ASSIGN', 'PLUSASSIGN', 'MINUSASSIGN', 'MULTASSIGN', 'DIVIDEASSIGN', 'MODASSIGN'
     ]
 
-palavras_reservadas = {
+reserved = {
     'if': 'IF',
     'else': 'ELSE',
     'while': 'WHILE',
@@ -27,7 +27,7 @@ palavras_reservadas = {
     'read': 'READ',
     'write': 'WRITE',
 }
-tokens += list(palavras_reservadas.values())
+tokens += list(reserved.values())
 
 t_LPAREN = r'\('
 t_RPAREN = r'\)'
@@ -64,7 +64,7 @@ t_ignore = ' \t\v\r'
 
 def t_id(t):
     r'[a-zA-Z_][a-zA-Z0-9_]*'
-    t.type = palavras_reservadas.get(t.value, 'ID')
+    t.type = reserved.get(t.value, 'ID')
     return t
 
 
@@ -105,63 +105,70 @@ def t_error(t):
     t.lexer.skip(1)
 
 
-def buscar_arquivos():
-    arquivos = []
-    numero_arquivo = ''
-    resposta = False
-    contador = 1
+path_files_test = '/Users/juliano/Workspace/Compiladores/test/'
+path_files_result = '/Users/juliano/Workspace/Compiladores/result/'
 
-    for base, dirs, files in os.walk('/Users/juliano/Workspace/Compiladores/test/'):
-        arquivos.append(files)
+
+def find_files(path_files_test):
+    archives = []
+    number_archives = ''
+    answer = False
+    count = 1
+
+    for base, dirs, files in os.walk(path_files_test):
+        archives.append(files)
 
         for file in files:
-            print(str(contador)+". "+file)
-            contador += 1
+            print(str(count)+". "+file)
+            count += 1
 
-        if resposta is False:
-            numero_arquivo = input('\nNúmero do Teste: ')
+        if answer is False:
+            number_archives = input('\nNúmero do Teste: ')
             for file in files:
-                if file == files[int(numero_arquivo)-1]:
+                if file == files[int(number_archives)-1]:
                     break
-            print("Você escolheu \"%s\" \n" % files[int(numero_arquivo)-1])
+            print("Você escolheu \"%s\" \n" % files[int(number_archives)-1])
 
-            return files[int(numero_arquivo)-1]
+            return files[int(number_archives)-1]
 
 
 analisador_lexico = lex.lex()
-arquivo = buscar_arquivos()
+archive = find_files(path_files_test)
 
 
-def buscar_arquivos_teste(arquivo):
-    diretorio_teste = '/Users/juliano/Workspace/Compiladores/test/'
-    teste = diretorio_teste + arquivo
-    arquivo_teste = open(teste, "r")
-    cadeia_caracteres = arquivo_teste.read()
-    arquivo_teste.close()
-    return cadeia_caracteres
+def find_files_test(archive, path_files_test):
+    test_directory = path_files_test
+    test = test_directory + archive
+    test_archive = open(test, "r")
+    input_string = test_archive.read()
+    test_archive.close()
+    return input_string
 
 
-analisador_lexico.input(buscar_arquivos_teste(arquivo))
+analisador_lexico.input(find_files_test(archive, path_files_test))
 
 
-def escrever_arquivos_resultado(arquivo):
-    diretorio_resultado = '/Users/juliano/Workspace/Compiladores/result/'
+def save_archives_test(archive, path_files_result):
+    result_directory = path_files_result
     time = datetime.datetime.now()
-    resultado = diretorio_resultado + arquivo + \
+    result = result_directory + archive + \
         "__" + ("%s-%s-%s" % (time.day, time.month, time.year)) + \
         "__" + ("%s:%s:%s" % (time.hour, time.minute, time.second)) + ".txt"
-    return resultado
+    return result
 
 
-def test_output_lexer(resultado):
+def test_output_lexer(result):
     while True:
         token = analisador_lexico.token()
         last_cr = lex.lexer.lexdata.rfind('\n', 0, lex.lexer.lexpos)
         column = lex.lexer.lexpos - last_cr - 1
         if not token:
             break
-        result = 'LexToken(Token: %s, Valor: %r, Linha: %d, Coluna: %d)' % (token.type, token.value, token.lineno, column)
-        print (result)
-        with open(resultado, 'a') as file:
-            file.write(result + '\n')
+        print_lexer = 'LexToken(Token: %s, Valor: %r, Linha: %d, Coluna: %d)' % (token.type, token.value, token.lineno, column)
+        print (print_lexer)
+        with open(result, 'a') as file:
+            file.write(print_lexer + '\n')
             file.close()
+
+
+test_output_lexer(save_archives_test(archive, path_files_result))

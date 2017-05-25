@@ -11,7 +11,7 @@ from analisadorLexico import tokens
 # a precedencia é definida de cima para baixo
 # baseado na definição da linguagem (versão 1.4)
 # os conflitos são resolvidos pela regra shift/reduce
-precedencia_tokens = (
+precedence_tokens = (
     ('right', '?'),
     ('left', 'OR'),
     ('left', 'AND'),
@@ -425,36 +425,44 @@ def p_error(p):
     p.lexer.skip(1)
 
 
-def buscar_arquivos(diretorio_teste):
-    arquivos = []
-    numero_arquivo = ''
-    resposta = False
-    contador = 1
+path_files_test = '/Users/juliano/Workspace/Compiladores/test/'
 
-    for base, dirs, files in os.walk(diretorio_teste):
-        arquivos.append(files)
+
+def find_files(path_files_test):
+    archives = []
+    number_archives = ''
+    answer = False
+    count = 1
+
+    for base, dirs, files in os.walk(path_files_test):
+        archives.append(files)
 
         for file in files:
-            print(str(contador)+". "+file)
-            contador += 1
+            print(str(count)+". "+file)
+            count += 1
 
-        if resposta is False:
-            numero_arquivo = input('\nNúmero do Teste: ')
+        if answer is False:
+            number_archives = input('\nNúmero do Teste: ')
             for file in files:
-                if file == files[int(numero_arquivo)-1]:
+                if file == files[int(number_archives)-1]:
                     break
-            print("Você escolheu \"%s\" \n" % files[int(numero_arquivo)-1])
+            print("Você escolheu \"%s\" \n" % files[int(number_archives)-1])
 
-            return files[int(numero_arquivo)-1]
+            return files[int(number_archives)-1]
 
 
-diretorio_teste = '/Users/juliano/Workspace/Compiladores/test/'
-arquivo = buscar_arquivos(diretorio_teste)
-teste = diretorio_teste + arquivo
-arquivo_teste = open(teste, "r")
-cadeia_caracteres = arquivo_teste.read()
-arquivo_teste.close()
+archive = find_files(path_files_test)
+
+
+def find_files_test(archive, path_files_test):
+    test_directory = path_files_test
+    test = test_directory + archive
+    test_archive = open(test, "r")
+    input_string = test_archive.read()
+    test_archive.close()
+    return input_string
+
 
 parser = yacc.yacc()
-analisadorSintatico = parser.parse(cadeia_caracteres)
-print (analisadorSintatico)
+analisador_sintatico = parser.parse(find_files_test(archive, path_files_test))
+print (analisador_sintatico)
