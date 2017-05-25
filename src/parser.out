@@ -9,9 +9,9 @@ Rule 3     dec -> ID LPAREN paramList RPAREN LKEY block RKEY
 Rule 4     dec -> type ID LPAREN paramList RPAREN LKEY block RKEY
 Rule 5     varDec -> type varSpecSeq SEMICOLON
 Rule 6     varSpec -> ID
-Rule 7     varSpec -> ID ASSING literal
+Rule 7     varSpec -> ID ASSIGN literal
 Rule 8     varSpec -> ID LCOR NUMBER RCOR
-Rule 9     varSpec -> ID LCOR NUMBER RCOR ASSING LKEY literalSeq RKEY
+Rule 9     varSpec -> ID LCOR NUMBER RCOR ASSIGN LKEY literalSeq RKEY
 Rule 10    type -> INT
 Rule 11    type -> STRING
 Rule 12    type -> BOOLEAN
@@ -25,24 +25,24 @@ Rule 19    stmt -> breakStmt
 Rule 20    stmt -> returnStmt
 Rule 21    stmt -> readStmt
 Rule 22    stmt -> writeStmt
-Rule 23    stmt -> assing SEMICOLON
+Rule 23    stmt -> assign SEMICOLON
 Rule 24    stmt -> subCall SEMICOLON
 Rule 25    ifStmt -> IF LPAREN exp RPAREN LKEY block RKEY
 Rule 26    ifStmt -> IF LPAREN exp RPAREN LKEY block RKEY ELSE LKEY block RKEY
 Rule 27    whileStmt -> WHILE LPAREN exp RPAREN LKEY block RKEY
-Rule 28    forStmt -> FOR LPAREN assing SEMICOLON exp SEMICOLON assing RPAREN LKEY block RKEY
+Rule 28    forStmt -> FOR LPAREN assign SEMICOLON exp SEMICOLON assign RPAREN LKEY block RKEY
 Rule 29    breakStmt -> BREAK SEMICOLON
 Rule 30    readStmt -> READ var SEMICOLON
 Rule 31    writeStmt -> WRITE expList SEMICOLON
 Rule 32    returnStmt -> RETURN SEMICOLON
 Rule 33    returnStmt -> RETURN exp SEMICOLON
 Rule 34    subCall -> ID LPAREN expList RPAREN
-Rule 35    assing -> var ASSING exp
-Rule 36    assing -> var PLUSASSING exp
-Rule 37    assing -> var MINUSASSING exp
-Rule 38    assing -> var MULTASSING exp
-Rule 39    assing -> var DIVIDEASSING exp
-Rule 40    assing -> var MODASSING exp
+Rule 35    assign -> var ASSIGN exp
+Rule 36    assign -> var PLUSASSIGN exp
+Rule 37    assign -> var MINUSASSIGN exp
+Rule 38    assign -> var MULTASSIGN exp
+Rule 39    assign -> var DIVIDEASSIGN exp
+Rule 40    assign -> var MODASSIGN exp
 Rule 41    exp -> exp PLUS exp
 Rule 42    exp -> exp MINUS exp
 Rule 43    exp -> exp MULT exp
@@ -57,7 +57,7 @@ Rule 51    exp -> exp LT exp
 Rule 52    exp -> exp AND exp
 Rule 53    exp -> exp OR exp
 Rule 54    exp -> NOT exp
-Rule 55    exp -> NEGUNARY exp
+Rule 55    exp -> UMINUS exp
 Rule 56    exp -> exp ? exp : exp
 Rule 57    exp -> subCall
 Rule 58    exp -> var
@@ -70,22 +70,22 @@ Rule 64    literal -> STRING_LITERAL
 Rule 65    literal -> FALSE
 Rule 66    literal -> TRUE
 Rule 67    paramList -> paramSeq
-Rule 68    paramList -> ε
+Rule 68    paramList -> empty
 Rule 69    program -> empty
 Rule 70    paramSeq -> param
 Rule 71    paramSeq -> param COMMA paramSeq
 Rule 72    varDecList -> varDec varDecList
-Rule 73    varDecList -> ε
+Rule 73    varDecList -> empty
 Rule 74    varSpecSeq -> varSpec
 Rule 75    varSpecSeq -> varSpec COMMA varSpecSeq
 Rule 76    decSeq -> dec
 Rule 77    decSeq -> dec decSeq
 Rule 78    stmtList -> stmt stmtList
-Rule 79    stmtList -> ε
+Rule 79    stmtList -> empty
 Rule 80    literalSeq -> literal
 Rule 81    literalSeq -> literal COMMA literalSeq
 Rule 82    expList -> expSeq
-Rule 83    expList -> ε
+Rule 83    expList -> empty
 Rule 84    expSeq -> exp
 Rule 85    expSeq -> exp COMMA expSeq
 Rule 86    empty -> <empty>
@@ -95,13 +95,13 @@ Terminals, with rules where they appear
 :                    : 56
 ?                    : 56
 AND                  : 52
-ASSING               : 7 9 35
+ASSIGN               : 7 9 35
 BOOLEAN              : 12
 BREAK                : 29
 COMMA                : 71 75 81 85
 DIFFERENT            : 47
 DIVIDE               : 44
-DIVIDEASSING         : 39
+DIVIDEASSIGN         : 39
 ELSE                 : 26
 EQUALS               : 46
 FALSE                : 65
@@ -117,17 +117,16 @@ LPAREN               : 3 4 25 26 27 28 34 60
 LT                   : 51
 LTE                  : 48
 MINUS                : 42
-MINUSASSING          : 37
+MINUSASSIGN          : 37
 MOD                  : 45
-MODASSING            : 40
+MODASSIGN            : 40
 MULT                 : 43
-MULTASSING           : 38
-NEGUNARY             : 55
+MULTASSIGN           : 38
 NOT                  : 54
 NUMBER               : 8 9 63
 OR                   : 53
 PLUS                 : 41
-PLUSASSING           : 36
+PLUSASSIGN           : 36
 RCOR                 : 8 9 14 62
 READ                 : 30
 RETURN               : 32 33
@@ -137,19 +136,19 @@ SEMICOLON            : 5 23 24 28 28 29 30 31 32 33
 STRING               : 11
 STRING_LITERAL       : 64
 TRUE                 : 66
+UMINUS               : 55
 WHILE                : 27
 WRITE                : 31
 error                : 
-ε                    : 68 73 79 83
 
 Nonterminals, with rules where they appear
 
-assing               : 23 28 28
+assign               : 23 28 28
 block                : 3 4 25 26 26 27 28
 breakStmt            : 19
 dec                  : 76 77
 decSeq               : 1 77
-empty                : 69
+empty                : 68 69 73 79 83
 exp                  : 25 26 27 28 33 35 36 37 38 39 40 41 41 42 42 43 43 44 44 45 45 46 46 47 47 48 48 49 49 50 50 51 51 52 52 53 53 54 55 56 56 56 60 62 84 85
 expList              : 31 34
 expSeq               : 82 85
@@ -276,9 +275,9 @@ state 7
     (74) varSpecSeq -> . varSpec
     (75) varSpecSeq -> . varSpec COMMA varSpecSeq
     (6) varSpec -> . ID
-    (7) varSpec -> . ID ASSING literal
+    (7) varSpec -> . ID ASSIGN literal
     (8) varSpec -> . ID LCOR NUMBER RCOR
-    (9) varSpec -> . ID LCOR NUMBER RCOR ASSING LKEY literalSeq RKEY
+    (9) varSpec -> . ID LCOR NUMBER RCOR ASSIGN LKEY literalSeq RKEY
 
     ID              shift and go to state 13
 
@@ -317,22 +316,24 @@ state 12
 
     (3) dec -> ID LPAREN . paramList RPAREN LKEY block RKEY
     (67) paramList -> . paramSeq
-    (68) paramList -> . ε
+    (68) paramList -> . empty
     (70) paramSeq -> . param
     (71) paramSeq -> . param COMMA paramSeq
+    (86) empty -> .
     (13) param -> . type ID
     (14) param -> . type ID RCOR LCOR
     (10) type -> . INT
     (11) type -> . STRING
     (12) type -> . BOOLEAN
 
-    ε               shift and go to state 18
+    RPAREN          reduce using rule 86 (empty -> .)
     INT             shift and go to state 8
     STRING          shift and go to state 9
     BOOLEAN         shift and go to state 10
 
     paramList                      shift and go to state 16
     paramSeq                       shift and go to state 17
+    empty                          shift and go to state 18
     param                          shift and go to state 19
     type                           shift and go to state 20
 
@@ -340,14 +341,14 @@ state 13
 
     (4) dec -> type ID . LPAREN paramList RPAREN LKEY block RKEY
     (6) varSpec -> ID .
-    (7) varSpec -> ID . ASSING literal
+    (7) varSpec -> ID . ASSIGN literal
     (8) varSpec -> ID . LCOR NUMBER RCOR
-    (9) varSpec -> ID . LCOR NUMBER RCOR ASSING LKEY literalSeq RKEY
+    (9) varSpec -> ID . LCOR NUMBER RCOR ASSIGN LKEY literalSeq RKEY
 
     LPAREN          shift and go to state 21
     COMMA           reduce using rule 6 (varSpec -> ID .)
     SEMICOLON       reduce using rule 6 (varSpec -> ID .)
-    ASSING          shift and go to state 22
+    ASSIGN          shift and go to state 22
     LCOR            shift and go to state 23
 
 
@@ -383,9 +384,9 @@ state 17
 
 state 18
 
-    (68) paramList -> ε .
+    (68) paramList -> empty .
 
-    RPAREN          reduce using rule 68 (paramList -> ε .)
+    RPAREN          reduce using rule 68 (paramList -> empty .)
 
 
 state 19
@@ -409,16 +410,17 @@ state 21
 
     (4) dec -> type ID LPAREN . paramList RPAREN LKEY block RKEY
     (67) paramList -> . paramSeq
-    (68) paramList -> . ε
+    (68) paramList -> . empty
     (70) paramSeq -> . param
     (71) paramSeq -> . param COMMA paramSeq
+    (86) empty -> .
     (13) param -> . type ID
     (14) param -> . type ID RCOR LCOR
     (10) type -> . INT
     (11) type -> . STRING
     (12) type -> . BOOLEAN
 
-    ε               shift and go to state 18
+    RPAREN          reduce using rule 86 (empty -> .)
     INT             shift and go to state 8
     STRING          shift and go to state 9
     BOOLEAN         shift and go to state 10
@@ -426,11 +428,12 @@ state 21
     type                           shift and go to state 20
     paramList                      shift and go to state 29
     paramSeq                       shift and go to state 17
+    empty                          shift and go to state 18
     param                          shift and go to state 19
 
 state 22
 
-    (7) varSpec -> ID ASSING . literal
+    (7) varSpec -> ID ASSIGN . literal
     (63) literal -> . NUMBER
     (64) literal -> . STRING_LITERAL
     (65) literal -> . FALSE
@@ -446,7 +449,7 @@ state 22
 state 23
 
     (8) varSpec -> ID LCOR . NUMBER RCOR
-    (9) varSpec -> ID LCOR . NUMBER RCOR ASSING LKEY literalSeq RKEY
+    (9) varSpec -> ID LCOR . NUMBER RCOR ASSIGN LKEY literalSeq RKEY
 
     NUMBER          shift and go to state 35
 
@@ -460,7 +463,14 @@ state 24
     STRING          reduce using rule 5 (varDec -> type varSpecSeq SEMICOLON .)
     BOOLEAN         reduce using rule 5 (varDec -> type varSpecSeq SEMICOLON .)
     $end            reduce using rule 5 (varDec -> type varSpecSeq SEMICOLON .)
-    ε               reduce using rule 5 (varDec -> type varSpecSeq SEMICOLON .)
+    IF              reduce using rule 5 (varDec -> type varSpecSeq SEMICOLON .)
+    WHILE           reduce using rule 5 (varDec -> type varSpecSeq SEMICOLON .)
+    FOR             reduce using rule 5 (varDec -> type varSpecSeq SEMICOLON .)
+    BREAK           reduce using rule 5 (varDec -> type varSpecSeq SEMICOLON .)
+    RETURN          reduce using rule 5 (varDec -> type varSpecSeq SEMICOLON .)
+    READ            reduce using rule 5 (varDec -> type varSpecSeq SEMICOLON .)
+    WRITE           reduce using rule 5 (varDec -> type varSpecSeq SEMICOLON .)
+    RKEY            reduce using rule 5 (varDec -> type varSpecSeq SEMICOLON .)
 
 
 state 25
@@ -469,9 +479,9 @@ state 25
     (74) varSpecSeq -> . varSpec
     (75) varSpecSeq -> . varSpec COMMA varSpecSeq
     (6) varSpec -> . ID
-    (7) varSpec -> . ID ASSING literal
+    (7) varSpec -> . ID ASSIGN literal
     (8) varSpec -> . ID LCOR NUMBER RCOR
-    (9) varSpec -> . ID LCOR NUMBER RCOR ASSING LKEY literalSeq RKEY
+    (9) varSpec -> . ID LCOR NUMBER RCOR ASSIGN LKEY literalSeq RKEY
 
     ID              shift and go to state 37
 
@@ -523,10 +533,10 @@ state 29
 
 state 30
 
-    (7) varSpec -> ID ASSING literal .
+    (7) varSpec -> ID ASSIGN literal .
 
-    COMMA           reduce using rule 7 (varSpec -> ID ASSING literal .)
-    SEMICOLON       reduce using rule 7 (varSpec -> ID ASSING literal .)
+    COMMA           reduce using rule 7 (varSpec -> ID ASSIGN literal .)
+    SEMICOLON       reduce using rule 7 (varSpec -> ID ASSIGN literal .)
 
 
 state 31
@@ -636,7 +646,7 @@ state 34
 state 35
 
     (8) varSpec -> ID LCOR NUMBER . RCOR
-    (9) varSpec -> ID LCOR NUMBER . RCOR ASSING LKEY literalSeq RKEY
+    (9) varSpec -> ID LCOR NUMBER . RCOR ASSIGN LKEY literalSeq RKEY
 
     RCOR            shift and go to state 42
 
@@ -651,13 +661,13 @@ state 36
 state 37
 
     (6) varSpec -> ID .
-    (7) varSpec -> ID . ASSING literal
+    (7) varSpec -> ID . ASSIGN literal
     (8) varSpec -> ID . LCOR NUMBER RCOR
-    (9) varSpec -> ID . LCOR NUMBER RCOR ASSING LKEY literalSeq RKEY
+    (9) varSpec -> ID . LCOR NUMBER RCOR ASSIGN LKEY literalSeq RKEY
 
     COMMA           reduce using rule 6 (varSpec -> ID .)
     SEMICOLON       reduce using rule 6 (varSpec -> ID .)
-    ASSING          shift and go to state 22
+    ASSIGN          shift and go to state 22
     LCOR            shift and go to state 23
 
 
@@ -666,13 +676,22 @@ state 38
     (3) dec -> ID LPAREN paramList RPAREN LKEY . block RKEY
     (15) block -> . varDecList stmtList
     (72) varDecList -> . varDec varDecList
-    (73) varDecList -> . ε
+    (73) varDecList -> . empty
     (5) varDec -> . type varSpecSeq SEMICOLON
+    (86) empty -> .
     (10) type -> . INT
     (11) type -> . STRING
     (12) type -> . BOOLEAN
 
-    ε               shift and go to state 46
+    IF              reduce using rule 86 (empty -> .)
+    WHILE           reduce using rule 86 (empty -> .)
+    FOR             reduce using rule 86 (empty -> .)
+    BREAK           reduce using rule 86 (empty -> .)
+    RETURN          reduce using rule 86 (empty -> .)
+    READ            reduce using rule 86 (empty -> .)
+    WRITE           reduce using rule 86 (empty -> .)
+    ID              reduce using rule 86 (empty -> .)
+    RKEY            reduce using rule 86 (empty -> .)
     INT             shift and go to state 8
     STRING          shift and go to state 9
     BOOLEAN         shift and go to state 10
@@ -680,6 +699,7 @@ state 38
     block                          shift and go to state 43
     varDecList                     shift and go to state 44
     varDec                         shift and go to state 45
+    empty                          shift and go to state 46
     type                           shift and go to state 47
 
 state 39
@@ -706,11 +726,11 @@ state 41
 state 42
 
     (8) varSpec -> ID LCOR NUMBER RCOR .
-    (9) varSpec -> ID LCOR NUMBER RCOR . ASSING LKEY literalSeq RKEY
+    (9) varSpec -> ID LCOR NUMBER RCOR . ASSIGN LKEY literalSeq RKEY
 
     COMMA           reduce using rule 8 (varSpec -> ID LCOR NUMBER RCOR .)
     SEMICOLON       reduce using rule 8 (varSpec -> ID LCOR NUMBER RCOR .)
-    ASSING          shift and go to state 50
+    ASSIGN          shift and go to state 50
 
 
 state 43
@@ -724,7 +744,7 @@ state 44
 
     (15) block -> varDecList . stmtList
     (78) stmtList -> . stmt stmtList
-    (79) stmtList -> . ε
+    (79) stmtList -> . empty
     (16) stmt -> . ifStmt
     (17) stmt -> . whileStmt
     (18) stmt -> . forStmt
@@ -732,28 +752,29 @@ state 44
     (20) stmt -> . returnStmt
     (21) stmt -> . readStmt
     (22) stmt -> . writeStmt
-    (23) stmt -> . assing SEMICOLON
+    (23) stmt -> . assign SEMICOLON
     (24) stmt -> . subCall SEMICOLON
+    (86) empty -> .
     (25) ifStmt -> . IF LPAREN exp RPAREN LKEY block RKEY
     (26) ifStmt -> . IF LPAREN exp RPAREN LKEY block RKEY ELSE LKEY block RKEY
     (27) whileStmt -> . WHILE LPAREN exp RPAREN LKEY block RKEY
-    (28) forStmt -> . FOR LPAREN assing SEMICOLON exp SEMICOLON assing RPAREN LKEY block RKEY
+    (28) forStmt -> . FOR LPAREN assign SEMICOLON exp SEMICOLON assign RPAREN LKEY block RKEY
     (29) breakStmt -> . BREAK SEMICOLON
     (32) returnStmt -> . RETURN SEMICOLON
     (33) returnStmt -> . RETURN exp SEMICOLON
     (30) readStmt -> . READ var SEMICOLON
     (31) writeStmt -> . WRITE expList SEMICOLON
-    (35) assing -> . var ASSING exp
-    (36) assing -> . var PLUSASSING exp
-    (37) assing -> . var MINUSASSING exp
-    (38) assing -> . var MULTASSING exp
-    (39) assing -> . var DIVIDEASSING exp
-    (40) assing -> . var MODASSING exp
+    (35) assign -> . var ASSIGN exp
+    (36) assign -> . var PLUSASSIGN exp
+    (37) assign -> . var MINUSASSIGN exp
+    (38) assign -> . var MULTASSIGN exp
+    (39) assign -> . var DIVIDEASSIGN exp
+    (40) assign -> . var MODASSIGN exp
     (34) subCall -> . ID LPAREN expList RPAREN
     (61) var -> . ID
     (62) var -> . ID LCOR exp RCOR
 
-    ε               shift and go to state 54
+    RKEY            reduce using rule 86 (empty -> .)
     IF              shift and go to state 64
     WHILE           shift and go to state 65
     FOR             shift and go to state 66
@@ -765,6 +786,7 @@ state 44
 
     stmtList                       shift and go to state 52
     stmt                           shift and go to state 53
+    empty                          shift and go to state 54
     ifStmt                         shift and go to state 55
     whileStmt                      shift and go to state 56
     forStmt                        shift and go to state 57
@@ -772,7 +794,7 @@ state 44
     returnStmt                     shift and go to state 59
     readStmt                       shift and go to state 60
     writeStmt                      shift and go to state 61
-    assing                         shift and go to state 62
+    assign                         shift and go to state 62
     subCall                        shift and go to state 63
     var                            shift and go to state 70
 
@@ -780,34 +802,44 @@ state 45
 
     (72) varDecList -> varDec . varDecList
     (72) varDecList -> . varDec varDecList
-    (73) varDecList -> . ε
+    (73) varDecList -> . empty
     (5) varDec -> . type varSpecSeq SEMICOLON
+    (86) empty -> .
     (10) type -> . INT
     (11) type -> . STRING
     (12) type -> . BOOLEAN
 
-    ε               shift and go to state 46
+    IF              reduce using rule 86 (empty -> .)
+    WHILE           reduce using rule 86 (empty -> .)
+    FOR             reduce using rule 86 (empty -> .)
+    BREAK           reduce using rule 86 (empty -> .)
+    RETURN          reduce using rule 86 (empty -> .)
+    READ            reduce using rule 86 (empty -> .)
+    WRITE           reduce using rule 86 (empty -> .)
+    ID              reduce using rule 86 (empty -> .)
+    RKEY            reduce using rule 86 (empty -> .)
     INT             shift and go to state 8
     STRING          shift and go to state 9
     BOOLEAN         shift and go to state 10
 
     varDec                         shift and go to state 45
     varDecList                     shift and go to state 73
+    empty                          shift and go to state 46
     type                           shift and go to state 47
 
 state 46
 
-    (73) varDecList -> ε .
+    (73) varDecList -> empty .
 
-    ε               reduce using rule 73 (varDecList -> ε .)
-    IF              reduce using rule 73 (varDecList -> ε .)
-    WHILE           reduce using rule 73 (varDecList -> ε .)
-    FOR             reduce using rule 73 (varDecList -> ε .)
-    BREAK           reduce using rule 73 (varDecList -> ε .)
-    RETURN          reduce using rule 73 (varDecList -> ε .)
-    READ            reduce using rule 73 (varDecList -> ε .)
-    WRITE           reduce using rule 73 (varDecList -> ε .)
-    ID              reduce using rule 73 (varDecList -> ε .)
+    IF              reduce using rule 73 (varDecList -> empty .)
+    WHILE           reduce using rule 73 (varDecList -> empty .)
+    FOR             reduce using rule 73 (varDecList -> empty .)
+    BREAK           reduce using rule 73 (varDecList -> empty .)
+    RETURN          reduce using rule 73 (varDecList -> empty .)
+    READ            reduce using rule 73 (varDecList -> empty .)
+    WRITE           reduce using rule 73 (varDecList -> empty .)
+    ID              reduce using rule 73 (varDecList -> empty .)
+    RKEY            reduce using rule 73 (varDecList -> empty .)
 
 
 state 47
@@ -816,9 +848,9 @@ state 47
     (74) varSpecSeq -> . varSpec
     (75) varSpecSeq -> . varSpec COMMA varSpecSeq
     (6) varSpec -> . ID
-    (7) varSpec -> . ID ASSING literal
+    (7) varSpec -> . ID ASSIGN literal
     (8) varSpec -> . ID LCOR NUMBER RCOR
-    (9) varSpec -> . ID LCOR NUMBER RCOR ASSING LKEY literalSeq RKEY
+    (9) varSpec -> . ID LCOR NUMBER RCOR ASSIGN LKEY literalSeq RKEY
 
     ID              shift and go to state 37
 
@@ -838,13 +870,22 @@ state 49
     (4) dec -> type ID LPAREN paramList RPAREN LKEY . block RKEY
     (15) block -> . varDecList stmtList
     (72) varDecList -> . varDec varDecList
-    (73) varDecList -> . ε
+    (73) varDecList -> . empty
     (5) varDec -> . type varSpecSeq SEMICOLON
+    (86) empty -> .
     (10) type -> . INT
     (11) type -> . STRING
     (12) type -> . BOOLEAN
 
-    ε               shift and go to state 46
+    IF              reduce using rule 86 (empty -> .)
+    WHILE           reduce using rule 86 (empty -> .)
+    FOR             reduce using rule 86 (empty -> .)
+    BREAK           reduce using rule 86 (empty -> .)
+    RETURN          reduce using rule 86 (empty -> .)
+    READ            reduce using rule 86 (empty -> .)
+    WRITE           reduce using rule 86 (empty -> .)
+    ID              reduce using rule 86 (empty -> .)
+    RKEY            reduce using rule 86 (empty -> .)
     INT             shift and go to state 8
     STRING          shift and go to state 9
     BOOLEAN         shift and go to state 10
@@ -853,10 +894,11 @@ state 49
     block                          shift and go to state 74
     varDecList                     shift and go to state 44
     varDec                         shift and go to state 45
+    empty                          shift and go to state 46
 
 state 50
 
-    (9) varSpec -> ID LCOR NUMBER RCOR ASSING . LKEY literalSeq RKEY
+    (9) varSpec -> ID LCOR NUMBER RCOR ASSIGN . LKEY literalSeq RKEY
 
     LKEY            shift and go to state 75
 
@@ -883,7 +925,7 @@ state 53
 
     (78) stmtList -> stmt . stmtList
     (78) stmtList -> . stmt stmtList
-    (79) stmtList -> . ε
+    (79) stmtList -> . empty
     (16) stmt -> . ifStmt
     (17) stmt -> . whileStmt
     (18) stmt -> . forStmt
@@ -891,28 +933,29 @@ state 53
     (20) stmt -> . returnStmt
     (21) stmt -> . readStmt
     (22) stmt -> . writeStmt
-    (23) stmt -> . assing SEMICOLON
+    (23) stmt -> . assign SEMICOLON
     (24) stmt -> . subCall SEMICOLON
+    (86) empty -> .
     (25) ifStmt -> . IF LPAREN exp RPAREN LKEY block RKEY
     (26) ifStmt -> . IF LPAREN exp RPAREN LKEY block RKEY ELSE LKEY block RKEY
     (27) whileStmt -> . WHILE LPAREN exp RPAREN LKEY block RKEY
-    (28) forStmt -> . FOR LPAREN assing SEMICOLON exp SEMICOLON assing RPAREN LKEY block RKEY
+    (28) forStmt -> . FOR LPAREN assign SEMICOLON exp SEMICOLON assign RPAREN LKEY block RKEY
     (29) breakStmt -> . BREAK SEMICOLON
     (32) returnStmt -> . RETURN SEMICOLON
     (33) returnStmt -> . RETURN exp SEMICOLON
     (30) readStmt -> . READ var SEMICOLON
     (31) writeStmt -> . WRITE expList SEMICOLON
-    (35) assing -> . var ASSING exp
-    (36) assing -> . var PLUSASSING exp
-    (37) assing -> . var MINUSASSING exp
-    (38) assing -> . var MULTASSING exp
-    (39) assing -> . var DIVIDEASSING exp
-    (40) assing -> . var MODASSING exp
+    (35) assign -> . var ASSIGN exp
+    (36) assign -> . var PLUSASSIGN exp
+    (37) assign -> . var MINUSASSIGN exp
+    (38) assign -> . var MULTASSIGN exp
+    (39) assign -> . var DIVIDEASSIGN exp
+    (40) assign -> . var MODASSIGN exp
     (34) subCall -> . ID LPAREN expList RPAREN
     (61) var -> . ID
     (62) var -> . ID LCOR exp RCOR
 
-    ε               shift and go to state 54
+    RKEY            reduce using rule 86 (empty -> .)
     IF              shift and go to state 64
     WHILE           shift and go to state 65
     FOR             shift and go to state 66
@@ -924,6 +967,7 @@ state 53
 
     stmt                           shift and go to state 53
     stmtList                       shift and go to state 76
+    empty                          shift and go to state 54
     ifStmt                         shift and go to state 55
     whileStmt                      shift and go to state 56
     forStmt                        shift and go to state 57
@@ -931,22 +975,21 @@ state 53
     returnStmt                     shift and go to state 59
     readStmt                       shift and go to state 60
     writeStmt                      shift and go to state 61
-    assing                         shift and go to state 62
+    assign                         shift and go to state 62
     subCall                        shift and go to state 63
     var                            shift and go to state 70
 
 state 54
 
-    (79) stmtList -> ε .
+    (79) stmtList -> empty .
 
-    RKEY            reduce using rule 79 (stmtList -> ε .)
+    RKEY            reduce using rule 79 (stmtList -> empty .)
 
 
 state 55
 
     (16) stmt -> ifStmt .
 
-    ε               reduce using rule 16 (stmt -> ifStmt .)
     IF              reduce using rule 16 (stmt -> ifStmt .)
     WHILE           reduce using rule 16 (stmt -> ifStmt .)
     FOR             reduce using rule 16 (stmt -> ifStmt .)
@@ -955,13 +998,13 @@ state 55
     READ            reduce using rule 16 (stmt -> ifStmt .)
     WRITE           reduce using rule 16 (stmt -> ifStmt .)
     ID              reduce using rule 16 (stmt -> ifStmt .)
+    RKEY            reduce using rule 16 (stmt -> ifStmt .)
 
 
 state 56
 
     (17) stmt -> whileStmt .
 
-    ε               reduce using rule 17 (stmt -> whileStmt .)
     IF              reduce using rule 17 (stmt -> whileStmt .)
     WHILE           reduce using rule 17 (stmt -> whileStmt .)
     FOR             reduce using rule 17 (stmt -> whileStmt .)
@@ -970,13 +1013,13 @@ state 56
     READ            reduce using rule 17 (stmt -> whileStmt .)
     WRITE           reduce using rule 17 (stmt -> whileStmt .)
     ID              reduce using rule 17 (stmt -> whileStmt .)
+    RKEY            reduce using rule 17 (stmt -> whileStmt .)
 
 
 state 57
 
     (18) stmt -> forStmt .
 
-    ε               reduce using rule 18 (stmt -> forStmt .)
     IF              reduce using rule 18 (stmt -> forStmt .)
     WHILE           reduce using rule 18 (stmt -> forStmt .)
     FOR             reduce using rule 18 (stmt -> forStmt .)
@@ -985,13 +1028,13 @@ state 57
     READ            reduce using rule 18 (stmt -> forStmt .)
     WRITE           reduce using rule 18 (stmt -> forStmt .)
     ID              reduce using rule 18 (stmt -> forStmt .)
+    RKEY            reduce using rule 18 (stmt -> forStmt .)
 
 
 state 58
 
     (19) stmt -> breakStmt .
 
-    ε               reduce using rule 19 (stmt -> breakStmt .)
     IF              reduce using rule 19 (stmt -> breakStmt .)
     WHILE           reduce using rule 19 (stmt -> breakStmt .)
     FOR             reduce using rule 19 (stmt -> breakStmt .)
@@ -1000,13 +1043,13 @@ state 58
     READ            reduce using rule 19 (stmt -> breakStmt .)
     WRITE           reduce using rule 19 (stmt -> breakStmt .)
     ID              reduce using rule 19 (stmt -> breakStmt .)
+    RKEY            reduce using rule 19 (stmt -> breakStmt .)
 
 
 state 59
 
     (20) stmt -> returnStmt .
 
-    ε               reduce using rule 20 (stmt -> returnStmt .)
     IF              reduce using rule 20 (stmt -> returnStmt .)
     WHILE           reduce using rule 20 (stmt -> returnStmt .)
     FOR             reduce using rule 20 (stmt -> returnStmt .)
@@ -1015,13 +1058,13 @@ state 59
     READ            reduce using rule 20 (stmt -> returnStmt .)
     WRITE           reduce using rule 20 (stmt -> returnStmt .)
     ID              reduce using rule 20 (stmt -> returnStmt .)
+    RKEY            reduce using rule 20 (stmt -> returnStmt .)
 
 
 state 60
 
     (21) stmt -> readStmt .
 
-    ε               reduce using rule 21 (stmt -> readStmt .)
     IF              reduce using rule 21 (stmt -> readStmt .)
     WHILE           reduce using rule 21 (stmt -> readStmt .)
     FOR             reduce using rule 21 (stmt -> readStmt .)
@@ -1030,13 +1073,13 @@ state 60
     READ            reduce using rule 21 (stmt -> readStmt .)
     WRITE           reduce using rule 21 (stmt -> readStmt .)
     ID              reduce using rule 21 (stmt -> readStmt .)
+    RKEY            reduce using rule 21 (stmt -> readStmt .)
 
 
 state 61
 
     (22) stmt -> writeStmt .
 
-    ε               reduce using rule 22 (stmt -> writeStmt .)
     IF              reduce using rule 22 (stmt -> writeStmt .)
     WHILE           reduce using rule 22 (stmt -> writeStmt .)
     FOR             reduce using rule 22 (stmt -> writeStmt .)
@@ -1045,11 +1088,12 @@ state 61
     READ            reduce using rule 22 (stmt -> writeStmt .)
     WRITE           reduce using rule 22 (stmt -> writeStmt .)
     ID              reduce using rule 22 (stmt -> writeStmt .)
+    RKEY            reduce using rule 22 (stmt -> writeStmt .)
 
 
 state 62
 
-    (23) stmt -> assing . SEMICOLON
+    (23) stmt -> assign . SEMICOLON
 
     SEMICOLON       shift and go to state 77
 
@@ -1078,7 +1122,7 @@ state 65
 
 state 66
 
-    (28) forStmt -> FOR . LPAREN assing SEMICOLON exp SEMICOLON assing RPAREN LKEY block RKEY
+    (28) forStmt -> FOR . LPAREN assign SEMICOLON exp SEMICOLON assign RPAREN LKEY block RKEY
 
     LPAREN          shift and go to state 81
 
@@ -1108,7 +1152,7 @@ state 68
     (52) exp -> . exp AND exp
     (53) exp -> . exp OR exp
     (54) exp -> . NOT exp
-    (55) exp -> . NEGUNARY exp
+    (55) exp -> . UMINUS exp
     (56) exp -> . exp ? exp : exp
     (57) exp -> . subCall
     (58) exp -> . var
@@ -1124,7 +1168,7 @@ state 68
 
     SEMICOLON       shift and go to state 83
     NOT             shift and go to state 85
-    NEGUNARY        shift and go to state 86
+    UMINUS          shift and go to state 86
     LPAREN          shift and go to state 90
     ID              shift and go to state 72
     NUMBER          shift and go to state 31
@@ -1149,28 +1193,29 @@ state 69
 
 state 70
 
-    (35) assing -> var . ASSING exp
-    (36) assing -> var . PLUSASSING exp
-    (37) assing -> var . MINUSASSING exp
-    (38) assing -> var . MULTASSING exp
-    (39) assing -> var . DIVIDEASSING exp
-    (40) assing -> var . MODASSING exp
+    (35) assign -> var . ASSIGN exp
+    (36) assign -> var . PLUSASSIGN exp
+    (37) assign -> var . MINUSASSIGN exp
+    (38) assign -> var . MULTASSIGN exp
+    (39) assign -> var . DIVIDEASSIGN exp
+    (40) assign -> var . MODASSIGN exp
 
-    ASSING          shift and go to state 93
-    PLUSASSING      shift and go to state 94
-    MINUSASSING     shift and go to state 95
-    MULTASSING      shift and go to state 96
-    DIVIDEASSING    shift and go to state 97
-    MODASSING       shift and go to state 98
+    ASSIGN          shift and go to state 93
+    PLUSASSIGN      shift and go to state 94
+    MINUSASSIGN     shift and go to state 95
+    MULTASSIGN      shift and go to state 96
+    DIVIDEASSIGN    shift and go to state 97
+    MODASSIGN       shift and go to state 98
 
 
 state 71
 
     (31) writeStmt -> WRITE . expList SEMICOLON
     (82) expList -> . expSeq
-    (83) expList -> . ε
+    (83) expList -> . empty
     (84) expSeq -> . exp
     (85) expSeq -> . exp COMMA expSeq
+    (86) empty -> .
     (41) exp -> . exp PLUS exp
     (42) exp -> . exp MINUS exp
     (43) exp -> . exp MULT exp
@@ -1185,7 +1230,7 @@ state 71
     (52) exp -> . exp AND exp
     (53) exp -> . exp OR exp
     (54) exp -> . NOT exp
-    (55) exp -> . NEGUNARY exp
+    (55) exp -> . UMINUS exp
     (56) exp -> . exp ? exp : exp
     (57) exp -> . subCall
     (58) exp -> . var
@@ -1199,9 +1244,9 @@ state 71
     (65) literal -> . FALSE
     (66) literal -> . TRUE
 
-    ε               shift and go to state 101
+    SEMICOLON       reduce using rule 86 (empty -> .)
     NOT             shift and go to state 85
-    NEGUNARY        shift and go to state 86
+    UMINUS          shift and go to state 86
     LPAREN          shift and go to state 90
     ID              shift and go to state 72
     NUMBER          shift and go to state 31
@@ -1211,6 +1256,7 @@ state 71
 
     expList                        shift and go to state 99
     expSeq                         shift and go to state 100
+    empty                          shift and go to state 101
     exp                            shift and go to state 102
     subCall                        shift and go to state 87
     var                            shift and go to state 88
@@ -1223,12 +1269,12 @@ state 72
     (62) var -> ID . LCOR exp RCOR
 
     LPAREN          shift and go to state 103
-    ASSING          reduce using rule 61 (var -> ID .)
-    PLUSASSING      reduce using rule 61 (var -> ID .)
-    MINUSASSING     reduce using rule 61 (var -> ID .)
-    MULTASSING      reduce using rule 61 (var -> ID .)
-    DIVIDEASSING    reduce using rule 61 (var -> ID .)
-    MODASSING       reduce using rule 61 (var -> ID .)
+    ASSIGN          reduce using rule 61 (var -> ID .)
+    PLUSASSIGN      reduce using rule 61 (var -> ID .)
+    MINUSASSIGN     reduce using rule 61 (var -> ID .)
+    MULTASSIGN      reduce using rule 61 (var -> ID .)
+    DIVIDEASSIGN    reduce using rule 61 (var -> ID .)
+    MODASSIGN       reduce using rule 61 (var -> ID .)
     SEMICOLON       reduce using rule 61 (var -> ID .)
     PLUS            reduce using rule 61 (var -> ID .)
     MINUS           reduce using rule 61 (var -> ID .)
@@ -1255,7 +1301,6 @@ state 73
 
     (72) varDecList -> varDec varDecList .
 
-    ε               reduce using rule 72 (varDecList -> varDec varDecList .)
     IF              reduce using rule 72 (varDecList -> varDec varDecList .)
     WHILE           reduce using rule 72 (varDecList -> varDec varDecList .)
     FOR             reduce using rule 72 (varDecList -> varDec varDecList .)
@@ -1264,6 +1309,7 @@ state 73
     READ            reduce using rule 72 (varDecList -> varDec varDecList .)
     WRITE           reduce using rule 72 (varDecList -> varDec varDecList .)
     ID              reduce using rule 72 (varDecList -> varDec varDecList .)
+    RKEY            reduce using rule 72 (varDecList -> varDec varDecList .)
 
 
 state 74
@@ -1275,7 +1321,7 @@ state 74
 
 state 75
 
-    (9) varSpec -> ID LCOR NUMBER RCOR ASSING LKEY . literalSeq RKEY
+    (9) varSpec -> ID LCOR NUMBER RCOR ASSIGN LKEY . literalSeq RKEY
     (80) literalSeq -> . literal
     (81) literalSeq -> . literal COMMA literalSeq
     (63) literal -> . NUMBER
@@ -1300,24 +1346,23 @@ state 76
 
 state 77
 
-    (23) stmt -> assing SEMICOLON .
+    (23) stmt -> assign SEMICOLON .
 
-    ε               reduce using rule 23 (stmt -> assing SEMICOLON .)
-    IF              reduce using rule 23 (stmt -> assing SEMICOLON .)
-    WHILE           reduce using rule 23 (stmt -> assing SEMICOLON .)
-    FOR             reduce using rule 23 (stmt -> assing SEMICOLON .)
-    BREAK           reduce using rule 23 (stmt -> assing SEMICOLON .)
-    RETURN          reduce using rule 23 (stmt -> assing SEMICOLON .)
-    READ            reduce using rule 23 (stmt -> assing SEMICOLON .)
-    WRITE           reduce using rule 23 (stmt -> assing SEMICOLON .)
-    ID              reduce using rule 23 (stmt -> assing SEMICOLON .)
+    IF              reduce using rule 23 (stmt -> assign SEMICOLON .)
+    WHILE           reduce using rule 23 (stmt -> assign SEMICOLON .)
+    FOR             reduce using rule 23 (stmt -> assign SEMICOLON .)
+    BREAK           reduce using rule 23 (stmt -> assign SEMICOLON .)
+    RETURN          reduce using rule 23 (stmt -> assign SEMICOLON .)
+    READ            reduce using rule 23 (stmt -> assign SEMICOLON .)
+    WRITE           reduce using rule 23 (stmt -> assign SEMICOLON .)
+    ID              reduce using rule 23 (stmt -> assign SEMICOLON .)
+    RKEY            reduce using rule 23 (stmt -> assign SEMICOLON .)
 
 
 state 78
 
     (24) stmt -> subCall SEMICOLON .
 
-    ε               reduce using rule 24 (stmt -> subCall SEMICOLON .)
     IF              reduce using rule 24 (stmt -> subCall SEMICOLON .)
     WHILE           reduce using rule 24 (stmt -> subCall SEMICOLON .)
     FOR             reduce using rule 24 (stmt -> subCall SEMICOLON .)
@@ -1326,6 +1371,7 @@ state 78
     READ            reduce using rule 24 (stmt -> subCall SEMICOLON .)
     WRITE           reduce using rule 24 (stmt -> subCall SEMICOLON .)
     ID              reduce using rule 24 (stmt -> subCall SEMICOLON .)
+    RKEY            reduce using rule 24 (stmt -> subCall SEMICOLON .)
 
 
 state 79
@@ -1346,7 +1392,7 @@ state 79
     (52) exp -> . exp AND exp
     (53) exp -> . exp OR exp
     (54) exp -> . NOT exp
-    (55) exp -> . NEGUNARY exp
+    (55) exp -> . UMINUS exp
     (56) exp -> . exp ? exp : exp
     (57) exp -> . subCall
     (58) exp -> . var
@@ -1361,7 +1407,7 @@ state 79
     (66) literal -> . TRUE
 
     NOT             shift and go to state 85
-    NEGUNARY        shift and go to state 86
+    UMINUS          shift and go to state 86
     LPAREN          shift and go to state 90
     ID              shift and go to state 72
     NUMBER          shift and go to state 31
@@ -1391,7 +1437,7 @@ state 80
     (52) exp -> . exp AND exp
     (53) exp -> . exp OR exp
     (54) exp -> . NOT exp
-    (55) exp -> . NEGUNARY exp
+    (55) exp -> . UMINUS exp
     (56) exp -> . exp ? exp : exp
     (57) exp -> . subCall
     (58) exp -> . var
@@ -1406,7 +1452,7 @@ state 80
     (66) literal -> . TRUE
 
     NOT             shift and go to state 85
-    NEGUNARY        shift and go to state 86
+    UMINUS          shift and go to state 86
     LPAREN          shift and go to state 90
     ID              shift and go to state 72
     NUMBER          shift and go to state 31
@@ -1421,26 +1467,25 @@ state 80
 
 state 81
 
-    (28) forStmt -> FOR LPAREN . assing SEMICOLON exp SEMICOLON assing RPAREN LKEY block RKEY
-    (35) assing -> . var ASSING exp
-    (36) assing -> . var PLUSASSING exp
-    (37) assing -> . var MINUSASSING exp
-    (38) assing -> . var MULTASSING exp
-    (39) assing -> . var DIVIDEASSING exp
-    (40) assing -> . var MODASSING exp
+    (28) forStmt -> FOR LPAREN . assign SEMICOLON exp SEMICOLON assign RPAREN LKEY block RKEY
+    (35) assign -> . var ASSIGN exp
+    (36) assign -> . var PLUSASSIGN exp
+    (37) assign -> . var MINUSASSIGN exp
+    (38) assign -> . var MULTASSIGN exp
+    (39) assign -> . var DIVIDEASSIGN exp
+    (40) assign -> . var MODASSIGN exp
     (61) var -> . ID
     (62) var -> . ID LCOR exp RCOR
 
     ID              shift and go to state 92
 
-    assing                         shift and go to state 110
+    assign                         shift and go to state 110
     var                            shift and go to state 70
 
 state 82
 
     (29) breakStmt -> BREAK SEMICOLON .
 
-    ε               reduce using rule 29 (breakStmt -> BREAK SEMICOLON .)
     IF              reduce using rule 29 (breakStmt -> BREAK SEMICOLON .)
     WHILE           reduce using rule 29 (breakStmt -> BREAK SEMICOLON .)
     FOR             reduce using rule 29 (breakStmt -> BREAK SEMICOLON .)
@@ -1449,13 +1494,13 @@ state 82
     READ            reduce using rule 29 (breakStmt -> BREAK SEMICOLON .)
     WRITE           reduce using rule 29 (breakStmt -> BREAK SEMICOLON .)
     ID              reduce using rule 29 (breakStmt -> BREAK SEMICOLON .)
+    RKEY            reduce using rule 29 (breakStmt -> BREAK SEMICOLON .)
 
 
 state 83
 
     (32) returnStmt -> RETURN SEMICOLON .
 
-    ε               reduce using rule 32 (returnStmt -> RETURN SEMICOLON .)
     IF              reduce using rule 32 (returnStmt -> RETURN SEMICOLON .)
     WHILE           reduce using rule 32 (returnStmt -> RETURN SEMICOLON .)
     FOR             reduce using rule 32 (returnStmt -> RETURN SEMICOLON .)
@@ -1464,6 +1509,7 @@ state 83
     READ            reduce using rule 32 (returnStmt -> RETURN SEMICOLON .)
     WRITE           reduce using rule 32 (returnStmt -> RETURN SEMICOLON .)
     ID              reduce using rule 32 (returnStmt -> RETURN SEMICOLON .)
+    RKEY            reduce using rule 32 (returnStmt -> RETURN SEMICOLON .)
 
 
 state 84
@@ -1518,7 +1564,7 @@ state 85
     (52) exp -> . exp AND exp
     (53) exp -> . exp OR exp
     (54) exp -> . NOT exp
-    (55) exp -> . NEGUNARY exp
+    (55) exp -> . UMINUS exp
     (56) exp -> . exp ? exp : exp
     (57) exp -> . subCall
     (58) exp -> . var
@@ -1533,7 +1579,7 @@ state 85
     (66) literal -> . TRUE
 
     NOT             shift and go to state 85
-    NEGUNARY        shift and go to state 86
+    UMINUS          shift and go to state 86
     LPAREN          shift and go to state 90
     ID              shift and go to state 72
     NUMBER          shift and go to state 31
@@ -1548,7 +1594,7 @@ state 85
 
 state 86
 
-    (55) exp -> NEGUNARY . exp
+    (55) exp -> UMINUS . exp
     (41) exp -> . exp PLUS exp
     (42) exp -> . exp MINUS exp
     (43) exp -> . exp MULT exp
@@ -1563,7 +1609,7 @@ state 86
     (52) exp -> . exp AND exp
     (53) exp -> . exp OR exp
     (54) exp -> . NOT exp
-    (55) exp -> . NEGUNARY exp
+    (55) exp -> . UMINUS exp
     (56) exp -> . exp ? exp : exp
     (57) exp -> . subCall
     (58) exp -> . var
@@ -1578,7 +1624,7 @@ state 86
     (66) literal -> . TRUE
 
     NOT             shift and go to state 85
-    NEGUNARY        shift and go to state 86
+    UMINUS          shift and go to state 86
     LPAREN          shift and go to state 90
     ID              shift and go to state 72
     NUMBER          shift and go to state 31
@@ -1683,7 +1729,7 @@ state 90
     (52) exp -> . exp AND exp
     (53) exp -> . exp OR exp
     (54) exp -> . NOT exp
-    (55) exp -> . NEGUNARY exp
+    (55) exp -> . UMINUS exp
     (56) exp -> . exp ? exp : exp
     (57) exp -> . subCall
     (58) exp -> . var
@@ -1698,7 +1744,7 @@ state 90
     (66) literal -> . TRUE
 
     NOT             shift and go to state 85
-    NEGUNARY        shift and go to state 86
+    UMINUS          shift and go to state 86
     LPAREN          shift and go to state 90
     ID              shift and go to state 72
     NUMBER          shift and go to state 31
@@ -1724,18 +1770,18 @@ state 92
     (62) var -> ID . LCOR exp RCOR
 
     SEMICOLON       reduce using rule 61 (var -> ID .)
-    ASSING          reduce using rule 61 (var -> ID .)
-    PLUSASSING      reduce using rule 61 (var -> ID .)
-    MINUSASSING     reduce using rule 61 (var -> ID .)
-    MULTASSING      reduce using rule 61 (var -> ID .)
-    DIVIDEASSING    reduce using rule 61 (var -> ID .)
-    MODASSING       reduce using rule 61 (var -> ID .)
+    ASSIGN          reduce using rule 61 (var -> ID .)
+    PLUSASSIGN      reduce using rule 61 (var -> ID .)
+    MINUSASSIGN     reduce using rule 61 (var -> ID .)
+    MULTASSIGN      reduce using rule 61 (var -> ID .)
+    DIVIDEASSIGN    reduce using rule 61 (var -> ID .)
+    MODASSIGN       reduce using rule 61 (var -> ID .)
     LCOR            shift and go to state 104
 
 
 state 93
 
-    (35) assing -> var ASSING . exp
+    (35) assign -> var ASSIGN . exp
     (41) exp -> . exp PLUS exp
     (42) exp -> . exp MINUS exp
     (43) exp -> . exp MULT exp
@@ -1750,7 +1796,7 @@ state 93
     (52) exp -> . exp AND exp
     (53) exp -> . exp OR exp
     (54) exp -> . NOT exp
-    (55) exp -> . NEGUNARY exp
+    (55) exp -> . UMINUS exp
     (56) exp -> . exp ? exp : exp
     (57) exp -> . subCall
     (58) exp -> . var
@@ -1765,7 +1811,7 @@ state 93
     (66) literal -> . TRUE
 
     NOT             shift and go to state 85
-    NEGUNARY        shift and go to state 86
+    UMINUS          shift and go to state 86
     LPAREN          shift and go to state 90
     ID              shift and go to state 72
     NUMBER          shift and go to state 31
@@ -1780,7 +1826,7 @@ state 93
 
 state 94
 
-    (36) assing -> var PLUSASSING . exp
+    (36) assign -> var PLUSASSIGN . exp
     (41) exp -> . exp PLUS exp
     (42) exp -> . exp MINUS exp
     (43) exp -> . exp MULT exp
@@ -1795,7 +1841,7 @@ state 94
     (52) exp -> . exp AND exp
     (53) exp -> . exp OR exp
     (54) exp -> . NOT exp
-    (55) exp -> . NEGUNARY exp
+    (55) exp -> . UMINUS exp
     (56) exp -> . exp ? exp : exp
     (57) exp -> . subCall
     (58) exp -> . var
@@ -1810,7 +1856,7 @@ state 94
     (66) literal -> . TRUE
 
     NOT             shift and go to state 85
-    NEGUNARY        shift and go to state 86
+    UMINUS          shift and go to state 86
     LPAREN          shift and go to state 90
     ID              shift and go to state 72
     NUMBER          shift and go to state 31
@@ -1825,7 +1871,7 @@ state 94
 
 state 95
 
-    (37) assing -> var MINUSASSING . exp
+    (37) assign -> var MINUSASSIGN . exp
     (41) exp -> . exp PLUS exp
     (42) exp -> . exp MINUS exp
     (43) exp -> . exp MULT exp
@@ -1840,7 +1886,7 @@ state 95
     (52) exp -> . exp AND exp
     (53) exp -> . exp OR exp
     (54) exp -> . NOT exp
-    (55) exp -> . NEGUNARY exp
+    (55) exp -> . UMINUS exp
     (56) exp -> . exp ? exp : exp
     (57) exp -> . subCall
     (58) exp -> . var
@@ -1855,7 +1901,7 @@ state 95
     (66) literal -> . TRUE
 
     NOT             shift and go to state 85
-    NEGUNARY        shift and go to state 86
+    UMINUS          shift and go to state 86
     LPAREN          shift and go to state 90
     ID              shift and go to state 72
     NUMBER          shift and go to state 31
@@ -1870,7 +1916,7 @@ state 95
 
 state 96
 
-    (38) assing -> var MULTASSING . exp
+    (38) assign -> var MULTASSIGN . exp
     (41) exp -> . exp PLUS exp
     (42) exp -> . exp MINUS exp
     (43) exp -> . exp MULT exp
@@ -1885,7 +1931,7 @@ state 96
     (52) exp -> . exp AND exp
     (53) exp -> . exp OR exp
     (54) exp -> . NOT exp
-    (55) exp -> . NEGUNARY exp
+    (55) exp -> . UMINUS exp
     (56) exp -> . exp ? exp : exp
     (57) exp -> . subCall
     (58) exp -> . var
@@ -1900,7 +1946,7 @@ state 96
     (66) literal -> . TRUE
 
     NOT             shift and go to state 85
-    NEGUNARY        shift and go to state 86
+    UMINUS          shift and go to state 86
     LPAREN          shift and go to state 90
     ID              shift and go to state 72
     NUMBER          shift and go to state 31
@@ -1915,7 +1961,7 @@ state 96
 
 state 97
 
-    (39) assing -> var DIVIDEASSING . exp
+    (39) assign -> var DIVIDEASSIGN . exp
     (41) exp -> . exp PLUS exp
     (42) exp -> . exp MINUS exp
     (43) exp -> . exp MULT exp
@@ -1930,7 +1976,7 @@ state 97
     (52) exp -> . exp AND exp
     (53) exp -> . exp OR exp
     (54) exp -> . NOT exp
-    (55) exp -> . NEGUNARY exp
+    (55) exp -> . UMINUS exp
     (56) exp -> . exp ? exp : exp
     (57) exp -> . subCall
     (58) exp -> . var
@@ -1945,7 +1991,7 @@ state 97
     (66) literal -> . TRUE
 
     NOT             shift and go to state 85
-    NEGUNARY        shift and go to state 86
+    UMINUS          shift and go to state 86
     LPAREN          shift and go to state 90
     ID              shift and go to state 72
     NUMBER          shift and go to state 31
@@ -1960,7 +2006,7 @@ state 97
 
 state 98
 
-    (40) assing -> var MODASSING . exp
+    (40) assign -> var MODASSIGN . exp
     (41) exp -> . exp PLUS exp
     (42) exp -> . exp MINUS exp
     (43) exp -> . exp MULT exp
@@ -1975,7 +2021,7 @@ state 98
     (52) exp -> . exp AND exp
     (53) exp -> . exp OR exp
     (54) exp -> . NOT exp
-    (55) exp -> . NEGUNARY exp
+    (55) exp -> . UMINUS exp
     (56) exp -> . exp ? exp : exp
     (57) exp -> . subCall
     (58) exp -> . var
@@ -1990,7 +2036,7 @@ state 98
     (66) literal -> . TRUE
 
     NOT             shift and go to state 85
-    NEGUNARY        shift and go to state 86
+    UMINUS          shift and go to state 86
     LPAREN          shift and go to state 90
     ID              shift and go to state 72
     NUMBER          shift and go to state 31
@@ -2020,10 +2066,10 @@ state 100
 
 state 101
 
-    (83) expList -> ε .
+    (83) expList -> empty .
 
-    SEMICOLON       reduce using rule 83 (expList -> ε .)
-    RPAREN          reduce using rule 83 (expList -> ε .)
+    SEMICOLON       reduce using rule 83 (expList -> empty .)
+    RPAREN          reduce using rule 83 (expList -> empty .)
 
 
 state 102
@@ -2068,9 +2114,10 @@ state 103
 
     (34) subCall -> ID LPAREN . expList RPAREN
     (82) expList -> . expSeq
-    (83) expList -> . ε
+    (83) expList -> . empty
     (84) expSeq -> . exp
     (85) expSeq -> . exp COMMA expSeq
+    (86) empty -> .
     (41) exp -> . exp PLUS exp
     (42) exp -> . exp MINUS exp
     (43) exp -> . exp MULT exp
@@ -2085,7 +2132,7 @@ state 103
     (52) exp -> . exp AND exp
     (53) exp -> . exp OR exp
     (54) exp -> . NOT exp
-    (55) exp -> . NEGUNARY exp
+    (55) exp -> . UMINUS exp
     (56) exp -> . exp ? exp : exp
     (57) exp -> . subCall
     (58) exp -> . var
@@ -2099,9 +2146,9 @@ state 103
     (65) literal -> . FALSE
     (66) literal -> . TRUE
 
-    ε               shift and go to state 101
+    RPAREN          reduce using rule 86 (empty -> .)
     NOT             shift and go to state 85
-    NEGUNARY        shift and go to state 86
+    UMINUS          shift and go to state 86
     LPAREN          shift and go to state 90
     ID              shift and go to state 72
     NUMBER          shift and go to state 31
@@ -2111,6 +2158,7 @@ state 103
 
     expList                        shift and go to state 138
     expSeq                         shift and go to state 100
+    empty                          shift and go to state 101
     exp                            shift and go to state 102
     subCall                        shift and go to state 87
     var                            shift and go to state 88
@@ -2133,7 +2181,7 @@ state 104
     (52) exp -> . exp AND exp
     (53) exp -> . exp OR exp
     (54) exp -> . NOT exp
-    (55) exp -> . NEGUNARY exp
+    (55) exp -> . UMINUS exp
     (56) exp -> . exp ? exp : exp
     (57) exp -> . subCall
     (58) exp -> . var
@@ -2148,7 +2196,7 @@ state 104
     (66) literal -> . TRUE
 
     NOT             shift and go to state 85
-    NEGUNARY        shift and go to state 86
+    UMINUS          shift and go to state 86
     LPAREN          shift and go to state 90
     ID              shift and go to state 72
     NUMBER          shift and go to state 31
@@ -2174,7 +2222,7 @@ state 105
 
 state 106
 
-    (9) varSpec -> ID LCOR NUMBER RCOR ASSING LKEY literalSeq . RKEY
+    (9) varSpec -> ID LCOR NUMBER RCOR ASSIGN LKEY literalSeq . RKEY
 
     RKEY            shift and go to state 140
 
@@ -2261,7 +2309,7 @@ state 109
 
 state 110
 
-    (28) forStmt -> FOR LPAREN assing . SEMICOLON exp SEMICOLON assing RPAREN LKEY block RKEY
+    (28) forStmt -> FOR LPAREN assign . SEMICOLON exp SEMICOLON assign RPAREN LKEY block RKEY
 
     SEMICOLON       shift and go to state 144
 
@@ -2270,7 +2318,6 @@ state 111
 
     (33) returnStmt -> RETURN exp SEMICOLON .
 
-    ε               reduce using rule 33 (returnStmt -> RETURN exp SEMICOLON .)
     IF              reduce using rule 33 (returnStmt -> RETURN exp SEMICOLON .)
     WHILE           reduce using rule 33 (returnStmt -> RETURN exp SEMICOLON .)
     FOR             reduce using rule 33 (returnStmt -> RETURN exp SEMICOLON .)
@@ -2279,6 +2326,7 @@ state 111
     READ            reduce using rule 33 (returnStmt -> RETURN exp SEMICOLON .)
     WRITE           reduce using rule 33 (returnStmt -> RETURN exp SEMICOLON .)
     ID              reduce using rule 33 (returnStmt -> RETURN exp SEMICOLON .)
+    RKEY            reduce using rule 33 (returnStmt -> RETURN exp SEMICOLON .)
 
 
 state 112
@@ -2298,7 +2346,7 @@ state 112
     (52) exp -> . exp AND exp
     (53) exp -> . exp OR exp
     (54) exp -> . NOT exp
-    (55) exp -> . NEGUNARY exp
+    (55) exp -> . UMINUS exp
     (56) exp -> . exp ? exp : exp
     (57) exp -> . subCall
     (58) exp -> . var
@@ -2313,7 +2361,7 @@ state 112
     (66) literal -> . TRUE
 
     NOT             shift and go to state 85
-    NEGUNARY        shift and go to state 86
+    UMINUS          shift and go to state 86
     LPAREN          shift and go to state 90
     ID              shift and go to state 72
     NUMBER          shift and go to state 31
@@ -2343,7 +2391,7 @@ state 113
     (52) exp -> . exp AND exp
     (53) exp -> . exp OR exp
     (54) exp -> . NOT exp
-    (55) exp -> . NEGUNARY exp
+    (55) exp -> . UMINUS exp
     (56) exp -> . exp ? exp : exp
     (57) exp -> . subCall
     (58) exp -> . var
@@ -2358,7 +2406,7 @@ state 113
     (66) literal -> . TRUE
 
     NOT             shift and go to state 85
-    NEGUNARY        shift and go to state 86
+    UMINUS          shift and go to state 86
     LPAREN          shift and go to state 90
     ID              shift and go to state 72
     NUMBER          shift and go to state 31
@@ -2388,7 +2436,7 @@ state 114
     (52) exp -> . exp AND exp
     (53) exp -> . exp OR exp
     (54) exp -> . NOT exp
-    (55) exp -> . NEGUNARY exp
+    (55) exp -> . UMINUS exp
     (56) exp -> . exp ? exp : exp
     (57) exp -> . subCall
     (58) exp -> . var
@@ -2403,7 +2451,7 @@ state 114
     (66) literal -> . TRUE
 
     NOT             shift and go to state 85
-    NEGUNARY        shift and go to state 86
+    UMINUS          shift and go to state 86
     LPAREN          shift and go to state 90
     ID              shift and go to state 72
     NUMBER          shift and go to state 31
@@ -2433,7 +2481,7 @@ state 115
     (52) exp -> . exp AND exp
     (53) exp -> . exp OR exp
     (54) exp -> . NOT exp
-    (55) exp -> . NEGUNARY exp
+    (55) exp -> . UMINUS exp
     (56) exp -> . exp ? exp : exp
     (57) exp -> . subCall
     (58) exp -> . var
@@ -2448,7 +2496,7 @@ state 115
     (66) literal -> . TRUE
 
     NOT             shift and go to state 85
-    NEGUNARY        shift and go to state 86
+    UMINUS          shift and go to state 86
     LPAREN          shift and go to state 90
     ID              shift and go to state 72
     NUMBER          shift and go to state 31
@@ -2478,7 +2526,7 @@ state 116
     (52) exp -> . exp AND exp
     (53) exp -> . exp OR exp
     (54) exp -> . NOT exp
-    (55) exp -> . NEGUNARY exp
+    (55) exp -> . UMINUS exp
     (56) exp -> . exp ? exp : exp
     (57) exp -> . subCall
     (58) exp -> . var
@@ -2493,7 +2541,7 @@ state 116
     (66) literal -> . TRUE
 
     NOT             shift and go to state 85
-    NEGUNARY        shift and go to state 86
+    UMINUS          shift and go to state 86
     LPAREN          shift and go to state 90
     ID              shift and go to state 72
     NUMBER          shift and go to state 31
@@ -2523,7 +2571,7 @@ state 117
     (52) exp -> . exp AND exp
     (53) exp -> . exp OR exp
     (54) exp -> . NOT exp
-    (55) exp -> . NEGUNARY exp
+    (55) exp -> . UMINUS exp
     (56) exp -> . exp ? exp : exp
     (57) exp -> . subCall
     (58) exp -> . var
@@ -2538,7 +2586,7 @@ state 117
     (66) literal -> . TRUE
 
     NOT             shift and go to state 85
-    NEGUNARY        shift and go to state 86
+    UMINUS          shift and go to state 86
     LPAREN          shift and go to state 90
     ID              shift and go to state 72
     NUMBER          shift and go to state 31
@@ -2568,7 +2616,7 @@ state 118
     (52) exp -> . exp AND exp
     (53) exp -> . exp OR exp
     (54) exp -> . NOT exp
-    (55) exp -> . NEGUNARY exp
+    (55) exp -> . UMINUS exp
     (56) exp -> . exp ? exp : exp
     (57) exp -> . subCall
     (58) exp -> . var
@@ -2583,7 +2631,7 @@ state 118
     (66) literal -> . TRUE
 
     NOT             shift and go to state 85
-    NEGUNARY        shift and go to state 86
+    UMINUS          shift and go to state 86
     LPAREN          shift and go to state 90
     ID              shift and go to state 72
     NUMBER          shift and go to state 31
@@ -2613,7 +2661,7 @@ state 119
     (52) exp -> . exp AND exp
     (53) exp -> . exp OR exp
     (54) exp -> . NOT exp
-    (55) exp -> . NEGUNARY exp
+    (55) exp -> . UMINUS exp
     (56) exp -> . exp ? exp : exp
     (57) exp -> . subCall
     (58) exp -> . var
@@ -2628,7 +2676,7 @@ state 119
     (66) literal -> . TRUE
 
     NOT             shift and go to state 85
-    NEGUNARY        shift and go to state 86
+    UMINUS          shift and go to state 86
     LPAREN          shift and go to state 90
     ID              shift and go to state 72
     NUMBER          shift and go to state 31
@@ -2658,7 +2706,7 @@ state 120
     (52) exp -> . exp AND exp
     (53) exp -> . exp OR exp
     (54) exp -> . NOT exp
-    (55) exp -> . NEGUNARY exp
+    (55) exp -> . UMINUS exp
     (56) exp -> . exp ? exp : exp
     (57) exp -> . subCall
     (58) exp -> . var
@@ -2673,7 +2721,7 @@ state 120
     (66) literal -> . TRUE
 
     NOT             shift and go to state 85
-    NEGUNARY        shift and go to state 86
+    UMINUS          shift and go to state 86
     LPAREN          shift and go to state 90
     ID              shift and go to state 72
     NUMBER          shift and go to state 31
@@ -2703,7 +2751,7 @@ state 121
     (52) exp -> . exp AND exp
     (53) exp -> . exp OR exp
     (54) exp -> . NOT exp
-    (55) exp -> . NEGUNARY exp
+    (55) exp -> . UMINUS exp
     (56) exp -> . exp ? exp : exp
     (57) exp -> . subCall
     (58) exp -> . var
@@ -2718,7 +2766,7 @@ state 121
     (66) literal -> . TRUE
 
     NOT             shift and go to state 85
-    NEGUNARY        shift and go to state 86
+    UMINUS          shift and go to state 86
     LPAREN          shift and go to state 90
     ID              shift and go to state 72
     NUMBER          shift and go to state 31
@@ -2748,7 +2796,7 @@ state 122
     (52) exp -> . exp AND exp
     (53) exp -> . exp OR exp
     (54) exp -> . NOT exp
-    (55) exp -> . NEGUNARY exp
+    (55) exp -> . UMINUS exp
     (56) exp -> . exp ? exp : exp
     (57) exp -> . subCall
     (58) exp -> . var
@@ -2763,7 +2811,7 @@ state 122
     (66) literal -> . TRUE
 
     NOT             shift and go to state 85
-    NEGUNARY        shift and go to state 86
+    UMINUS          shift and go to state 86
     LPAREN          shift and go to state 90
     ID              shift and go to state 72
     NUMBER          shift and go to state 31
@@ -2793,7 +2841,7 @@ state 123
     (52) exp -> . exp AND exp
     (53) exp -> . exp OR exp
     (54) exp -> . NOT exp
-    (55) exp -> . NEGUNARY exp
+    (55) exp -> . UMINUS exp
     (56) exp -> . exp ? exp : exp
     (57) exp -> . subCall
     (58) exp -> . var
@@ -2808,7 +2856,7 @@ state 123
     (66) literal -> . TRUE
 
     NOT             shift and go to state 85
-    NEGUNARY        shift and go to state 86
+    UMINUS          shift and go to state 86
     LPAREN          shift and go to state 90
     ID              shift and go to state 72
     NUMBER          shift and go to state 31
@@ -2838,7 +2886,7 @@ state 124
     (52) exp -> . exp AND exp
     (53) exp -> . exp OR exp
     (54) exp -> . NOT exp
-    (55) exp -> . NEGUNARY exp
+    (55) exp -> . UMINUS exp
     (56) exp -> . exp ? exp : exp
     (57) exp -> . subCall
     (58) exp -> . var
@@ -2853,7 +2901,7 @@ state 124
     (66) literal -> . TRUE
 
     NOT             shift and go to state 85
-    NEGUNARY        shift and go to state 86
+    UMINUS          shift and go to state 86
     LPAREN          shift and go to state 90
     ID              shift and go to state 72
     NUMBER          shift and go to state 31
@@ -2883,7 +2931,7 @@ state 125
     (52) exp -> . exp AND exp
     (53) exp -> . exp OR exp
     (54) exp -> . NOT exp
-    (55) exp -> . NEGUNARY exp
+    (55) exp -> . UMINUS exp
     (56) exp -> . exp ? exp : exp
     (57) exp -> . subCall
     (58) exp -> . var
@@ -2898,7 +2946,7 @@ state 125
     (66) literal -> . TRUE
 
     NOT             shift and go to state 85
-    NEGUNARY        shift and go to state 86
+    UMINUS          shift and go to state 86
     LPAREN          shift and go to state 90
     ID              shift and go to state 72
     NUMBER          shift and go to state 31
@@ -2981,7 +3029,7 @@ state 126
 
 state 127
 
-    (55) exp -> NEGUNARY exp .
+    (55) exp -> UMINUS exp .
     (41) exp -> exp . PLUS exp
     (42) exp -> exp . MINUS exp
     (43) exp -> exp . MULT exp
@@ -3011,11 +3059,11 @@ state 127
   ! shift/reduce conflict for AND resolved as shift
   ! shift/reduce conflict for OR resolved as shift
   ! shift/reduce conflict for ? resolved as shift
-    SEMICOLON       reduce using rule 55 (exp -> NEGUNARY exp .)
-    COMMA           reduce using rule 55 (exp -> NEGUNARY exp .)
-    RPAREN          reduce using rule 55 (exp -> NEGUNARY exp .)
-    RCOR            reduce using rule 55 (exp -> NEGUNARY exp .)
-    :               reduce using rule 55 (exp -> NEGUNARY exp .)
+    SEMICOLON       reduce using rule 55 (exp -> UMINUS exp .)
+    COMMA           reduce using rule 55 (exp -> UMINUS exp .)
+    RPAREN          reduce using rule 55 (exp -> UMINUS exp .)
+    RCOR            reduce using rule 55 (exp -> UMINUS exp .)
+    :               reduce using rule 55 (exp -> UMINUS exp .)
     PLUS            shift and go to state 112
     MINUS           shift and go to state 113
     MULT            shift and go to state 114
@@ -3031,20 +3079,20 @@ state 127
     OR              shift and go to state 124
     ?               shift and go to state 125
 
-  ! PLUS            [ reduce using rule 55 (exp -> NEGUNARY exp .) ]
-  ! MINUS           [ reduce using rule 55 (exp -> NEGUNARY exp .) ]
-  ! MULT            [ reduce using rule 55 (exp -> NEGUNARY exp .) ]
-  ! DIVIDE          [ reduce using rule 55 (exp -> NEGUNARY exp .) ]
-  ! MOD             [ reduce using rule 55 (exp -> NEGUNARY exp .) ]
-  ! EQUALS          [ reduce using rule 55 (exp -> NEGUNARY exp .) ]
-  ! DIFFERENT       [ reduce using rule 55 (exp -> NEGUNARY exp .) ]
-  ! LTE             [ reduce using rule 55 (exp -> NEGUNARY exp .) ]
-  ! GTE             [ reduce using rule 55 (exp -> NEGUNARY exp .) ]
-  ! GT              [ reduce using rule 55 (exp -> NEGUNARY exp .) ]
-  ! LT              [ reduce using rule 55 (exp -> NEGUNARY exp .) ]
-  ! AND             [ reduce using rule 55 (exp -> NEGUNARY exp .) ]
-  ! OR              [ reduce using rule 55 (exp -> NEGUNARY exp .) ]
-  ! ?               [ reduce using rule 55 (exp -> NEGUNARY exp .) ]
+  ! PLUS            [ reduce using rule 55 (exp -> UMINUS exp .) ]
+  ! MINUS           [ reduce using rule 55 (exp -> UMINUS exp .) ]
+  ! MULT            [ reduce using rule 55 (exp -> UMINUS exp .) ]
+  ! DIVIDE          [ reduce using rule 55 (exp -> UMINUS exp .) ]
+  ! MOD             [ reduce using rule 55 (exp -> UMINUS exp .) ]
+  ! EQUALS          [ reduce using rule 55 (exp -> UMINUS exp .) ]
+  ! DIFFERENT       [ reduce using rule 55 (exp -> UMINUS exp .) ]
+  ! LTE             [ reduce using rule 55 (exp -> UMINUS exp .) ]
+  ! GTE             [ reduce using rule 55 (exp -> UMINUS exp .) ]
+  ! GT              [ reduce using rule 55 (exp -> UMINUS exp .) ]
+  ! LT              [ reduce using rule 55 (exp -> UMINUS exp .) ]
+  ! AND             [ reduce using rule 55 (exp -> UMINUS exp .) ]
+  ! OR              [ reduce using rule 55 (exp -> UMINUS exp .) ]
+  ! ?               [ reduce using rule 55 (exp -> UMINUS exp .) ]
 
 
 state 128
@@ -3086,7 +3134,6 @@ state 129
 
     (30) readStmt -> READ var SEMICOLON .
 
-    ε               reduce using rule 30 (readStmt -> READ var SEMICOLON .)
     IF              reduce using rule 30 (readStmt -> READ var SEMICOLON .)
     WHILE           reduce using rule 30 (readStmt -> READ var SEMICOLON .)
     FOR             reduce using rule 30 (readStmt -> READ var SEMICOLON .)
@@ -3095,11 +3142,12 @@ state 129
     READ            reduce using rule 30 (readStmt -> READ var SEMICOLON .)
     WRITE           reduce using rule 30 (readStmt -> READ var SEMICOLON .)
     ID              reduce using rule 30 (readStmt -> READ var SEMICOLON .)
+    RKEY            reduce using rule 30 (readStmt -> READ var SEMICOLON .)
 
 
 state 130
 
-    (35) assing -> var ASSING exp .
+    (35) assign -> var ASSIGN exp .
     (41) exp -> exp . PLUS exp
     (42) exp -> exp . MINUS exp
     (43) exp -> exp . MULT exp
@@ -3115,8 +3163,8 @@ state 130
     (53) exp -> exp . OR exp
     (56) exp -> exp . ? exp : exp
 
-    SEMICOLON       reduce using rule 35 (assing -> var ASSING exp .)
-    RPAREN          reduce using rule 35 (assing -> var ASSING exp .)
+    SEMICOLON       reduce using rule 35 (assign -> var ASSIGN exp .)
+    RPAREN          reduce using rule 35 (assign -> var ASSIGN exp .)
     PLUS            shift and go to state 112
     MINUS           shift and go to state 113
     MULT            shift and go to state 114
@@ -3135,7 +3183,7 @@ state 130
 
 state 131
 
-    (36) assing -> var PLUSASSING exp .
+    (36) assign -> var PLUSASSIGN exp .
     (41) exp -> exp . PLUS exp
     (42) exp -> exp . MINUS exp
     (43) exp -> exp . MULT exp
@@ -3151,8 +3199,8 @@ state 131
     (53) exp -> exp . OR exp
     (56) exp -> exp . ? exp : exp
 
-    SEMICOLON       reduce using rule 36 (assing -> var PLUSASSING exp .)
-    RPAREN          reduce using rule 36 (assing -> var PLUSASSING exp .)
+    SEMICOLON       reduce using rule 36 (assign -> var PLUSASSIGN exp .)
+    RPAREN          reduce using rule 36 (assign -> var PLUSASSIGN exp .)
     PLUS            shift and go to state 112
     MINUS           shift and go to state 113
     MULT            shift and go to state 114
@@ -3171,7 +3219,7 @@ state 131
 
 state 132
 
-    (37) assing -> var MINUSASSING exp .
+    (37) assign -> var MINUSASSIGN exp .
     (41) exp -> exp . PLUS exp
     (42) exp -> exp . MINUS exp
     (43) exp -> exp . MULT exp
@@ -3187,8 +3235,8 @@ state 132
     (53) exp -> exp . OR exp
     (56) exp -> exp . ? exp : exp
 
-    SEMICOLON       reduce using rule 37 (assing -> var MINUSASSING exp .)
-    RPAREN          reduce using rule 37 (assing -> var MINUSASSING exp .)
+    SEMICOLON       reduce using rule 37 (assign -> var MINUSASSIGN exp .)
+    RPAREN          reduce using rule 37 (assign -> var MINUSASSIGN exp .)
     PLUS            shift and go to state 112
     MINUS           shift and go to state 113
     MULT            shift and go to state 114
@@ -3207,7 +3255,7 @@ state 132
 
 state 133
 
-    (38) assing -> var MULTASSING exp .
+    (38) assign -> var MULTASSIGN exp .
     (41) exp -> exp . PLUS exp
     (42) exp -> exp . MINUS exp
     (43) exp -> exp . MULT exp
@@ -3223,8 +3271,8 @@ state 133
     (53) exp -> exp . OR exp
     (56) exp -> exp . ? exp : exp
 
-    SEMICOLON       reduce using rule 38 (assing -> var MULTASSING exp .)
-    RPAREN          reduce using rule 38 (assing -> var MULTASSING exp .)
+    SEMICOLON       reduce using rule 38 (assign -> var MULTASSIGN exp .)
+    RPAREN          reduce using rule 38 (assign -> var MULTASSIGN exp .)
     PLUS            shift and go to state 112
     MINUS           shift and go to state 113
     MULT            shift and go to state 114
@@ -3243,7 +3291,7 @@ state 133
 
 state 134
 
-    (39) assing -> var DIVIDEASSING exp .
+    (39) assign -> var DIVIDEASSIGN exp .
     (41) exp -> exp . PLUS exp
     (42) exp -> exp . MINUS exp
     (43) exp -> exp . MULT exp
@@ -3259,8 +3307,8 @@ state 134
     (53) exp -> exp . OR exp
     (56) exp -> exp . ? exp : exp
 
-    SEMICOLON       reduce using rule 39 (assing -> var DIVIDEASSING exp .)
-    RPAREN          reduce using rule 39 (assing -> var DIVIDEASSING exp .)
+    SEMICOLON       reduce using rule 39 (assign -> var DIVIDEASSIGN exp .)
+    RPAREN          reduce using rule 39 (assign -> var DIVIDEASSIGN exp .)
     PLUS            shift and go to state 112
     MINUS           shift and go to state 113
     MULT            shift and go to state 114
@@ -3279,7 +3327,7 @@ state 134
 
 state 135
 
-    (40) assing -> var MODASSING exp .
+    (40) assign -> var MODASSIGN exp .
     (41) exp -> exp . PLUS exp
     (42) exp -> exp . MINUS exp
     (43) exp -> exp . MULT exp
@@ -3295,8 +3343,8 @@ state 135
     (53) exp -> exp . OR exp
     (56) exp -> exp . ? exp : exp
 
-    SEMICOLON       reduce using rule 40 (assing -> var MODASSING exp .)
-    RPAREN          reduce using rule 40 (assing -> var MODASSING exp .)
+    SEMICOLON       reduce using rule 40 (assign -> var MODASSIGN exp .)
+    RPAREN          reduce using rule 40 (assign -> var MODASSIGN exp .)
     PLUS            shift and go to state 112
     MINUS           shift and go to state 113
     MULT            shift and go to state 114
@@ -3317,7 +3365,6 @@ state 136
 
     (31) writeStmt -> WRITE expList SEMICOLON .
 
-    ε               reduce using rule 31 (writeStmt -> WRITE expList SEMICOLON .)
     IF              reduce using rule 31 (writeStmt -> WRITE expList SEMICOLON .)
     WHILE           reduce using rule 31 (writeStmt -> WRITE expList SEMICOLON .)
     FOR             reduce using rule 31 (writeStmt -> WRITE expList SEMICOLON .)
@@ -3326,6 +3373,7 @@ state 136
     READ            reduce using rule 31 (writeStmt -> WRITE expList SEMICOLON .)
     WRITE           reduce using rule 31 (writeStmt -> WRITE expList SEMICOLON .)
     ID              reduce using rule 31 (writeStmt -> WRITE expList SEMICOLON .)
+    RKEY            reduce using rule 31 (writeStmt -> WRITE expList SEMICOLON .)
 
 
 state 137
@@ -3347,7 +3395,7 @@ state 137
     (52) exp -> . exp AND exp
     (53) exp -> . exp OR exp
     (54) exp -> . NOT exp
-    (55) exp -> . NEGUNARY exp
+    (55) exp -> . UMINUS exp
     (56) exp -> . exp ? exp : exp
     (57) exp -> . subCall
     (58) exp -> . var
@@ -3362,7 +3410,7 @@ state 137
     (66) literal -> . TRUE
 
     NOT             shift and go to state 85
-    NEGUNARY        shift and go to state 86
+    UMINUS          shift and go to state 86
     LPAREN          shift and go to state 90
     ID              shift and go to state 72
     NUMBER          shift and go to state 31
@@ -3420,10 +3468,10 @@ state 139
 
 state 140
 
-    (9) varSpec -> ID LCOR NUMBER RCOR ASSING LKEY literalSeq RKEY .
+    (9) varSpec -> ID LCOR NUMBER RCOR ASSIGN LKEY literalSeq RKEY .
 
-    COMMA           reduce using rule 9 (varSpec -> ID LCOR NUMBER RCOR ASSING LKEY literalSeq RKEY .)
-    SEMICOLON       reduce using rule 9 (varSpec -> ID LCOR NUMBER RCOR ASSING LKEY literalSeq RKEY .)
+    COMMA           reduce using rule 9 (varSpec -> ID LCOR NUMBER RCOR ASSIGN LKEY literalSeq RKEY .)
+    SEMICOLON       reduce using rule 9 (varSpec -> ID LCOR NUMBER RCOR ASSIGN LKEY literalSeq RKEY .)
 
 
 state 141
@@ -3461,7 +3509,7 @@ state 143
 
 state 144
 
-    (28) forStmt -> FOR LPAREN assing SEMICOLON . exp SEMICOLON assing RPAREN LKEY block RKEY
+    (28) forStmt -> FOR LPAREN assign SEMICOLON . exp SEMICOLON assign RPAREN LKEY block RKEY
     (41) exp -> . exp PLUS exp
     (42) exp -> . exp MINUS exp
     (43) exp -> . exp MULT exp
@@ -3476,7 +3524,7 @@ state 144
     (52) exp -> . exp AND exp
     (53) exp -> . exp OR exp
     (54) exp -> . NOT exp
-    (55) exp -> . NEGUNARY exp
+    (55) exp -> . UMINUS exp
     (56) exp -> . exp ? exp : exp
     (57) exp -> . subCall
     (58) exp -> . var
@@ -3491,7 +3539,7 @@ state 144
     (66) literal -> . TRUE
 
     NOT             shift and go to state 85
-    NEGUNARY        shift and go to state 86
+    UMINUS          shift and go to state 86
     LPAREN          shift and go to state 90
     ID              shift and go to state 72
     NUMBER          shift and go to state 31
@@ -4485,12 +4533,12 @@ state 162
 
     (62) var -> ID LCOR exp RCOR .
 
-    ASSING          reduce using rule 62 (var -> ID LCOR exp RCOR .)
-    PLUSASSING      reduce using rule 62 (var -> ID LCOR exp RCOR .)
-    MINUSASSING     reduce using rule 62 (var -> ID LCOR exp RCOR .)
-    MULTASSING      reduce using rule 62 (var -> ID LCOR exp RCOR .)
-    DIVIDEASSING    reduce using rule 62 (var -> ID LCOR exp RCOR .)
-    MODASSING       reduce using rule 62 (var -> ID LCOR exp RCOR .)
+    ASSIGN          reduce using rule 62 (var -> ID LCOR exp RCOR .)
+    PLUSASSIGN      reduce using rule 62 (var -> ID LCOR exp RCOR .)
+    MINUSASSIGN     reduce using rule 62 (var -> ID LCOR exp RCOR .)
+    MULTASSIGN      reduce using rule 62 (var -> ID LCOR exp RCOR .)
+    DIVIDEASSIGN    reduce using rule 62 (var -> ID LCOR exp RCOR .)
+    MODASSIGN       reduce using rule 62 (var -> ID LCOR exp RCOR .)
     SEMICOLON       reduce using rule 62 (var -> ID LCOR exp RCOR .)
     PLUS            reduce using rule 62 (var -> ID LCOR exp RCOR .)
     MINUS           reduce using rule 62 (var -> ID LCOR exp RCOR .)
@@ -4525,13 +4573,22 @@ state 164
     (26) ifStmt -> IF LPAREN exp RPAREN LKEY . block RKEY ELSE LKEY block RKEY
     (15) block -> . varDecList stmtList
     (72) varDecList -> . varDec varDecList
-    (73) varDecList -> . ε
+    (73) varDecList -> . empty
     (5) varDec -> . type varSpecSeq SEMICOLON
+    (86) empty -> .
     (10) type -> . INT
     (11) type -> . STRING
     (12) type -> . BOOLEAN
 
-    ε               shift and go to state 46
+    IF              reduce using rule 86 (empty -> .)
+    WHILE           reduce using rule 86 (empty -> .)
+    FOR             reduce using rule 86 (empty -> .)
+    BREAK           reduce using rule 86 (empty -> .)
+    RETURN          reduce using rule 86 (empty -> .)
+    READ            reduce using rule 86 (empty -> .)
+    WRITE           reduce using rule 86 (empty -> .)
+    ID              reduce using rule 86 (empty -> .)
+    RKEY            reduce using rule 86 (empty -> .)
     INT             shift and go to state 8
     STRING          shift and go to state 9
     BOOLEAN         shift and go to state 10
@@ -4539,6 +4596,7 @@ state 164
     block                          shift and go to state 168
     varDecList                     shift and go to state 44
     varDec                         shift and go to state 45
+    empty                          shift and go to state 46
     type                           shift and go to state 47
 
 state 165
@@ -4546,13 +4604,22 @@ state 165
     (27) whileStmt -> WHILE LPAREN exp RPAREN LKEY . block RKEY
     (15) block -> . varDecList stmtList
     (72) varDecList -> . varDec varDecList
-    (73) varDecList -> . ε
+    (73) varDecList -> . empty
     (5) varDec -> . type varSpecSeq SEMICOLON
+    (86) empty -> .
     (10) type -> . INT
     (11) type -> . STRING
     (12) type -> . BOOLEAN
 
-    ε               shift and go to state 46
+    IF              reduce using rule 86 (empty -> .)
+    WHILE           reduce using rule 86 (empty -> .)
+    FOR             reduce using rule 86 (empty -> .)
+    BREAK           reduce using rule 86 (empty -> .)
+    RETURN          reduce using rule 86 (empty -> .)
+    READ            reduce using rule 86 (empty -> .)
+    WRITE           reduce using rule 86 (empty -> .)
+    ID              reduce using rule 86 (empty -> .)
+    RKEY            reduce using rule 86 (empty -> .)
     INT             shift and go to state 8
     STRING          shift and go to state 9
     BOOLEAN         shift and go to state 10
@@ -4560,11 +4627,12 @@ state 165
     block                          shift and go to state 169
     varDecList                     shift and go to state 44
     varDec                         shift and go to state 45
+    empty                          shift and go to state 46
     type                           shift and go to state 47
 
 state 166
 
-    (28) forStmt -> FOR LPAREN assing SEMICOLON exp . SEMICOLON assing RPAREN LKEY block RKEY
+    (28) forStmt -> FOR LPAREN assign SEMICOLON exp . SEMICOLON assign RPAREN LKEY block RKEY
     (41) exp -> exp . PLUS exp
     (42) exp -> exp . MINUS exp
     (43) exp -> exp . MULT exp
@@ -4614,7 +4682,7 @@ state 167
     (52) exp -> . exp AND exp
     (53) exp -> . exp OR exp
     (54) exp -> . NOT exp
-    (55) exp -> . NEGUNARY exp
+    (55) exp -> . UMINUS exp
     (56) exp -> . exp ? exp : exp
     (57) exp -> . subCall
     (58) exp -> . var
@@ -4629,7 +4697,7 @@ state 167
     (66) literal -> . TRUE
 
     NOT             shift and go to state 85
-    NEGUNARY        shift and go to state 86
+    UMINUS          shift and go to state 86
     LPAREN          shift and go to state 90
     ID              shift and go to state 72
     NUMBER          shift and go to state 31
@@ -4659,19 +4727,19 @@ state 169
 
 state 170
 
-    (28) forStmt -> FOR LPAREN assing SEMICOLON exp SEMICOLON . assing RPAREN LKEY block RKEY
-    (35) assing -> . var ASSING exp
-    (36) assing -> . var PLUSASSING exp
-    (37) assing -> . var MINUSASSING exp
-    (38) assing -> . var MULTASSING exp
-    (39) assing -> . var DIVIDEASSING exp
-    (40) assing -> . var MODASSING exp
+    (28) forStmt -> FOR LPAREN assign SEMICOLON exp SEMICOLON . assign RPAREN LKEY block RKEY
+    (35) assign -> . var ASSIGN exp
+    (36) assign -> . var PLUSASSIGN exp
+    (37) assign -> . var MINUSASSIGN exp
+    (38) assign -> . var MULTASSIGN exp
+    (39) assign -> . var DIVIDEASSIGN exp
+    (40) assign -> . var MODASSIGN exp
     (61) var -> . ID
     (62) var -> . ID LCOR exp RCOR
 
     ID              shift and go to state 92
 
-    assing                         shift and go to state 174
+    assign                         shift and go to state 174
     var                            shift and go to state 70
 
 state 171
@@ -4747,7 +4815,6 @@ state 172
     (25) ifStmt -> IF LPAREN exp RPAREN LKEY block RKEY .
     (26) ifStmt -> IF LPAREN exp RPAREN LKEY block RKEY . ELSE LKEY block RKEY
 
-    ε               reduce using rule 25 (ifStmt -> IF LPAREN exp RPAREN LKEY block RKEY .)
     IF              reduce using rule 25 (ifStmt -> IF LPAREN exp RPAREN LKEY block RKEY .)
     WHILE           reduce using rule 25 (ifStmt -> IF LPAREN exp RPAREN LKEY block RKEY .)
     FOR             reduce using rule 25 (ifStmt -> IF LPAREN exp RPAREN LKEY block RKEY .)
@@ -4756,6 +4823,7 @@ state 172
     READ            reduce using rule 25 (ifStmt -> IF LPAREN exp RPAREN LKEY block RKEY .)
     WRITE           reduce using rule 25 (ifStmt -> IF LPAREN exp RPAREN LKEY block RKEY .)
     ID              reduce using rule 25 (ifStmt -> IF LPAREN exp RPAREN LKEY block RKEY .)
+    RKEY            reduce using rule 25 (ifStmt -> IF LPAREN exp RPAREN LKEY block RKEY .)
     ELSE            shift and go to state 175
 
 
@@ -4763,7 +4831,6 @@ state 173
 
     (27) whileStmt -> WHILE LPAREN exp RPAREN LKEY block RKEY .
 
-    ε               reduce using rule 27 (whileStmt -> WHILE LPAREN exp RPAREN LKEY block RKEY .)
     IF              reduce using rule 27 (whileStmt -> WHILE LPAREN exp RPAREN LKEY block RKEY .)
     WHILE           reduce using rule 27 (whileStmt -> WHILE LPAREN exp RPAREN LKEY block RKEY .)
     FOR             reduce using rule 27 (whileStmt -> WHILE LPAREN exp RPAREN LKEY block RKEY .)
@@ -4772,11 +4839,12 @@ state 173
     READ            reduce using rule 27 (whileStmt -> WHILE LPAREN exp RPAREN LKEY block RKEY .)
     WRITE           reduce using rule 27 (whileStmt -> WHILE LPAREN exp RPAREN LKEY block RKEY .)
     ID              reduce using rule 27 (whileStmt -> WHILE LPAREN exp RPAREN LKEY block RKEY .)
+    RKEY            reduce using rule 27 (whileStmt -> WHILE LPAREN exp RPAREN LKEY block RKEY .)
 
 
 state 174
 
-    (28) forStmt -> FOR LPAREN assing SEMICOLON exp SEMICOLON assing . RPAREN LKEY block RKEY
+    (28) forStmt -> FOR LPAREN assign SEMICOLON exp SEMICOLON assign . RPAREN LKEY block RKEY
 
     RPAREN          shift and go to state 176
 
@@ -4790,7 +4858,7 @@ state 175
 
 state 176
 
-    (28) forStmt -> FOR LPAREN assing SEMICOLON exp SEMICOLON assing RPAREN . LKEY block RKEY
+    (28) forStmt -> FOR LPAREN assign SEMICOLON exp SEMICOLON assign RPAREN . LKEY block RKEY
 
     LKEY            shift and go to state 178
 
@@ -4800,13 +4868,22 @@ state 177
     (26) ifStmt -> IF LPAREN exp RPAREN LKEY block RKEY ELSE LKEY . block RKEY
     (15) block -> . varDecList stmtList
     (72) varDecList -> . varDec varDecList
-    (73) varDecList -> . ε
+    (73) varDecList -> . empty
     (5) varDec -> . type varSpecSeq SEMICOLON
+    (86) empty -> .
     (10) type -> . INT
     (11) type -> . STRING
     (12) type -> . BOOLEAN
 
-    ε               shift and go to state 46
+    IF              reduce using rule 86 (empty -> .)
+    WHILE           reduce using rule 86 (empty -> .)
+    FOR             reduce using rule 86 (empty -> .)
+    BREAK           reduce using rule 86 (empty -> .)
+    RETURN          reduce using rule 86 (empty -> .)
+    READ            reduce using rule 86 (empty -> .)
+    WRITE           reduce using rule 86 (empty -> .)
+    ID              reduce using rule 86 (empty -> .)
+    RKEY            reduce using rule 86 (empty -> .)
     INT             shift and go to state 8
     STRING          shift and go to state 9
     BOOLEAN         shift and go to state 10
@@ -4814,20 +4891,30 @@ state 177
     block                          shift and go to state 179
     varDecList                     shift and go to state 44
     varDec                         shift and go to state 45
+    empty                          shift and go to state 46
     type                           shift and go to state 47
 
 state 178
 
-    (28) forStmt -> FOR LPAREN assing SEMICOLON exp SEMICOLON assing RPAREN LKEY . block RKEY
+    (28) forStmt -> FOR LPAREN assign SEMICOLON exp SEMICOLON assign RPAREN LKEY . block RKEY
     (15) block -> . varDecList stmtList
     (72) varDecList -> . varDec varDecList
-    (73) varDecList -> . ε
+    (73) varDecList -> . empty
     (5) varDec -> . type varSpecSeq SEMICOLON
+    (86) empty -> .
     (10) type -> . INT
     (11) type -> . STRING
     (12) type -> . BOOLEAN
 
-    ε               shift and go to state 46
+    IF              reduce using rule 86 (empty -> .)
+    WHILE           reduce using rule 86 (empty -> .)
+    FOR             reduce using rule 86 (empty -> .)
+    BREAK           reduce using rule 86 (empty -> .)
+    RETURN          reduce using rule 86 (empty -> .)
+    READ            reduce using rule 86 (empty -> .)
+    WRITE           reduce using rule 86 (empty -> .)
+    ID              reduce using rule 86 (empty -> .)
+    RKEY            reduce using rule 86 (empty -> .)
     INT             shift and go to state 8
     STRING          shift and go to state 9
     BOOLEAN         shift and go to state 10
@@ -4835,6 +4922,7 @@ state 178
     block                          shift and go to state 180
     varDecList                     shift and go to state 44
     varDec                         shift and go to state 45
+    empty                          shift and go to state 46
     type                           shift and go to state 47
 
 state 179
@@ -4846,7 +4934,7 @@ state 179
 
 state 180
 
-    (28) forStmt -> FOR LPAREN assing SEMICOLON exp SEMICOLON assing RPAREN LKEY block . RKEY
+    (28) forStmt -> FOR LPAREN assign SEMICOLON exp SEMICOLON assign RPAREN LKEY block . RKEY
 
     RKEY            shift and go to state 182
 
@@ -4855,7 +4943,6 @@ state 181
 
     (26) ifStmt -> IF LPAREN exp RPAREN LKEY block RKEY ELSE LKEY block RKEY .
 
-    ε               reduce using rule 26 (ifStmt -> IF LPAREN exp RPAREN LKEY block RKEY ELSE LKEY block RKEY .)
     IF              reduce using rule 26 (ifStmt -> IF LPAREN exp RPAREN LKEY block RKEY ELSE LKEY block RKEY .)
     WHILE           reduce using rule 26 (ifStmt -> IF LPAREN exp RPAREN LKEY block RKEY ELSE LKEY block RKEY .)
     FOR             reduce using rule 26 (ifStmt -> IF LPAREN exp RPAREN LKEY block RKEY ELSE LKEY block RKEY .)
@@ -4864,21 +4951,22 @@ state 181
     READ            reduce using rule 26 (ifStmt -> IF LPAREN exp RPAREN LKEY block RKEY ELSE LKEY block RKEY .)
     WRITE           reduce using rule 26 (ifStmt -> IF LPAREN exp RPAREN LKEY block RKEY ELSE LKEY block RKEY .)
     ID              reduce using rule 26 (ifStmt -> IF LPAREN exp RPAREN LKEY block RKEY ELSE LKEY block RKEY .)
+    RKEY            reduce using rule 26 (ifStmt -> IF LPAREN exp RPAREN LKEY block RKEY ELSE LKEY block RKEY .)
 
 
 state 182
 
-    (28) forStmt -> FOR LPAREN assing SEMICOLON exp SEMICOLON assing RPAREN LKEY block RKEY .
+    (28) forStmt -> FOR LPAREN assign SEMICOLON exp SEMICOLON assign RPAREN LKEY block RKEY .
 
-    ε               reduce using rule 28 (forStmt -> FOR LPAREN assing SEMICOLON exp SEMICOLON assing RPAREN LKEY block RKEY .)
-    IF              reduce using rule 28 (forStmt -> FOR LPAREN assing SEMICOLON exp SEMICOLON assing RPAREN LKEY block RKEY .)
-    WHILE           reduce using rule 28 (forStmt -> FOR LPAREN assing SEMICOLON exp SEMICOLON assing RPAREN LKEY block RKEY .)
-    FOR             reduce using rule 28 (forStmt -> FOR LPAREN assing SEMICOLON exp SEMICOLON assing RPAREN LKEY block RKEY .)
-    BREAK           reduce using rule 28 (forStmt -> FOR LPAREN assing SEMICOLON exp SEMICOLON assing RPAREN LKEY block RKEY .)
-    RETURN          reduce using rule 28 (forStmt -> FOR LPAREN assing SEMICOLON exp SEMICOLON assing RPAREN LKEY block RKEY .)
-    READ            reduce using rule 28 (forStmt -> FOR LPAREN assing SEMICOLON exp SEMICOLON assing RPAREN LKEY block RKEY .)
-    WRITE           reduce using rule 28 (forStmt -> FOR LPAREN assing SEMICOLON exp SEMICOLON assing RPAREN LKEY block RKEY .)
-    ID              reduce using rule 28 (forStmt -> FOR LPAREN assing SEMICOLON exp SEMICOLON assing RPAREN LKEY block RKEY .)
+    IF              reduce using rule 28 (forStmt -> FOR LPAREN assign SEMICOLON exp SEMICOLON assign RPAREN LKEY block RKEY .)
+    WHILE           reduce using rule 28 (forStmt -> FOR LPAREN assign SEMICOLON exp SEMICOLON assign RPAREN LKEY block RKEY .)
+    FOR             reduce using rule 28 (forStmt -> FOR LPAREN assign SEMICOLON exp SEMICOLON assign RPAREN LKEY block RKEY .)
+    BREAK           reduce using rule 28 (forStmt -> FOR LPAREN assign SEMICOLON exp SEMICOLON assign RPAREN LKEY block RKEY .)
+    RETURN          reduce using rule 28 (forStmt -> FOR LPAREN assign SEMICOLON exp SEMICOLON assign RPAREN LKEY block RKEY .)
+    READ            reduce using rule 28 (forStmt -> FOR LPAREN assign SEMICOLON exp SEMICOLON assign RPAREN LKEY block RKEY .)
+    WRITE           reduce using rule 28 (forStmt -> FOR LPAREN assign SEMICOLON exp SEMICOLON assign RPAREN LKEY block RKEY .)
+    ID              reduce using rule 28 (forStmt -> FOR LPAREN assign SEMICOLON exp SEMICOLON assign RPAREN LKEY block RKEY .)
+    RKEY            reduce using rule 28 (forStmt -> FOR LPAREN assign SEMICOLON exp SEMICOLON assign RPAREN LKEY block RKEY .)
 
 WARNING: 
 WARNING: Conflicts:

@@ -101,7 +101,7 @@
 <stmtList> => <stmt> <stmtList>
             | ε
 
-<literalSeq> => <literal> <literalSeq>
+<literalSeq> => <literal> ',' <literalSeq>
               | <literal>
 
 <expList> => <expSeq>

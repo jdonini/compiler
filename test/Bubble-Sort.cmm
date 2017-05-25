@@ -4,6 +4,7 @@ int v[10];
  Procedimento de ordenação por troca
  Observe como um parâmetro de arranjo é declarado
 */
+
 bubblesort(int v[], int n) {
   int i=0, j;
   bool trocou = true;

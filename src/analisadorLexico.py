@@ -5,17 +5,13 @@ import os
 import sys
 import datetime
 
-
-# Definição dos tokens que a linguagem reconhece
+# Funções seguindo o padrão da doc(http://www.dabeaz.com/ply/ply.html\ply_nn6)
 tokens = [
-    'LPAREN', 'RPAREN', 'LCOR', 'RCOR', 'LKEY', 'RKEY', 'COMMA', 'SEMICOLON',
-    'ID', 'NUMBER', 'PLUS', 'MINUS', 'MULT', 'DIVIDE', 'EQUALS', 'DIFFERENT',
-    'GT', 'GTE', 'LT', 'LTE',  'OR', 'AND', 'NOT', 'ASSING', 'PLUSASSING',
-    'MINUSASSING', 'MULTASSING', 'DIVIDEASSING', 'MODASSING',
-    'MOD', 'NEGUNARY', 'STRING_LITERAL'
+    'LPAREN', 'RPAREN', 'LCOR', 'RCOR', 'LKEY', 'RKEY', 'COMMA', 'SEMICOLON', 'ID', 'NUMBER', 'STRING_LITERAL',
+    'PLUS', 'MINUS', 'MULT', 'DIVIDE', 'EQUALS', 'DIFFERENT', 'GT', 'GTE', 'LT', 'LTE', 'MOD', 'UMINUS',
+    'OR', 'AND', 'NOT', 'ASSIGN', 'PLUSASSIGN', 'MINUSASSIGN', 'MULTASSIGN', 'DIVIDEASSIGN', 'MODASSIGN'
     ]
 
-# De acordo com a linguagem itilizada, foi definida as palavras_reservadas
 palavras_reservadas = {
     'if': 'IF',
     'else': 'ELSE',
@@ -33,10 +29,6 @@ palavras_reservadas = {
 }
 tokens += list(palavras_reservadas.values())
 
-# o Caracter T antes das funcões quer dizer que vamos reconhecer um token
-# passando T como paramentro, vamos analisar os tokens na função
-
-# implementando utilizando expressoes regulares
 t_LPAREN = r'\('
 t_RPAREN = r'\)'
 t_LCOR = '\['
@@ -59,18 +51,17 @@ t_LTE = r'<='
 t_OR = r'\|\|'
 t_AND = r'&&'
 t_NOT = r'!'
-t_NEGUNARY = r'-'
-t_ASSING = r'='
-t_PLUSASSING = r'\+='
-t_MINUSASSING = r'-='
-t_MULTASSING = r'\*='
-t_DIVIDEASSING = r'/='
-t_MODASSING = r'%='
+t_UMINUS = r'-'
+t_ASSIGN = r'='
+t_PLUSASSIGN = r'\+='
+t_MINUSASSIGN = r'-='
+t_MULTASSIGN = r'\*='
+t_DIVIDEASSIGN = r'/='
+t_MODASSIGN = r'%='
 t_STRING_LITERAL = r'\".*?\"'
 t_ignore = ' \t\v\r'
 
 
-# Funções seguindo o padrão da doc(http://www.dabeaz.com/ply/ply.html\ply_nn6)
 def t_id(t):
     r'[a-zA-Z_][a-zA-Z0-9_]*'
     t.type = palavras_reservadas.get(t.value, 'ID')
@@ -98,10 +89,6 @@ def t_newline(t):
     t.lexer.lineno += t.value.count("\n")
 
 
-# Compute column.
-# input is the input text string
-# token is a token instance
-# marca a ultima posição do token identificado
 def find_column(input, token):
     last_cr = input.rfind('\n', 0, token.lexpos)
     column = token.lexpos - last_cr
@@ -109,15 +96,16 @@ def find_column(input, token):
 
 
 def t_error(t):
-    """ Trata o erro que ocorre quando é verificado um Caracter ao longo
-    da leitura do arquivo, encontra o erro e continua """
+    '''
+    Trata o erro que ocorre quando é verificado um Caracter ao longo
+    da leitura do arquivo, encontra o erro e continua
+    '''
     column = find_column(t.lexer.lexdata, t)
     print("LexToken(ERROR Léxico: Linha: %d, Coluna: %d, Token invávildo: %s)" % (t.lexer.lineno, column, t.value[0]))
     t.lexer.skip(1)
 
 
 def buscar_arquivos():
-    # verifica todos os arquivos do diretorio test
     arquivos = []
     numero_arquivo = ''
     resposta = False
@@ -140,8 +128,8 @@ def buscar_arquivos():
             return files[int(numero_arquivo)-1]
 
 
-analisador_lexer = lex.lex()
-# arquivo = buscar_arquivos()
+analisador_lexico = lex.lex()
+arquivo = buscar_arquivos()
 
 
 def buscar_arquivos_teste(arquivo):
@@ -153,8 +141,7 @@ def buscar_arquivos_teste(arquivo):
     return cadeia_caracteres
 
 
-# usa a cadeia_caracteres como entrada para o A.Lex
-# analisador_lexer.input(buscar_arquivos_teste(arquivo))
+analisador_lexico.input(buscar_arquivos_teste(arquivo))
 
 
 def escrever_arquivos_resultado(arquivo):
@@ -168,7 +155,7 @@ def escrever_arquivos_resultado(arquivo):
 
 def test_output_lexer(resultado):
     while True:
-        token = analisador_lexer.token()
+        token = analisador_lexico.token()
         last_cr = lex.lexer.lexdata.rfind('\n', 0, lex.lexer.lexpos)
         column = lex.lexer.lexpos - last_cr - 1
         if not token:

@@ -1,4 +1,7 @@
-while (i < n-1 && trocou) {
-  trocou = false;
-  i += 1;
+bool a = true;
+
+int func() {
+	while (a) {
+
+	}
 }

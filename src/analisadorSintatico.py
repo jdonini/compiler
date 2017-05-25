@@ -12,26 +12,22 @@ from analisadorLexico import tokens
 # baseado na definição da linguagem (versão 1.4)
 # os conflitos são resolvidos pela regra shift/reduce
 precedencia_tokens = (
-    ('right', 'NEGUNARY', 'NOT'),
-    ('right', 'NOT'),
-    ('left', 'MULT', 'DIVIDE', 'MOD'),
-    ('left', 'PLUS', 'MINUS'),
-    ('left', 'GTE', 'LTE', 'GT', 'LT'),
-    ('left', 'EQUALS', 'DIFFERENT'),
-    ('left', 'AND'),
+    ('right', '?'),
     ('left', 'OR'),
-    ('right', '?')
+    ('left', 'AND'),
+    ('left', 'EQUALS', 'DIFFERENT'),
+    ('left', 'GTE', 'LTE', 'GT', 'LT'),
+    ('left', 'PLUS', 'MINUS'),
+    ('left', 'MULT', 'DIVIDE', 'MOD'),
+    ('right', 'NOT', 'UMINUS')
 )
 
 
-# os terminais são os tokens
-# os não terminais da gramatica, serão os nomes das funcões
-# P quer dizer que vamos analisar as produções
 def p_program(p):
     '''
     program : decSeq
     '''
-    p[0] = (p[1], "Programa")
+    p[0] = ('Program', p[1])
 
 
 def p_dec(p):
@@ -41,35 +37,35 @@ def p_dec(p):
         | type ID LPAREN paramList RPAREN LKEY block RKEY
     '''
     if len(p) == 2:
-        p[0] = ('Declaração', p[1])
+        p[0] = ('dec', p[1])
     elif len(p) == 8:
-        p[0] = ('Declaração', p[1], p[2], p[3], p[4], p[5], p[6], p[7])
+        p[0] = ('dec', p[3], p[6])
     elif len(p) == 9:
-        p[0] = ('Declaração', p[1], p[2], p[3], p[4], p[5], p[6], p[7], p[8])
+        p[0] = ('dec', p[1], p[4], p[7])
 
 
 def p_varDec(p):
     '''
     varDec : type varSpecSeq SEMICOLON
     '''
-    p[0] = ('Declaração Variável', p[1], p[2], p[3])
+    p[0] = ('varDec', p[1], p[2])
 
 
 def p_varSpec(p):
     '''
     varSpec : ID
-            | ID ASSING literal
+            | ID ASSIGN literal
             | ID LCOR NUMBER RCOR
-            | ID LCOR NUMBER RCOR ASSING LKEY literalSeq RKEY
+            | ID LCOR NUMBER RCOR ASSIGN LKEY literalSeq RKEY
     '''
     if len(p) == 2:
-        p[0] = ('Especificação de variável', p[1])
+        p[0] = ('varSpec', p[1])
     elif len(p) == 4:
-        p[0] = ('Especificação de variável', p[1], p[2], p[3])
+        p[0] = ('varSpec', p[1], p[3])
     elif len(p) == 5:
-        p[0] = ('Especificação de variável', p[1], p[2], p[3], p[4])
+        p[0] = ('varSpec', p[1], p[3])
     elif len(p) == 9:
-        p[0] = ('Especificação de variável', p[1], p[2], p[3], p[4], p[5], p[6], p[7], p[8])
+        p[0] = ('varSpec', p[1], p[7])
 
 
 def p_type(p):
@@ -78,7 +74,7 @@ def p_type(p):
          | STRING
          | BOOLEAN
     '''
-    p[0] = ('Tipo', p[1])
+    p[0] = ('type', p[1])
 
 
 def p_param(p):
@@ -87,16 +83,16 @@ def p_param(p):
           | type ID RCOR LCOR
     '''
     if len(p) == 3:
-        p[0] = ('Parâmetro', p[1], p[2])
+        p[0] = ('param', p[1])
     elif len(p) == 5:
-        p[0] = ('Parâmetro', p[1], p[2], p[3], p[4])
+        p[0] = ('param', p[1])
 
 
 def p_block(p):
     '''
     block : varDecList stmtList
     '''
-    p[0] = ('Bloco', p[1], p[2])
+    p[0] = ('block', p[1], p[2])
 
 
 def p_stmt(p):
@@ -108,13 +104,13 @@ def p_stmt(p):
          | returnStmt
          | readStmt
          | writeStmt
-         | assing SEMICOLON
+         | assign SEMICOLON
          | subCall SEMICOLON
     '''
     if len(p) == 2:
-        p[0] = ('Comandos', p[1])
+        p[0] = ('stmt', p[1])
     elif len(p) == 3:
-        p[0] = ('Comandos', p[1], p[2])
+        p[0] = ('stmt', p[1])
 
 
 def p_ifStmt(p):
@@ -123,44 +119,44 @@ def p_ifStmt(p):
            | IF LPAREN exp RPAREN LKEY block RKEY ELSE LKEY block RKEY
     '''
     if len(p) == 8:
-        p[0] = ('IF', p[1], p[2], p[3], p[4], p[5], p[6], p[7])
+        p[0] = ('ifStmt', p[3], p[6])
     elif len(p) == 12:
-        p[0] == ('IF', p[1], p[2], p[3], p[4], p[5], p[6], p[7], p[8], p[9], p[10], p[11])
+        p[0] == ('ifStmt', p[3], p[6], p[10])
 
 
 def p_whileStmt(p):
     '''
     whileStmt : WHILE LPAREN exp RPAREN LKEY block RKEY
     '''
-    p[0] = ('WHILE', p[1], p[2], p[3], p[4], p[5], p[6], p[7])
+    p[0] = ('whileStmt', p[3], p[6])
 
 
 def p_forStmt(p):
     '''
-    forStmt : FOR LPAREN assing SEMICOLON exp SEMICOLON assing RPAREN LKEY block RKEY
+    forStmt : FOR LPAREN assign SEMICOLON exp SEMICOLON assign RPAREN LKEY block RKEY
     '''
-    p[0] = ('FOR', p[1], p[2], p[3], p[4], p[5], p[6], p[7], p[8], p[9], p[10], p[11])
+    p[0] = ('forStmt', p[3], p[5], p[7], p[10])
+
+
+def p_breakStmt(p):
+    '''
+    breakStmt : BREAK SEMICOLON
+    '''
+    p[0] = ('breakStmt', p[1])
 
 
 def p_readStmt(p):
     '''
-    breakStmt : BREAK SEMICOLON
-    '''
-    p[0] = ('BREAK', p[1], p[2])
-
-
-def p_comandoRead(p):
-    '''
     readStmt : READ var SEMICOLON
     '''
-    p[0] = ('READ', p[1], p[2], p[3])
+    p[0] = ('readStmt', p[2])
 
 
 def p_writeStmt(p):
     '''
     writeStmt : WRITE expList SEMICOLON
     '''
-    p[0] = ('WRITE', p[1], p[2], p[3])
+    p[0] = ('writeStmt', p[2])
 
 
 def p_returnStmt(p):
@@ -169,39 +165,39 @@ def p_returnStmt(p):
                | RETURN exp SEMICOLON
     '''
     if len(p) == 3:
-        p[0] = ('RETURN', p[1], p[2])
+        p[0] = ('returnStmt', p[1])
     elif len(p) == 4:
-        p[0] = ('RETURN', p[1], p[2], p[3])
+        p[0] = ('returnStmt', p[1], p[2])
 
 
 def p_subCall(p):
     '''
     subCall : ID LPAREN expList RPAREN
     '''
-    p[0] = ('Chamada de Função', p[1], p[2], p[3], p[4])
+    p[0] = ('subCall', p[1], p[3])
 
 
-def p_assing(p):
+def p_assign(p):
     '''
-    assing : var ASSING exp
-           | var PLUSASSING exp
-           | var MINUSASSING exp
-           | var MULTASSING exp
-           | var DIVIDEASSING exp
-           | var MODASSING exp
+    assign : var ASSIGN exp
+           | var PLUSASSIGN exp
+           | var MINUSASSIGN exp
+           | var MULTASSIGN exp
+           | var DIVIDEASSIGN exp
+           | var MODASSIGN exp
     '''
     if p[2] == '=':
-        p[0] = ('Atribuição', p[1], p[2], p[3])
+        p[0] = ('=', p[1], p[3])
     elif p[2] == '+=':
-        p[0] = ('SomaAtribuição', p[1], p[2], p[3])
+        p[0] = ('+=', p[1], p[3])
     elif p[2] == '-=':
-        p[0] = ('SubAtribuição', p[1], p[2], p[3])
+        p[0] = ('-=', p[1], p[3])
     elif p[2] == '*=':
-        p[0] = ('MultAtribuição', p[1], p[2], p[3])
+        p[0] = ('*=', p[1], p[3])
     elif p[2] == '/=':
-        p[0] = ('DivAtribuição', p[1], p[2], p[3])
+        p[0] = ('/=', p[1], p[3])
     elif p[2] == '%=':
-        p[0] = ('ModAtribuição', p[1], p[2], p[3])
+        p[0] = ('%=', p[1], p[3])
 
 
 def p_expArithmetic(p):
@@ -213,18 +209,18 @@ def p_expArithmetic(p):
         | exp MOD exp
     '''
     if p[2] == '+':
-        p[0] = ('Adição', p[1] + p[3])
+        p[0] = ('+', p[1], p[3])
     elif p[2] == '-':
-        p[0] = ('Subtração', p[1] - p[3])
+        p[0] = ('-', p[1], p[3])
     elif p[2] == '/':
-        p[0] = ('Divisão', p[1] / p[3])
+        p[0] = ('/', p[1], p[3])
     elif p[2] == '*':
-        p[0] = ('Multiplicação', p[1] * p[3])
+        p[0] = ('*', p[1], p[3])
     elif p[2] == '%':
-        p[0] = ('Módulo', p[1] % p[3])
+        p[0] = ('%', p[1], p[3])
 
 
-def p_expComparasion(p):
+def p_expComparison(p):
     '''
     exp : exp EQUALS exp
         | exp DIFFERENT exp
@@ -234,17 +230,17 @@ def p_expComparasion(p):
         | exp LT exp
     '''
     if p[2] == '==':
-        p[0] = ('Igual', p[1] == p[3])
+        p[0] = ('==', p[1], p[3])
     elif p[2] == '!=':
-        p[0] = ('Diferente', p[1] != p[3])
+        p[0] = ('!=', p[1], p[3])
     elif p[2] == '<=':
-        p[0] = ('Menor igual', p[1] <= p[3])
+        p[0] = ('<=', p[1], p[3])
     elif p[2] == '>=':
-        p[0] = ('Maior igual', p[1] >= p[3])
+        p[0] = ('>=', p[1], p[3])
     elif p[2] == '>':
-        p[0] = ('Maior', p[1] > p[3])
+        p[0] = ('>', p[1], p[3])
     elif p[2] == '<':
-        p[0] = ('Menor', p[1] < p[3])
+        p[0] = ('<', p[1], p[3])
 
 
 def p_expLogic(p):
@@ -252,51 +248,51 @@ def p_expLogic(p):
     exp : exp AND exp
         | exp OR exp
         | NOT exp
-        | NEGUNARY exp
+        | UMINUS exp
     '''
     if p[2] == '&&':
-        p[0] = ('AND', p[1], p[2], p[3])
+        p[0] = ('AND', p[1], p[3])
     elif p[2] == '||':
-        p[0] = ('OR', p[1], p[2], p[3])
+        p[0] = ('OR', p[1], p[3])
     elif p[1] == '!':
-        p[0] = ('Negação', p[1], p[2])
+        p[0] = ('NOT', p[1], p[2])
     elif p[1] == '-':
-        p[0] = ('Menos', -p[2])
+        p[0] = ('UMINUS', -p[2])
 
 
 def p_expTernary(p):
     '''
     exp : exp '?' exp ':' exp
     '''
-    p[0] = ('Ternário', p[1], p[2], p[3], p[4], p[5])
+    p[0] = ('Ternary', p[1], p[3], p[5])
 
 
 def p_expSubCall(p):
     '''
     exp : subCall
     '''
-    p[0] = ('Chamada de Função', p[1])
+    p[0] = ('expSubCall', p[1])
 
 
 def p_expVar(p):
     '''
     exp : var
     '''
-    p[0] = ('Variável', p[1])
+    p[0] = ('expVar', p[1])
 
 
 def p_expLiteral(p):
     '''
     exp : literal
     '''
-    p[0] = ('Literal', p[1])
+    p[0] = ('literal', p[1])
 
 
 def p_expMultParent(p):
     '''
     exp : LPAREN exp RPAREN
     '''
-    p[0] = ('Multiplos parênteses', p[1], p[2], p[3])
+    p[0] = ('expMultParent', p[2])
 
 
 def p_var(p):
@@ -305,9 +301,9 @@ def p_var(p):
         | ID LCOR exp RCOR
     '''
     if len(p) == 2:
-        p[0] = ('Variável', p[1])
+        p[0] = ('var', p[1])
     elif len(p) == 5:
-        p[0] = ('Variável', p[1], p[2], p[3], p[4])
+        p[0] = ('var', p[1], p[3])
 
 
 def p_literal(p):
@@ -323,16 +319,16 @@ def p_literal(p):
 def p_paramList(p):
     '''
     paramList : paramSeq
-              | 'ε'
+              | empty
     '''
-    p[0] = ('Lista de parametros', p[1])
+    if len(p) == 2:
+        p[0] = ('paramList', p[1])
 
 
 def p_paramListNull(p):
     '''
     program : empty
     '''
-    p[0] is None
 
 
 def p_paramSeq(p):
@@ -341,17 +337,18 @@ def p_paramSeq(p):
              | param COMMA paramSeq
     '''
     if len(p) == 2:
-        p[0] = ('Sequência de parâmetros', p[1])
+        p[0] = ('paramSeq', p[1])
     elif len(p) == 4:
-        p[0] = ('Sequência de parâmetros', p[1], p[2], p[3])
+        p[0] = ('paramSeq', p[1], p[3])
 
 
 def p_varDecList(p):
     '''
     varDecList : varDec varDecList
-               | 'ε'
+               | empty
     '''
-    p[0] = ('Lista de declaração de variável', p[1], p[2])
+    if len(p) == 3:
+        p[0] = ('varDecList', p[1], p[2])
 
 
 def p_varSpecSeq(p):
@@ -360,9 +357,9 @@ def p_varSpecSeq(p):
                | varSpec COMMA varSpecSeq
     '''
     if len(p) == 2:
-        p[0] = ('Sequencia de variável', p[1])
+        p[0] = ('varSpecSeq', p[1])
     elif len(p) == 4:
-        p[0] = ('Sequencia de variável', p[1], p[2], p[3])
+        p[0] = ('varSpecSeq', p[1], p[3])
 
 
 def p_decSeq(p):
@@ -371,17 +368,18 @@ def p_decSeq(p):
            | dec decSeq
     '''
     if len(p) == 2:
-        p[0] = ('Sequência de declaração', p[1])
+        p[0] = ('decSeq', p[1])
     elif len(p) == 3:
-        p[0] = ('Sequência de declaração', p[1], p[2])
+        p[0] = ('decSeq', p[1], p[2])
 
 
 def p_stmtList(p):
     '''
     stmtList : stmt stmtList
-             | 'ε'
+             | empty
     '''
-    p[0] = ('Lista de comando', p[1], p[2])
+    if len(p) == 3:
+        p[0] = ('stmtList', p[1], p[2])
 
 
 def p_literalSeq(p):
@@ -390,17 +388,18 @@ def p_literalSeq(p):
                | literal COMMA literalSeq
     '''
     if len(p) == 2:
-        p[0] = ('Valor da sequência', p[1])
+        p[0] = ('literalSeq', p[1])
     elif len(p) == 3:
-        p[0] = ('Valor da sequência', p[1], p[2])
+        p[0] = ('literalSeq', p[1], p[3])
 
 
 def p_expList(p):
     '''
     expList : expSeq
-            | 'ε'
+            | empty
     '''
-    p[0] = ('Sequência de Expressão', p[1])
+    if len(p) == 2:
+        p[0] = ('expSeq', p[1])
 
 
 def p_expSeq(p):
@@ -409,9 +408,9 @@ def p_expSeq(p):
            | exp COMMA expSeq
     '''
     if len(p) == 2:
-        p[0] = ('Sequência de Expressões', p[1])
+        p[0] = ('expSeq', p[1])
     elif len(p) == 4:
-        p[0] = ('Sequência de Expressões', p[1], p[2], p[3])
+        p[0] = ('expSeq', p[1], p[3])
 
 
 def p_empty(p):
@@ -432,7 +431,7 @@ def buscar_arquivos(diretorio_teste):
     resposta = False
     contador = 1
 
-    for base, dirs, files in os.walk('/Users/juliano/Workspace/Compiladores/test/'):
+    for base, dirs, files in os.walk(diretorio_teste):
         arquivos.append(files)
 
         for file in files:
