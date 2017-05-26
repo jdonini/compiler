@@ -10,7 +10,8 @@ from utils import Utils
 tokens = [
     'LPAREN', 'RPAREN', 'LCOR', 'RCOR', 'LKEY', 'RKEY', 'COMMA', 'SEMICOLON', 'ID', 'NUMBER', 'STRING_LITERAL',
     'PLUS', 'MINUS', 'MULT', 'DIVIDE', 'EQUALS', 'DIFFERENT', 'GT', 'GTE', 'LT', 'LTE', 'MOD', 'UMINUS',
-    'OR', 'AND', 'NOT', 'ASSIGN', 'PLUSASSIGN', 'MINUSASSIGN', 'MULTASSIGN', 'DIVIDEASSIGN', 'MODASSIGN'
+    'OR', 'AND', 'NOT', 'ASSIGN', 'PLUSASSIGN', 'MINUSASSIGN', 'MULTASSIGN', 'DIVIDEASSIGN', 'MODASSIGN', 'QMARK',
+    'COLON'
     ]
 
 reserved = {
@@ -30,6 +31,8 @@ reserved = {
 }
 tokens += list(reserved.values())
 
+t_QMARK = r'\?'
+t_COLON = r':'
 t_LPAREN = r'\('
 t_RPAREN = r'\)'
 t_LCOR = '\['
@@ -59,7 +62,7 @@ t_MINUSASSIGN = r'-='
 t_MULTASSIGN = r'\*='
 t_DIVIDEASSIGN = r'/='
 t_MODASSIGN = r'%='
-t_STRING_LITERAL = r'\".*?\"'
+t_STRING_LITERAL = r'\"(.|\n)*?\"'
 t_ignore = ' \t\v\r'
 
 def t_id(t):

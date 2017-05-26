@@ -263,7 +263,7 @@ def p_expLogic(p):
 
 def p_expTernary(p):
     '''
-    exp : exp '?' exp ':' exp
+    exp : exp QMARK exp COLON exp
     '''
     p[0] = ('Ternary', p[1], p[3], p[5])
 
