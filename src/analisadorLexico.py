@@ -1,10 +1,6 @@
 # coding: utf-8
 import ply.lex as lex
-import re
-import os
-import sys
-import datetime
-from utils import Utils
+from utils import Utils, path_files_test, path_files_result
 
 # Funções seguindo o padrão da doc(http://www.dabeaz.com/ply/ply.html\ply_nn6)
 tokens = [
@@ -65,6 +61,7 @@ t_MODASSIGN = r'%='
 t_STRING_LITERAL = r'\"(.|\n)*?\"'
 t_ignore = ' \t\v\r'
 
+
 def t_id(t):
     r'[a-zA-Z_][a-zA-Z0-9_]*'
     t.type = reserved.get(t.value, 'ID')
@@ -108,11 +105,8 @@ def t_error(t):
     t.lexer.skip(1)
 
 
-path_files_test = '../test/'
-path_files_result = '../result/'
 analisador_lexico = lex.lex()
-archive = Utils.find_files(path_files_test)
-analisador_lexico.input(Utils.find_files_test(archive, path_files_test))
+analisador_lexico.input(Utils.find_files_test(Utils.archive, path_files_test))
 
 
 def test_output_lexer(result):
@@ -129,4 +123,4 @@ def test_output_lexer(result):
             file.close()
 
 
-test_output_lexer(Utils.save_archives_test(archive, path_files_result))
+test_output_lexer(Utils.save_archives_test(Utils.archive, path_files_result))

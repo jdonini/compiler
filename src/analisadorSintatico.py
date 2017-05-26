@@ -1,12 +1,7 @@
 # coding: utf-8
 import ply.yacc as yacc
 import ply.lex as lex
-import os
-import codecs
-import re
-import datetime
-from utils import Utils
-from sys import stdin
+from utils import Utils, path_files_test, path_files_result
 from analisadorLexico import tokens
 
 # a precedencia é definida de cima para baixo
@@ -420,11 +415,12 @@ def p_error(p):
     p.lexer.skip(1)
 
 
-path_files_test = '../test/'
-path_files_result = '../result/'
-archive = Utils.find_files(path_files_test)
 parser = yacc.yacc()
-analisador_sintatico = parser.parse(Utils.find_files_test(archive, path_files_test))
+analisador_sintatico = parser.parse(Utils.find_files_test(Utils.archive, path_files_test))
 
 
-print (analisador_sintatico)
+def test_output_sintatico(result):
+    print (analisador_sintatico)
+    with open(result, 'a') as file:
+        file.write(str(analisador_sintatico) + '\n')
+        file.close()

@@ -1,3 +1,8 @@
+from analisadorLexico import test_output_lexer
+from analisadorSintatico import test_output_sintatico
+from utils import Utils, path_files_result
+
+
 def menu():
     print("""
          ++++++ Compilador para a Linguagem cmm ++++++
@@ -11,21 +16,19 @@ def menu():
 
 
 def analisadorLexico():
-    print ('\nanalisadorLexico()\n')
-    menu()
-    switch(int(input('Escolha uma opção: ')))
+    print("\n++++++++++++++++++++++++++++++++++++ Análisador Léxico ++++++++++++++++++++++++++++++++++++\n")
+    test_output_lexer(Utils.save_archives_test(Utils.archive, path_files_result))
+    print()
 
 
 def analisadorSintatico():
-    print ('\nanalisadorSintatico()\n')
-    menu()
-    switch(int(input('Escolha uma opção: ')))
+    print("\n++++++++++++++++++++++++++++++++++++ Árvore Sintática Abstrata ++++++++++++++++++++++++++++++++++++\n")
+    test_output_sintatico(Utils.save_archives_test(Utils.archive, path_files_result))
+    print()
 
 
 def analisadorSemantico():
     print ('\nanalisadorSemantico()\n')
-    menu()
-    switch(int(input('Escolha uma opção: ')))
 
 
 def sair():

@@ -1,6 +1,9 @@
 import os
-import sys
 import datetime
+
+path_files_test = '../test/'
+path_files_result = '../result/'
+
 
 class Utils(object):
     """ """
@@ -16,6 +19,7 @@ class Utils(object):
         for base, dirs, files in os.walk(path_files_test):
             archives.append(files)
 
+            print("\nEscolha um caso de Teste\n")
             for file in files:
                 print(str(count)+". "+file)
                 count += 1
@@ -25,10 +29,9 @@ class Utils(object):
                 for file in files:
                     if file == files[int(number_archives)-1]:
                         break
-                print("Você escolheu \"%s\" \n" % files[int(number_archives)-1])
+                print("\nVocê escolheu \"%s\" \n" % files[int(number_archives)-1])
 
                 return files[int(number_archives)-1]
-
 
     def find_files_test(archive, path_files_test):
         test = path_files_test + archive
@@ -37,7 +40,6 @@ class Utils(object):
         test_archive.close()
         return input_string
 
-
     def save_archives_test(archive, path_files_result):
         result_directory = path_files_result
         time = datetime.datetime.now()
@@ -45,3 +47,5 @@ class Utils(object):
             "__" + ("%s-%s-%s" % (time.day, time.month, time.year)) + \
             "__" + ("%s:%s:%s" % (time.hour, time.minute, time.second)) + ".txt"
         return result
+
+    archive = find_files(path_files_test)
