@@ -40,7 +40,7 @@ def p_dec(p):
     if len(p) == 2:
         p[0] = ('dec', p[1])
     elif len(p) == 8:
-        p[0] = ('dec', p[3], p[6])
+        p[0] = ('decProcedure', p[1], p[3], p[6])
     elif len(p) == 9:
         p[0] = ('dec', p[1], p[4], p[7])
 
@@ -265,7 +265,7 @@ def p_expTernary(p):
     '''
     exp : exp QMARK exp COLON exp
     '''
-    p[0] = ('Ternary', p[1], p[3], p[5])
+    p[0] = ('ternary', p[1], p[3], p[5])
 
 
 def p_expSubCall(p):
@@ -324,12 +324,6 @@ def p_paramList(p):
     '''
     if len(p) == 2:
         p[0] = ('paramList', p[1])
-
-
-def p_paramListNull(p):
-    '''
-    program : empty
-    '''
 
 
 def p_paramSeq(p):

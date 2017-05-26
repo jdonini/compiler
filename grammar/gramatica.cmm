@@ -29,6 +29,7 @@
         | <writeStmt>
         | <assign> ';'
         | <subCall> ';'
+        | <procedure>
 
 <ifStmt> => "if" '(' <exp> ')' '{' <block> '}'
           | "if" '(' <exp> ')' '{' <block> '}' "else" '{' <block> '}'
@@ -47,6 +48,8 @@
               | "return" <exp> ';'
 
 <subCall> => id '(' <expList> ')'
+
+<procedure> => id '(' <expList> ')' '{' <block> '}'
 
 <assign> => <var> '='  <exp>
           | <var> "+=" <exp>
@@ -78,6 +81,7 @@
        | <var>
        | <literal>
        | '(' <exp> ')'
+       | <param>
 
 <literal> => num
            | str
