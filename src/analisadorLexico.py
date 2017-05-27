@@ -54,7 +54,7 @@ t_NOT = r'!'
 t_UMINUS = r'-'
 t_ASSIGN = r'='
 t_PLUSASSIGN = r'\+='
-t_MINUSASSIGN = r'-='
+t_MINUSASSIGN = r'\-='
 t_MULTASSIGN = r'\*='
 t_DIVIDEASSIGN = r'/='
 t_MODASSIGN = r'%='
@@ -106,10 +106,10 @@ def t_error(t):
 
 
 analisador_lexico = lex.lex()
-analisador_lexico.input(Utils.find_files_test(Utils.archive, path_files_test))
 
 
 def test_output_lexer(result):
+    analisador_lexico.input(Utils.find_files_test(Utils.archive, path_files_test))
     while True:
         token = analisador_lexico.token()
         last_cr = lex.lexer.lexdata.rfind('\n', 0, lex.lexer.lexpos)
@@ -121,6 +121,3 @@ def test_output_lexer(result):
         with open(result, 'a') as file:
             file.write(print_lexer + '\n')
             file.close()
-
-
-test_output_lexer(Utils.save_archives_test(Utils.archive, path_files_result))

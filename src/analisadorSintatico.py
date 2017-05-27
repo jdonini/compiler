@@ -2,7 +2,7 @@
 import ply.yacc as yacc
 import ply.lex as lex
 from utils import Utils, path_files_test, path_files_result
-from analisadorLexico import tokens
+from analisadorLexico import tokens, test_output_lexer
 
 # a precedencia é definida de cima para baixo
 # baseado na definição da linguagem (versão 1.4)
@@ -220,23 +220,23 @@ def p_expComparison(p):
     '''
     exp : exp EQUALS exp
         | exp DIFFERENT exp
-        | exp LTE exp
-        | exp GTE exp
         | exp GT exp
+        | exp GTE exp
         | exp LT exp
+        | exp LTE exp
     '''
     if p[2] == '==':
         p[0] = ('==', p[1], p[3])
     elif p[2] == '!=':
         p[0] = ('!=', p[1], p[3])
-    elif p[2] == '<=':
-        p[0] = ('<=', p[1], p[3])
-    elif p[2] == '>=':
-        p[0] = ('>=', p[1], p[3])
     elif p[2] == '>':
         p[0] = ('>', p[1], p[3])
+    elif p[2] == '>=':
+        p[0] = ('>=', p[1], p[3])
     elif p[2] == '<':
         p[0] = ('<', p[1], p[3])
+    elif p[2] == '<=':
+        p[0] = ('<=', p[1], p[3])
 
 
 def p_expLogic(p):
@@ -260,7 +260,7 @@ def p_expTernary(p):
     '''
     exp : exp QMARK exp COLON exp
     '''
-    p[0] = ('ternary', p[1], p[3], p[5])
+    p[0] = ('ternary', p[1], p[3])
 
 
 def p_expSubCall(p):
@@ -411,7 +411,7 @@ def p_empty(p):
 def p_error(p):
     last_cr = lex.lexer.lexdata.rfind('\n', 0, lex.lexer.lexpos)
     column = lex.lexer.lexpos - last_cr - 1
-    print("LexToken(ERROR Sintático: Linha: %s, Coluna: %s, Token invávildo: %s)" % (p.lexer.lineno, column, p.value[0]))
+    print("\nLexToken(ERROR Sintático: Linha: %s, Coluna: %s, Token invávildo: %s)" % (p.lexer.lineno, column, p.value[0]))
     p.lexer.skip(1)
 
 
