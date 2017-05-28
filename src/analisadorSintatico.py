@@ -1,8 +1,8 @@
 # coding: utf-8
 import ply.yacc as yacc
 import ply.lex as lex
-from utils import Utils, path_files_test, path_files_result
-from analisadorLexico import tokens, test_output_lexer
+from utils import Utils, path_files_test
+from analisadorLexico import tokens
 
 # a precedencia é definida de cima para baixo
 # baseado na definição da linguagem (versão 1.4)

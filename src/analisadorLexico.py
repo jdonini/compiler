@@ -1,6 +1,6 @@
 # coding: utf-8
 import ply.lex as lex
-from utils import Utils, path_files_test, path_files_result
+from utils import Utils, path_files_test
 
 # Funções seguindo o padrão da doc(http://www.dabeaz.com/ply/ply.html\ply_nn6)
 tokens = [
@@ -110,6 +110,7 @@ analisador_lexico = lex.lex()
 
 def test_output_lexer(result):
     analisador_lexico.input(Utils.find_files_test(Utils.archive, path_files_test))
+    lex.lexer.lineno = 1
     while True:
         token = analisador_lexico.token()
         last_cr = lex.lexer.lexdata.rfind('\n', 0, lex.lexer.lexpos)
