@@ -1,8 +1,3 @@
-from analisadorLexico import test_output_lexer
-from analisadorSintatico import test_output_sintatico
-from utils import Utils, path_files_result
-
-
 def menu():
     print("""
          ++++++++++++++++++++++++++++++++++++ Compilador para a Linguagem cmm ++++++++++++++++++++++++++++++++++++
@@ -16,6 +11,8 @@ def menu():
 
 
 def analisadorLexico():
+    from analisadorLexico import test_output_lexer
+    from utils import Utils, path_files_result
     print("\n++++++++++++++++++++++++++++++++++++ Análisador Léxico ++++++++++++++++++++++++++++++++++++\n")
     test_output_lexer(Utils.save_archives_test(Utils.archive, path_files_result))
     print()
@@ -24,6 +21,9 @@ def analisadorLexico():
 
 
 def analisadorSintatico():
+    from analisadorSintatico import test_output_sintatico
+    from analisadorLexico import test_output_lexer
+    from utils import Utils, path_files_result
     print("\n++++++++++++++++++++++++++++++++++++ Análisador Léxico ++++++++++++++++++++++++++++++++++++\n")
     test_output_lexer(Utils.save_archives_test(Utils.archive, path_files_result))
     print()
@@ -36,7 +36,7 @@ def analisadorSintatico():
 
 def analisadorSemantico():
     print()
-    print ('\nanalisadorSemantico()\n')
+    print("\n++++++++++++++++++++++++++++++++++++ Análisador Semântico ++++++++++++++++++++++++++++++++++++\n")
     print()
     menu()
     switch(int(input('Escolha uma opção: ')))
