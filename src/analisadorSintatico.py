@@ -35,9 +35,9 @@ def p_dec(p):
     if len(p) == 2:
         p[0] = ('dec', p[1])
     elif len(p) == 8:
-        p[0] = ('decProcedure', p[1], p[3], p[6])
+        p[0] = ('decProcedure', p[3], p[6])
     elif len(p) == 9:
-        p[0] = ('dec', p[1], p[4], p[7])
+        p[0] = ('decFunc', p[1], p[4], p[7])
 
 
 def p_varDec(p):
@@ -55,13 +55,13 @@ def p_varSpec(p):
             | ID LCOR NUMBER RCOR ASSIGN LKEY literalSeq RKEY
     '''
     if len(p) == 2:
-        p[0] = ('varSpec', p[1])
+        p[0] = ('varSpecID', p[1])
     elif len(p) == 4:
-        p[0] = ('varSpec', p[1], p[3])
+        p[0] = ('varSpecAtrib', p[1], p[3])
     elif len(p) == 5:
-        p[0] = ('varSpec', p[1], p[3])
+        p[0] = ('varSpecVec', p[1], p[3])
     elif len(p) == 9:
-        p[0] = ('varSpec', p[1], p[7])
+        p[0] = ('varSpecVecMultVal', p[1], p[7])
 
 
 def p_type(p):
@@ -81,7 +81,7 @@ def p_param(p):
     if len(p) == 3:
         p[0] = ('param', p[1])
     elif len(p) == 5:
-        p[0] = ('param', p[1])
+        p[0] = ('paramVec', p[1])
 
 
 def p_block(p):
@@ -102,6 +102,7 @@ def p_stmt(p):
          | writeStmt
          | assign SEMICOLON
          | subCall SEMICOLON
+         | error
     '''
     if len(p) == 2:
         p[0] = ('stmt', p[1])
@@ -251,7 +252,7 @@ def p_expLogic(p):
     elif p[2] == '||':
         p[0] = ('OR', p[1], p[3])
     elif p[1] == '!':
-        p[0] = ('NOT', p[1], p[2])
+        p[0] = ('NOT', p[2])
     elif p[1] == '-':
         p[0] = ('UMINUS', -p[2])
 
@@ -260,7 +261,7 @@ def p_expTernary(p):
     '''
     exp : exp QMARK exp COLON exp
     '''
-    p[0] = ('ternary', p[1], p[3])
+    p[0] = ('ternary', p[1], p[3], p[5])
 
 
 def p_expSubCall(p):
@@ -411,8 +412,11 @@ def p_empty(p):
 def p_error(p):
     last_cr = lex.lexer.lexdata.rfind('\n', 0, lex.lexer.lexpos)
     column = lex.lexer.lexpos - last_cr - 1
-    print("\nLexToken(ERROR Sintático: Linha: %s, Coluna: %s, Token invávildo: %s)" % (p.lexer.lineno, column, p.value[0]))
-    p.lexer.skip(1)
+    if p:
+        print("\nErro de sintaxe: Linha: %d, Coluna: %d, Tipo do erro: %s" % (p.lexer.lineno, column, p.type))
+        parser.errok()
+    else:
+        print("Erro de sintaxe: EOF")
 
 
 parser = yacc.yacc()

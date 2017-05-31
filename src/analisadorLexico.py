@@ -111,6 +111,8 @@ analisador_lexico = lex.lex()
 def test_output_lexer(result):
     analisador_lexico.input(Utils.find_files_test(Utils.archive, path_files_test))
     lex.lexer.lineno = 1
+    dict_token = {}
+    count = 1
     while True:
         token = analisador_lexico.token()
         last_cr = lex.lexer.lexdata.rfind('\n', 0, lex.lexer.lexpos)
@@ -119,6 +121,18 @@ def test_output_lexer(result):
             break
         print_lexer = 'LexToken(Token: %s, Valor: %r, Linha: %d, Coluna: %d)' % (token.type, token.value, token.lineno, column)
         print (print_lexer)
+        lista_tokens = []
+        lista_tokens.append(token.type)
+        for item in lista_tokens:
+            if ('ID' in item) and (token.value not in dict_token.keys()):
+                dict_token[token.value] = count
+                count += 1
         with open(result, 'a') as file:
             file.write(print_lexer + '\n')
             file.close()
+    print("\n\n+++++++++++++++++++++++++++++++++++++ Lista de Ocorrências +++++++++++++++++++++++++++++++++++++\n")
+    print_dict_token = '\nLista de Ocorrências %s' % (dict_token)
+    print(print_dict_token)
+    with open(result, 'a') as file:
+        file.write(str(print_dict_token) + '\n')
+        file.close()

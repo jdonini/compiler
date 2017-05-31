@@ -1,3 +1,30 @@
+import os
+import errno
+
+
+def clean_files():
+    for base, dirs, files in os.walk('../src/'):
+        for archive in files:
+            if archive.endswith('.pyc'):
+                os.remove(os.path.join(base, archive))
+            if archive.endswith('.out'):
+                os.remove(os.path.join(base, archive))
+            if archive.startswith('parsetab'):
+                os.remove(os.path.join(base, archive))
+    for base, dirs, files in os.walk('..'):
+        for archive in files:
+            if archive.endswith('.DS_Store'):
+                os.remove(os.path.join(base, archive))
+
+
+def create_folder():
+    try:
+        os.makedirs('../result')
+    except OSError as exception:
+        if exception.errno != errno.EEXIST:
+            raise
+
+
 def menu():
     print("""
          ++++++++++++++++++++++++++++++++++++ Compilador para a Linguagem cmm ++++++++++++++++++++++++++++++++++++
@@ -8,6 +35,8 @@ def menu():
 
          0 - Sair
            """)
+    clean_files()
+    create_folder()
 
 
 def analisadorLexico():
@@ -16,22 +45,15 @@ def analisadorLexico():
     print("\n++++++++++++++++++++++++++++++++++++ Análisador Léxico ++++++++++++++++++++++++++++++++++++\n")
     test_output_lexer(Utils.save_archives_test(Utils.archive, path_files_result))
     print()
-    menu()
-    switch(int(input('Escolha uma opção: ')))
 
 
 def analisadorSintatico():
     from analisadorSintatico import test_output_sintatico
-    from analisadorLexico import test_output_lexer
     from utils import Utils, path_files_result
-    print("\n++++++++++++++++++++++++++++++++++++ Análisador Léxico ++++++++++++++++++++++++++++++++++++\n")
-    test_output_lexer(Utils.save_archives_test(Utils.archive, path_files_result))
     print()
     print("\n++++++++++++++++++++++++++++++++ Árvore Sintática Abstrata ++++++++++++++++++++++++++++++++\n")
     test_output_sintatico(Utils.save_archives_test(Utils.archive, path_files_result))
     print()
-    menu()
-    switch(int(input('Escolha uma opção: ')))
 
 
 def analisadorSemantico():
