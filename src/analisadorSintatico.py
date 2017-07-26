@@ -1,12 +1,16 @@
 # coding: utf-8
+
 import ply.yacc as yacc
 import ply.lex as lex
 from utils import Utils, path_files_test
 from analisadorLexico import tokens
+from analisadorSemantico import *
 
+# chamar depois do sintatico p[0].avaliaNo .. no retorno do sintatico
 # a precedencia é definida de cima para baixo
 # baseado na definição da linguagem (versão 1.4)
 # os conflitos são resolvidos pela regra shift/reduce
+
 precedence_tokens = (
     ('right', '?'),
     ('left', 'OR'),
@@ -23,7 +27,7 @@ def p_program(p):
     '''
     program : decSeq
     '''
-    p[0] = ('Program', p[1])
+    p[0] = NodeProgram({'program': p[1]})
 
 
 def p_dec(p):
@@ -33,18 +37,18 @@ def p_dec(p):
         | type ID LPAREN paramList RPAREN LKEY block RKEY
     '''
     if len(p) == 2:
-        p[0] = ('dec', p[1])
+        p[0] = NodeDec({'varDec': p[1]})
     elif len(p) == 8:
-        p[0] = ('decProcedure', p[3], p[6])
+        p[0] = NodeDec({'ID': p[1], 'paramList': p[3], 'block': p[6]})
     elif len(p) == 9:
-        p[0] = ('decFunc', p[1], p[4], p[7])
+        p[0] = NodeDec({'type': p[1], 'ID': p[2], 'paramList': p[4], 'block': p[7]})
 
 
 def p_varDec(p):
     '''
     varDec : type varSpecSeq SEMICOLON
     '''
-    p[0] = ('varDec', p[1], p[2])
+    p[0] = NodeVarDec({'type': p[1], 'varSpecSeq': p[2]})
 
 
 def p_varSpec(p):
@@ -55,13 +59,13 @@ def p_varSpec(p):
             | ID LCOR NUMBER RCOR ASSIGN LKEY literalSeq RKEY
     '''
     if len(p) == 2:
-        p[0] = ('varSpecID', p[1])
+        p[0] = NodeVarSpec({'ID': p[1]})
     elif len(p) == 4:
-        p[0] = ('varSpecAtrib', p[1], p[3])
+        p[0] = NodeVarSpec({'ID': p[1], 'literal': p[3]})
     elif len(p) == 5:
-        p[0] = ('varSpecVec', p[1], p[3])
+        p[0] = NodeVarSpec({'ID': p[1], 'NUMBER': p[3]})
     elif len(p) == 9:
-        p[0] = ('varSpecVecMultVal', p[1], p[7])
+        p[0] = NodeVarSpec({'ID': p[1], 'literalSeq': p[7]})
 
 
 def p_type(p):
@@ -70,7 +74,7 @@ def p_type(p):
          | STRING
          | BOOLEAN
     '''
-    p[0] = ('type', p[1])
+    p[0] = NodeType({'type': p[1]})
 
 
 def p_param(p):
@@ -79,16 +83,16 @@ def p_param(p):
           | type ID RCOR LCOR
     '''
     if len(p) == 3:
-        p[0] = ('param', p[1])
+        p[0] = NodeParam({'type': p[1], 'ID': p[2]})
     elif len(p) == 5:
-        p[0] = ('paramVec', p[1])
+        p[0] = NodeParam({'type': p[1], 'ID': p[2], 'RCOR': p[3], 'LCOR': p[4]})
 
 
 def p_block(p):
     '''
     block : varDecList stmtList
     '''
-    p[0] = ('block', p[1], p[2])
+    p[0] = NodeBlock({'varDecList': p[1], 'stmtList': p[2]})
 
 
 def p_stmt(p):
@@ -105,9 +109,9 @@ def p_stmt(p):
          | error
     '''
     if len(p) == 2:
-        p[0] = ('stmt', p[1])
+        p[0] = NodeStmt({'stmt', p[1]})
     elif len(p) == 3:
-        p[0] = ('stmt', p[1])
+        p[0] = NodeStmt({'stmt', p[1]})
 
 
 def p_ifStmt(p):
@@ -116,44 +120,44 @@ def p_ifStmt(p):
            | IF LPAREN exp RPAREN LKEY block RKEY ELSE LKEY block RKEY
     '''
     if len(p) == 8:
-        p[0] = ('ifStmt', p[3], p[6])
+        p[0] = NodeIfStmt({'exp': p[3], 'block': p[6]})
     elif len(p) == 12:
-        p[0] == ('ifStmt', p[3], p[6], p[10])
+        p[0] = NodeIfStmt({'exp': p[3], 'block1': p[6], 'block2': p[10]})
 
 
 def p_whileStmt(p):
     '''
     whileStmt : WHILE LPAREN exp RPAREN LKEY block RKEY
     '''
-    p[0] = ('whileStmt', p[3], p[6])
+    p[0] = NodeWhileStmt({'exp': p[3], 'block': p[6]})
 
 
 def p_forStmt(p):
     '''
     forStmt : FOR LPAREN assign SEMICOLON exp SEMICOLON assign RPAREN LKEY block RKEY
     '''
-    p[0] = ('forStmt', p[3], p[5], p[7], p[10])
+    p[0] = NodeForStmt({'assign1': p[3], 'exp': p[5], 'assign2': p[7], 'block':p[10]})
 
 
 def p_breakStmt(p):
     '''
     breakStmt : BREAK SEMICOLON
     '''
-    p[0] = ('breakStmt', p[1])
+    p[0] = NodeBreakStmt({'breakStmt': p[1]})
 
 
 def p_readStmt(p):
     '''
     readStmt : READ var SEMICOLON
     '''
-    p[0] = ('readStmt', p[2])
+    p[0] = NodeReadStmt({'var': p[2]})
 
 
 def p_writeStmt(p):
     '''
     writeStmt : WRITE expList SEMICOLON
     '''
-    p[0] = ('writeStmt', p[2])
+    p[0] = NodeWriteStmt({'expList': p[2]})
 
 
 def p_returnStmt(p):
@@ -161,17 +165,14 @@ def p_returnStmt(p):
     returnStmt : RETURN SEMICOLON
                | RETURN exp SEMICOLON
     '''
-    if len(p) == 3:
-        p[0] = ('returnStmt', p[1])
-    elif len(p) == 4:
-        p[0] = ('returnStmt', p[1], p[2])
+    p[0] = NodeReturnStmt({'return': p[1], 'exp': p[2]})
 
 
 def p_subCall(p):
     '''
     subCall : ID LPAREN expList RPAREN
     '''
-    p[0] = ('subCall', p[1], p[3])
+    p[0] = NodeSubCall({'expList': p[3]})
 
 
 def p_assign(p):
@@ -183,18 +184,7 @@ def p_assign(p):
            | var DIVIDEASSIGN exp
            | var MODASSIGN exp
     '''
-    if p[2] == '=':
-        p[0] = ('=', p[1], p[3])
-    elif p[2] == '+=':
-        p[0] = ('+=', p[1], p[3])
-    elif p[2] == '-=':
-        p[0] = ('-=', p[1], p[3])
-    elif p[2] == '*=':
-        p[0] = ('*=', p[1], p[3])
-    elif p[2] == '/=':
-        p[0] = ('/=', p[1], p[3])
-    elif p[2] == '%=':
-        p[0] = ('%=', p[1], p[3])
+    p[0] = NodeAssign({'var': p[1], 'exp': p[3]})
 
 
 def p_expArithmetic(p):
@@ -205,16 +195,7 @@ def p_expArithmetic(p):
         | exp DIVIDE exp
         | exp MOD exp
     '''
-    if p[2] == '+':
-        p[0] = ('+', p[1], p[3])
-    elif p[2] == '-':
-        p[0] = ('-', p[1], p[3])
-    elif p[2] == '/':
-        p[0] = ('/', p[1], p[3])
-    elif p[2] == '*':
-        p[0] = ('*', p[1], p[3])
-    elif p[2] == '%':
-        p[0] = ('%', p[1], p[3])
+    p[0] = NodeExpArithmetic({'exp1': p[1], 'exp2': p[3]})
 
 
 def p_expComparison(p):
@@ -226,18 +207,7 @@ def p_expComparison(p):
         | exp LT exp
         | exp LTE exp
     '''
-    if p[2] == '==':
-        p[0] = ('==', p[1], p[3])
-    elif p[2] == '!=':
-        p[0] = ('!=', p[1], p[3])
-    elif p[2] == '>':
-        p[0] = ('>', p[1], p[3])
-    elif p[2] == '>=':
-        p[0] = ('>=', p[1], p[3])
-    elif p[2] == '<':
-        p[0] = ('<', p[1], p[3])
-    elif p[2] == '<=':
-        p[0] = ('<=', p[1], p[3])
+    p[0] = NodeExpComparison({'exp1': p[1], 'exp2': p[3]})
 
 
 def p_expLogic(p):
@@ -247,49 +217,45 @@ def p_expLogic(p):
         | NOT exp
         | UMINUS exp
     '''
-    if p[2] == '&&':
-        p[0] = ('AND', p[1], p[3])
-    elif p[2] == '||':
-        p[0] = ('OR', p[1], p[3])
-    elif p[1] == '!':
-        p[0] = ('NOT', p[2])
-    elif p[1] == '-':
-        p[0] = ('UMINUS', -p[2])
+    if p[2] == '&&' or '||':
+        p[0] = NodeExpLogic({'exp1': p[1], 'op': p[2],'exp2': p[3]})
+    elif p[1] == '!' or '-':
+        p[0] = NodeExpLogic({'op': p[1] ,'exp': p[2]})
 
 
 def p_expTernary(p):
     '''
     exp : exp QMARK exp COLON exp
     '''
-    p[0] = ('ternary', p[1], p[3], p[5])
+    p[0] = NodeExpTernary({'exp1': p[1], 'exp2': p[3], 'exp3': p[5]})
 
 
 def p_expSubCall(p):
     '''
     exp : subCall
     '''
-    p[0] = ('expSubCall', p[1])
+    p[0] = NodeExpSubCall({'subCall': p[1]})
 
 
 def p_expVar(p):
     '''
     exp : var
     '''
-    p[0] = ('expVar', p[1])
+    p[0] = NodeExpVar({'var': p[1]})
 
 
 def p_expLiteral(p):
     '''
     exp : literal
     '''
-    p[0] = ('literal', p[1])
+    p[0] = NodeExpLiteral({'literal': p[1]})
 
 
 def p_expMultParent(p):
     '''
     exp : LPAREN exp RPAREN
     '''
-    p[0] = ('expMultParent', p[2])
+    p[0] = NodeExpMultParent({'exp': p[2]})
 
 
 def p_var(p):
@@ -298,9 +264,9 @@ def p_var(p):
         | ID LCOR exp RCOR
     '''
     if len(p) == 2:
-        p[0] = ('var', p[1])
+        p[0] = NodeVar({'id': p[1]})
     elif len(p) == 5:
-        p[0] = ('var', p[1], p[3])
+        p[0] = NodeVar({'id': p[1], 'exp': p[3]})
 
 
 def p_literal(p):
@@ -310,7 +276,7 @@ def p_literal(p):
             | FALSE
             | TRUE
     '''
-    p[0] = ('Literal', p[1])
+    p[0] = NodeLiteral({'literal': p[1]})
 
 
 def p_paramList(p):
@@ -319,7 +285,7 @@ def p_paramList(p):
               | empty
     '''
     if len(p) == 2:
-        p[0] = ('paramList', p[1])
+        p[0] = NodeParamList({'paramSeq': p[1]})
 
 
 def p_paramSeq(p):
@@ -328,9 +294,9 @@ def p_paramSeq(p):
              | param COMMA paramSeq
     '''
     if len(p) == 2:
-        p[0] = ('paramSeq', p[1])
+        p[0] = NodeParamSeq({'param': p[1]})
     elif len(p) == 4:
-        p[0] = ('paramSeq', p[1], p[3])
+        p[0] = NodeParamSeq({'param': p[1], 'paramSeq': p[3]})
 
 
 def p_varDecList(p):
@@ -339,7 +305,7 @@ def p_varDecList(p):
                | empty
     '''
     if len(p) == 3:
-        p[0] = ('varDecList', p[1], p[2])
+        p[0] = NodeVarDecList({'varDec': p[1], 'varDecList': p[2]})
 
 
 def p_varSpecSeq(p):
@@ -348,9 +314,9 @@ def p_varSpecSeq(p):
                | varSpec COMMA varSpecSeq
     '''
     if len(p) == 2:
-        p[0] = ('varSpecSeq', p[1])
+        p[0] = NodeVarSpecSeq({'varSpec': p[1]})
     elif len(p) == 4:
-        p[0] = ('varSpecSeq', p[1], p[3])
+        p[0] = NodeVarSpecSeq({'varSpec': p[1], 'varSpecSeq': p[3]})
 
 
 def p_decSeq(p):
@@ -359,9 +325,9 @@ def p_decSeq(p):
            | dec decSeq
     '''
     if len(p) == 2:
-        p[0] = ('decSeq', p[1])
+        p[0] = NodeDecSeq({'dec': p[1]})
     elif len(p) == 3:
-        p[0] = ('decSeq', p[1], p[2])
+        p[0] = NodeDecSeq({'dec': p[1], 'decSeq': p[2]})
 
 
 def p_stmtList(p):
@@ -370,7 +336,7 @@ def p_stmtList(p):
              | empty
     '''
     if len(p) == 3:
-        p[0] = ('stmtList', p[1], p[2])
+        p[0] = NodeStmtList({'stmt': p[1], 'stmtList': p[2]})
 
 
 def p_literalSeq(p):
@@ -379,9 +345,9 @@ def p_literalSeq(p):
                | literal COMMA literalSeq
     '''
     if len(p) == 2:
-        p[0] = ('literalSeq', p[1])
+        p[0] = NodeLiteralSeq({'literal': p[1]})
     elif len(p) == 3:
-        p[0] = ('literalSeq', p[1], p[3])
+        p[0] = NodeLiteralSeq({'literal': p[1], 'literalSeq': p[3]})
 
 
 def p_expList(p):
@@ -390,7 +356,7 @@ def p_expList(p):
             | empty
     '''
     if len(p) == 2:
-        p[0] = ('expSeq', p[1])
+        p[0] = NodeExpList({'expSeq': p[1]})
 
 
 def p_expSeq(p):
@@ -399,9 +365,9 @@ def p_expSeq(p):
            | exp COMMA expSeq
     '''
     if len(p) == 2:
-        p[0] = ('expSeq', p[1])
+        p[0] = NodeExpSeq({'exp': p[1]})
     elif len(p) == 4:
-        p[0] = ('expSeq', p[1], p[3])
+        p[0] = NodeExpSeq({'exp': p[1], 'expSeq': p[3]})
 
 
 def p_empty(p):
@@ -418,13 +384,17 @@ def p_error(p):
     else:
         print("Erro de sintaxe: EOF")
 
-
 parser = yacc.yacc()
 analisador_sintatico = parser.parse(Utils.find_files_test(Utils.archive, path_files_test))
 
 
 def test_output_sintatico(result):
     print (analisador_sintatico)
+    print (analisador_sintatico.dicionario['program'])
+    print (analisador_sintatico.dicionario['program'].dicionario['dec'])
+    print (analisador_sintatico.dicionario['program'].dicionario['dec'].dicionario['varDec'])
+    print (analisador_sintatico.dicionario['program'].dicionario['dec'].dicionario['varDec'].dicionario['type'])
+    print (analisador_sintatico.dicionario['program'].dicionario['dec'].dicionario['varDec'].dicionario['type'].dicionario['type'])
     with open(result, 'a') as file:
         file.write(str(analisador_sintatico) + '\n')
         file.close()
