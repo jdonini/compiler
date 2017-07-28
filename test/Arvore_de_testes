@@ -1,0 +1,13 @@
+program : decSeq
+decSeq : dec
+dec : varDec
+varDec : type varSpecSeq SEMICOLON
+
+       type : bool
+       varSpecSeq : varSpec
+       varSpec : ID ASSIGN literal
+       literal : true
+
+program : decSeq
+decSeq : dec
+dec : ID LPAREN parmaList RPAREN LKEY block RKEY
