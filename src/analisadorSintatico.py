@@ -44,11 +44,33 @@ def p_dec(p):
         p[0] = NodeDec({'type': p[1], 'ID': p[2], 'paramList': p[4], 'block': p[7]})
 
 
+def p_decSeq(p):
+    '''
+    decSeq : dec
+           | dec decSeq
+    '''
+    if len(p) == 2:
+        p[0] = NodeDecSeq({'dec': p[1]})
+    elif len(p) == 3:
+        p[0] = NodeDecSeq({'dec': p[1], 'decSeq': p[2]})
+
+
 def p_varDec(p):
     '''
     varDec : type varSpecSeq SEMICOLON
     '''
     p[0] = NodeVarDec({'type': p[1], 'varSpecSeq': p[2]})
+
+def p_varSpecSeq(p):
+    '''
+    varSpecSeq : varSpec
+               | varSpec COMMA varSpecSeq
+    '''
+    if len(p) == 2:
+        p[0] = NodeVarSpecSeq({'varSpec': p[1]})
+    elif len(p) == 4:
+        p[0] = NodeVarSpecSeq({'varSpec': p[1], 'varSpecSeq': p[3]})
+
 
 
 def p_varSpec(p):
@@ -65,7 +87,7 @@ def p_varSpec(p):
     elif len(p) == 5:
         p[0] = NodeVarSpec({'ID': p[1], 'NUMBER': p[3]})
     elif len(p) == 9:
-        p[0] = NodeVarSpec({'ID': p[1], 'literalSeq': p[7]})
+        p[0] = NodeVarSpec({'ID': p[1], 'NUMBER': p[3], 'literalSeq': p[7]})
 
 
 def p_type(p):
@@ -77,15 +99,6 @@ def p_type(p):
     p[0] = NodeType({'type': p[1]})
 
 
-def p_param(p):
-    '''
-    param : type ID
-          | type ID RCOR LCOR
-    '''
-    if len(p) == 3:
-        p[0] = NodeParam({'type': p[1], 'ID': p[2]})
-    elif len(p) == 5:
-        p[0] = NodeParam({'type': p[1], 'ID': p[2], 'RCOR': p[3], 'LCOR': p[4]})
 
 
 def p_block(p):
@@ -172,7 +185,7 @@ def p_subCall(p):
     '''
     subCall : ID LPAREN expList RPAREN
     '''
-    p[0] = NodeSubCall({'expList': p[3]})
+    p[0] = NodeSubCall({'ID': p[1], 'expList': p[3]})
 
 
 def p_assign(p):
@@ -299,6 +312,17 @@ def p_paramSeq(p):
         p[0] = NodeParamSeq({'param': p[1], 'paramSeq': p[3]})
 
 
+def p_param(p):
+    '''
+    param : type ID
+          | type ID LCOR RCOR
+    '''
+    if len(p) == 3:
+        p[0] = NodeParam({'type': p[1], 'ID': p[2]})
+    elif len(p) == 5:
+        p[0] = NodeParam({'type': p[1], 'ID': p[2], 'LCOR': p[3], 'RCOR': p[4]})
+
+
 def p_varDecList(p):
     '''
     varDecList : varDec varDecList
@@ -310,26 +334,7 @@ def p_varDecList(p):
         p[0] = NodeVarDecList({'varDec': p[1], 'varDecList': p[2]})
 
 
-def p_varSpecSeq(p):
-    '''
-    varSpecSeq : varSpec
-               | varSpec COMMA varSpecSeq
-    '''
-    if len(p) == 2:
-        p[0] = NodeVarSpecSeq({'varSpec': p[1]})
-    elif len(p) == 4:
-        p[0] = NodeVarSpecSeq({'varSpec': p[1], 'varSpecSeq': p[3]})
 
-
-def p_decSeq(p):
-    '''
-    decSeq : dec
-           | dec decSeq
-    '''
-    if len(p) == 2:
-        p[0] = NodeDecSeq({'dec': p[1]})
-    elif len(p) == 3:
-        p[0] = NodeDecSeq({'dec': p[1], 'decSeq': p[2]})
 
 
 def p_stmtList(p):
@@ -339,6 +344,8 @@ def p_stmtList(p):
     '''
     if len(p) == 3:
         p[0] = NodeStmtList({'stmt': p[1], 'stmtList': p[2]})
+    if len(p) == 2:
+        p[0] = NodeStmtList({'empty': p[1]})
 
 
 def p_literalSeq(p):
@@ -348,7 +355,7 @@ def p_literalSeq(p):
     '''
     if len(p) == 2:
         p[0] = NodeLiteralSeq({'literal': p[1]})
-    elif len(p) == 3:
+    elif len(p) == 4:
         p[0] = NodeLiteralSeq({'literal': p[1], 'literalSeq': p[3]})
 
 
