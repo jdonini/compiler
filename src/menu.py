@@ -3,7 +3,6 @@
 import os
 import errno
 
-
 def clean_files():
     for base, dirs, files in os.walk('../src/'):
         for archive in files:
@@ -32,8 +31,7 @@ def menu():
          ++++++++++++++++++++++++++++++++++++ Compilador para a Linguagem cmm ++++++++++++++++++++++++++++++++++++
 
          1 - Analisador Léxico
-         2 - Analisador Sintático
-         3 - Analisador Semântico
+         2 - Analisador Sintático e Analisador Semântico
 
          0 - Sair
            """)
@@ -54,16 +52,10 @@ def analisadorSintatico():
     from utils import Utils, path_files_result
     print()
     print("\n++++++++++++++++++++++++++++++++ Árvore Sintática Abstrata ++++++++++++++++++++++++++++++++\n")
+    import analisadorSemantico
+    print(analisadorSemantico.dicionario_de_simbolos)
     test_output_sintatico(Utils.save_archives_test(Utils.archive, path_files_result))
     print()
-
-
-def analisadorSemantico():
-    print()
-    print("\n++++++++++++++++++++++++++++++++++++ Análisador Semântico ++++++++++++++++++++++++++++++++++++\n")
-    print()
-    menu()
-    switch(int(input('Escolha uma opção: ')))
 
 
 def sair():
@@ -83,7 +75,6 @@ def switch(x):
 dict = {
     1: analisadorLexico,
     2: analisadorSintatico,
-    3: analisadorSemantico,
     0: sair
     }
 
